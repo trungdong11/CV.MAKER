@@ -1,0 +1,33 @@
+/* THEME OPTIONS */
+@import './nprogress.css';
+:root {
+  --loader-width: 250px;
+  --loader-dot-size: 16px;
+}
+body {
+  font-size: 14px;
+  min-height: 100dvh;
+  height: 100dvh;
+  color: rgb(15, 20, 25);
+}
+
+hr {
+  color: #e5e4e6;
+}
+
+textarea {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.driver-popover * {
+  font-family: inherit !important;
+}
+
+.driver-popover-title {
+  font-weight: 600 !important;
+}
