@@ -28,7 +28,7 @@
       @apply bg-background text-foreground;
     }
     :root {
-      --primary: 247 68% 62%;
+      --primary: 24 100% 50%;
       --primary-foreground: 210 40% 98%;
       --radius: 0.5rem;
 
