@@ -10,7 +10,7 @@ import {
   reportRoute,
   planRoute,
 } from './modules'
-import { authGuard } from './auth-guard'
+// import { authGuard } from './auth-guard'
 const { progress } = useIndicator()
 
 const routes: RouteRecordRaw[] = [
