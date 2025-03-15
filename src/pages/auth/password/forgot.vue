@@ -92,14 +92,14 @@ const [email, emailAttrs] = defineField('email')
 <template>
   <div class="h-full flex p-8">
     <div class="flex-1 flex justify-center items-center">
-      <div class="rounded-xl max-md:w-full max-sm:p-0 w-96">
+      <div class="rounded-xl max-md:w-full max-sm:p-0 w-96 p-5 bg-white shadow-lg">
         <div class="flex items-center gap-4 justify-center">
           <img
             class="w-10 h-10 rounded-md object-contain"
             src="@/assets/img/logo.png"
             alt=""
           />
-          <h2 class="text-lg font-semibold">Quizzfly</h2>
+          <h2 class="text-lg font-semibold">CV.Maker</h2>
         </div>
         <div class="flex flex-col items-start gap-2 mb-2 mt-6">
           <h1 class="text-[344054] text-lg font-semibold">Forgot password</h1>

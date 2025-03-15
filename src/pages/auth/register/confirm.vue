@@ -54,6 +54,6 @@ onBeforeMount(async () => {
 
 <style scoped lang="scss">
 .contain {
-  background: url('@/assets/img/auth-bg.jpg');
+  background: url('@/assets/img/bg-image-1.jpg');
 }
 </style>
