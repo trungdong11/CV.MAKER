@@ -16,7 +16,7 @@ const { progress } = useIndicator()
 const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     component: () => import('@/pages/index.vue'),
     children: dashboardRoute,
   },
@@ -34,28 +34,28 @@ const routes: RouteRecordRaw[] = [
       layout: 'GuestLayout',
       public: true,
     },
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     children: authRoute,
   },
   {
     path: '/profiles',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     children: profileRoute,
   },
   {
     path: '/quizzfly',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     children: quizzflyRoute,
   },
   {
     path: '/room',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     component: () => import('@/pages/room/index.vue'),
     children: roomRoute,
   },
   {
     path: '/groups',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     component: () => import('@/pages/groups/detail/index.vue'),
     children: groupRoute,
   },
@@ -65,17 +65,17 @@ const routes: RouteRecordRaw[] = [
       layout: 'GuestLayout',
       unAuth: true,
     },
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     children: playRoute,
   },
   {
     path: '/reports',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     children: reportRoute,
   },
   {
     path: '/billing-plan',
-    beforeEnter: [authGuard],
+    // beforeEnter: [authGuard],
     children: planRoute,
   },
   {

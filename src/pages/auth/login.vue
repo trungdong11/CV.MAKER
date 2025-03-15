@@ -32,15 +32,15 @@ const loginGoogle = () => {
 }
 </script>
 <template>
-  <div class="h-full flex p-8 gap-12">
+  <div class="bg-white rounded-xl p-5 flex h-full">
     <div class="flex-1 flex justify-center items-center">
-      <div class="rounded-xl max-md:w-full max-sm:p-0 w-96">
+      <div class="max-md:w-full max-sm:p-0 max-w-full p-5 rounded-xl shadow-lg">
         <form
           class="rounded-xl max-md:w-full max-sm:p-0 w-96"
           @submit="onSubmit"
         >
           <div class="flex items-center gap-0.5 mb-4">
-            <h1 class="text-[344054] text-lg font-semibold mt-3">Welcome Back</h1>
+            <h1 class="text-[344054] text-lg font-semibold mt-3">Welcome to CV.Maker</h1>
           </div>
           <div>
             <h2 class="mt-1 text-[#667085]">Today is a new day. It's your day. You shape it.</h2>
@@ -116,9 +116,9 @@ const loginGoogle = () => {
         </div>
       </div>
     </div>
-    <div class="flex-1 relative max-md:hidden">
+    <div class="flex-1 max-md:hidden">
       <img
-        class="absolute top-0 left-0 w-full h-full object-cover rounded-3xl"
+        class="top-0 left-0 w-full h-full object-cover rounded-3xl"
         src="@/assets/img/bg-image-1.jpg"
         alt=""
       />

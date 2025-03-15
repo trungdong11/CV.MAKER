@@ -81,10 +81,10 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 <template>
   <Toaster />
-  <div class="h-full flex p-8">
+  <div class="bg-white rounded-xl p-5 flex h-full">
     <div class="flex-1 flex justify-center items-center">
       <div
-        class="rounded-xl max-md:w-full max-sm:p-0 w-96"
+        class="max-md:w-full max-sm:p-0 max-w-full p-5 rounded-xl shadow-lg"
         @submit.prevent="onSubmit"
       >
         <form
@@ -93,10 +93,6 @@ const onSubmit = handleSubmit(async (values) => {
         >
           <div class="flex items-center gap-0.5 mb-4">
             <h1 class="text-[344054] text-lg font-semibold">Register account</h1>
-          </div>
-          <div>
-            <h2 class="mt-1 text-[#667085]">Today is a new day. It's your day. You shape it.</h2>
-            <h2 class="mt-1 text-[#667085]">Sign in to start managing your projects</h2>
           </div>
           <div class="mt-6">
             <div class="form-data">
@@ -189,9 +185,9 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
       </div>
     </div>
-    <div class="flex-1 relative max-md:hidden">
+    <div class="flex-1 relative">
       <img
-        class="absolute top-0 left-0 w-full h-full object-cover rounded-3xl"
+        class="top-0 left-0 w-full h-full object-cover rounded-3xl"
         src="@/assets/img/bg-image-1.jpg"
         alt=""
       />
