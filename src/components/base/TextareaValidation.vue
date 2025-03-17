@@ -10,8 +10,6 @@ const props = defineProps<{
   initialValue?: string
 }>()
 
-// The `name` is returned in a function because we want to make sure it stays reactive
-// If the name changes you want `useField` to be able to pick it up
 const { value, errorMessage } = useField(() => props.name) as any as {
   value: Ref<string>
   errorMessage: string
@@ -28,6 +26,7 @@ onBeforeMount(() => {
     v-bind="{ ...$props, ...$attrs }"
     v-model="value"
     :invalid="errorMessage"
+    class="border-primary outline-none"
   />
   <ErrorMessage
     :error="errorMessage"

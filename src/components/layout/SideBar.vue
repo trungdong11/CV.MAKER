@@ -51,7 +51,7 @@ onBeforeMount(() => {
       'min-w-[280px] w-[280px]': !isCollapsed,
       'light-mode': sidebarMode === 'light',
     }"
-    class="max-md:hidden rounded-tr-2xl bg-[#07182d] text-white group overflow-hidden whitespace-nowrap relative py-3 flex flex-col border-r p-4 gap-2 transition-all duration-400"
+    class="max-md:hidden rounded-tr-2xl bg-black text-white group overflow-hidden whitespace-nowrap relative py-3 flex flex-col border-r p-4 gap-2 transition-all duration-400"
   >
     <div
       :class="{
@@ -85,7 +85,7 @@ onBeforeMount(() => {
           ' ml-auto translate-x-5 rounded-tl-full rounded-bl-full': !isCollapsed,
           '!flex !w-12 !min-w-12 -translate-x-5 rounded-tr-full rounded-br-full': isCollapsed,
         }"
-        class="hidden text-white bg-[#44AA5C] group-hover:flex transition-all duration-600 justify-center items-center cursor-pointer shadow-md min-w-9 w-9 h-9"
+        class="hidden text-white bg-primary group-hover:flex transition-all duration-600 justify-center items-center cursor-pointer shadow-md min-w-9 w-9 h-9"
         @click="toggleSidebar"
       >
         <span
