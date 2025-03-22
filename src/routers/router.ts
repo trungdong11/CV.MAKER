@@ -3,14 +3,14 @@ import {
   authRoute,
   dashboardRoute,
   profileRoute,
-  quizzflyRoute,
+  templateRoute,
   roomRoute,
   playRoute,
   groupRoute,
   reportRoute,
   planRoute,
 } from './modules'
-import { authGuard } from './auth-guard'
+// import { authGuard } from './auth-guard'
 const { progress } = useIndicator()
 
 const routes: RouteRecordRaw[] = [
@@ -43,9 +43,9 @@ const routes: RouteRecordRaw[] = [
     children: profileRoute,
   },
   {
-    path: '/quizzfly',
+    path: '/templates',
     // beforeEnter: [authGuard],
-    children: quizzflyRoute,
+    children: templateRoute,
   },
   {
     path: '/room',

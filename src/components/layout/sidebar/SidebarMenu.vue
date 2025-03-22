@@ -24,7 +24,7 @@ const menus = ref<Menu[]>([
       {
         class: 'i-solar-graph-bold',
         title: 'Dashboard',
-        link: '/',
+        link: '/dashboard',
       },
     ],
   },
@@ -139,12 +139,13 @@ const menus = ref<Menu[]>([
 }
 
 .router-link-active {
-  background-color: #0077fd !important;
+  /* background-color: #0077fd !important; */
+  background-color: #f47432 !important;
   color: #fff;
   font-weight: 500;
-  border: 3px solid #3984e0;
-  /* box-shadow: 0px 8px 20px 1px #3d8ced9c; */
-  box-shadow: 0px 8px 20px 1px #3d8ced70;
+  border: 3px solid #f47432;
+  /* box-shadow: 0px 8px 20px 1px #3d8ced9c; 
+  box-shadow: 0px 8px 20px 1px #3d8ced70;*/
   z-index: 10;
 }
 

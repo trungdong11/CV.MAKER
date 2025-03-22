@@ -19,6 +19,13 @@ export default ({ mode }: { mode: string }) => {
     // server: {
     //     port: parseInt(process.env.VITE_PORT as string),
     // },
+    // Components({
+    //   // resolvers: [
+    //   //   AntDesignVueResolver({
+    //   //     importStyle: false, // css in js
+    //   //   }),
+    //   // ],
+    // }),
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

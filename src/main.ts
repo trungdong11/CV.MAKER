@@ -6,6 +6,8 @@ import './assets/css/tailwind.css'
 import router from './routers/router'
 import { Icon } from '@iconify/vue'
 import 'driver.js/dist/driver.css'
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/reset.css'
 
 /* layouts */
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
@@ -36,6 +38,7 @@ const initApp = async () => {
   app.use(MotionPlugin)
   app.use(VImage)
   app.use(Viewer)
+  app.use(Antd)
   app.use(VueTippy, {
     directive: 'tippy', // => v-tippy
     component: 'tippy', // => <tippy/>
