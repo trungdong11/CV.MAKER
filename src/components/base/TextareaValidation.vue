@@ -26,7 +26,7 @@ onBeforeMount(() => {
     v-bind="{ ...$props, ...$attrs }"
     v-model="value"
     :invalid="errorMessage"
-    class="border-primary outline-none"
+    class="outline-none overflow-y-auto overflow-hidden"
   />
   <ErrorMessage
     :error="errorMessage"

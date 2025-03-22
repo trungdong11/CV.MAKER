@@ -3,7 +3,7 @@ import {
   authRoute,
   dashboardRoute,
   profileRoute,
-  quizzflyRoute,
+  templateRoute,
   roomRoute,
   playRoute,
   groupRoute,
@@ -43,9 +43,9 @@ const routes: RouteRecordRaw[] = [
     children: profileRoute,
   },
   {
-    path: '/quizzfly',
+    path: '/templates',
     // beforeEnter: [authGuard],
-    children: quizzflyRoute,
+    children: templateRoute,
   },
   {
     path: '/room',
