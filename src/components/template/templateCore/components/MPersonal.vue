@@ -12,13 +12,21 @@ const prop = withDefaults(defineProps<Props>(), {
   isLoading: false,
 })
 
+const isEdit = ref(false)
+const openEdit = () => {
+  isEdit.value = true
+}
+
 const onSubmit = () => {}
 </script>
 
 <template>
-  <BaseItemTemplate>
+  <BaseItemTemplate
+    :name="'personal'"
+    @edit="openEdit"
+  >
     <div class="items-center flex flex-col justify-center gap-3 w-full">
-      <h2 class="font-bold text-3xl">{{ prop.data.fullname }}</h2>
+      <h2 class="font-semibold text-3xl">{{ prop.data.fullname }}</h2>
       <div
         class="flex items-center gap-1 justify-center font-normal text-slate-600 text-sm flex-wrap"
       >
@@ -43,7 +51,10 @@ const onSubmit = () => {}
         </div>
       </div>
     </div>
-    <div class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5">
+    <div
+      v-if="isEdit"
+      class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    >
       <form
         class="flex flex-col gap-2 w-full"
         @submit="onSubmit"
@@ -124,6 +135,7 @@ const onSubmit = () => {}
           <Button
             variant="secondary"
             class="w-32 h-11 flex gap-2 items-center text-primary"
+            @click="isEdit = false"
           >
             Cancel
           </Button>

@@ -20,15 +20,27 @@ onMounted(() => {
   content.value = prop.summary
 })
 
+const isEdit = ref(false)
+const openEdit = () => {
+  isEdit.value = true
+}
+
 const onSubmit = () => {}
 </script>
 
 <template>
-  <BaseItemTemplate class="">
+  <BaseItemTemplate
+    :name="'description'"
+    class=""
+    @edit="openEdit"
+  >
     <div class="flex">
       <p class="ont-normal text-slate-600 text-sm">{{ prop.summary }}</p>
     </div>
-    <div class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5">
+    <div
+      v-if="isEdit"
+      class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    >
       <form
         class="flex flex-col gap-2 w-full"
         @submit="onSubmit"
@@ -49,6 +61,7 @@ const onSubmit = () => {}
           <Button
             variant="secondary"
             class="w-32 h-11 flex gap-2 items-center text-primary"
+            @click="isEdit = false"
           >
             Cancel
           </Button>

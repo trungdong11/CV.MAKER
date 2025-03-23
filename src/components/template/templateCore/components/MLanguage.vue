@@ -2,8 +2,8 @@
 import BaseItemTemplate from '@/components/base/BaseItemTemplate.vue'
 import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import TextareaValidation from '@/components/base/TextareaValidation.vue'
+
 interface Props {
   data: Record<string, any>
   isLoading: boolean
@@ -29,29 +29,27 @@ const onSubmit = () => {}
 
 <template>
   <BaseItemTemplate
-    :name="'project'"
+    :name="'language'"
     class="items-start"
     @edit="openEdit"
   >
     <div class="w-full">
-      <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">PROJECTS</h2>
-      <div
-        v-for="(item, index) in prop.data"
-        :key="index"
-        class="flex flex-col gap-0 mt-1 w-full px-3"
-      >
-        <div class="flex justify-between w-full items-center">
-          <a
-            :href="item?.projectLink"
-            class="font-bold text-base"
-            >{{ item?.projectName }}</a
+      <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">LANGUAGES</h2>
+      <div class="px-3 flex gap-2 items-center mt-1">
+        <div
+          v-for="(item, index) in prop.data"
+          :key="index"
+          class="flex gap-1 items-center"
+        >
+          <span class="text-base font-semibold">{{ item?.language }}</span>
+          ( <span class="font-normal text-sm">{{ item?.proficiency }}</span> )
+          <div
+            v-if="index + 1 < prop.data.length"
+            class="font-semibold text-lg -mt-2 flex justify-center items-center text-slate-500"
           >
-          <div class="flex items-center gap-3">
-            <p class="font-semibold text-base">{{ item?.startDate }}</p>
-            <p class="font-semibold text-base">{{ item?.endDate }}</p>
+            .
           </div>
         </div>
-        <p class="text-sm font-normal">{{ item?.description }}</p>
       </div>
     </div>
     <div
@@ -59,7 +57,7 @@ const onSubmit = () => {}
       class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
     >
       <form
-        class="flex gap-2 w-full flex-col"
+        class="flex w-full flex-col"
         @submit="onSubmit"
       >
         <div
@@ -67,61 +65,27 @@ const onSubmit = () => {}
           :key="index"
           class="flex items-start gap-x-4 w-full flex-col justify-center relative"
         >
-          <div class="form-data flex flex-col gap-1 w-[300px]">
-            <label for="name">Project Name</label>
+          <div class="form-data flex flex-col gap-1 w-1/2">
+            <label for="language">Language</label>
             <InputValidation
-              id="name"
-              placeholder="e.g., Youtube, Ecomdy, etc"
+              id="language"
+              placeholder="e.g., English, Vietnamese etc."
               type="text"
-              name="name"
+              name="language"
               class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
             />
           </div>
-          <div class="flex items-center gap-x-3 flex-wrap">
-            <div class="form-data flex flex-col gap-1 w-[300px]">
-              <label for="position">Project Link</label>
-              <InputValidation
-                id="position"
-                placeholder="e.g., Frontend, Backend, etc"
-                type="text"
-                name="position"
-                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-            </div>
-            <div class="form-data flex flex-col gap-1 w-[200px]">
-              <label for="city">Start Date</label>
-              <InputValidation
-                id="city"
-                placeholder="start day"
-                type="text"
-                name="city"
-                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-            </div>
-            <div class="form-data flex flex-col gap-1 w-[200px]">
-              <label for="end">End Date</label>
-              <InputValidation
-                id="end"
-                placeholder="End Date"
-                type="text"
-                name="end"
-                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-            </div>
+          <div class="form-data flex flex-col gap-1 w-full">
+            <label for="Proficiency">Proficiency</label>
+            <TextareaValidation
+              id="Proficiency"
+              v-model="item.Proficiency"
+              type="text"
+              name="Proficiency"
+              placeholder="Fluent, basic communication, etc"
+              class="h-18 mt-1 bg-slate-50 border-slate-200 outline-none"
+            />
           </div>
-          <ScrollArea class="flex flex-col gap-1 w-full mb-12">
-            <label for="end">Descriptions</label>
-            <div class="form-description h-40 w-full bg-white rounded-lg">
-              <QuillEditor
-                ref="quillEditor"
-                v-model:content="content"
-                :toolbar="['bold', 'italic', 'underline', 'link']"
-                placeholder="Enter your post"
-                content-type="html"
-                theme="snow"
-              />
-            </div>
-          </ScrollArea>
           <div
             v-if="index + 1 < prop.data.length"
             class="border-b border-slate-950 mb-5 w-full mt-5"

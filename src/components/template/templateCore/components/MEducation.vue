@@ -19,11 +19,20 @@ onMounted(() => {
   content.value = prop.data?.description
 })
 
+const isEdit = ref(false)
+const openEdit = () => {
+  isEdit.value = true
+}
+
 const onSubmit = () => {}
 </script>
 
 <template>
-  <BaseItemTemplate class="items-start">
+  <BaseItemTemplate
+    :name="'education'"
+    class="items-start"
+    @edit="openEdit"
+  >
     <div class="w-full">
       <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">EDUCATION</h2>
       <div
@@ -47,7 +56,10 @@ const onSubmit = () => {}
         </div>
       </div>
     </div>
-    <div class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5">
+    <div
+      v-if="isEdit"
+      class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    >
       <form
         class="flex gap-2 w-full flex-col"
         @submit="onSubmit"
@@ -142,6 +154,7 @@ const onSubmit = () => {}
           <Button
             variant="secondary"
             class="w-32 h-11 flex gap-2 items-center"
+            @click="isEdit = false"
           >
             Cancel
           </Button>

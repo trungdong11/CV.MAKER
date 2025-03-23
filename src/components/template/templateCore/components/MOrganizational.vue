@@ -4,6 +4,7 @@ import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 interface Props {
   data: Record<string, any>
   isLoading: boolean
@@ -29,31 +30,36 @@ const onSubmit = () => {}
 
 <template>
   <BaseItemTemplate
-    :name="'certification'"
+    :name="'award'"
     class="items-start"
     @edit="openEdit"
   >
     <div class="w-full">
       <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">
-        WORK EXPERIENCED
+        ORGANIZATION & VOLUNTEERING EXPERIENCED
       </h2>
-      <div
-        v-for="(item, index) in prop.data"
-        :key="index"
-        class="flex flex-col gap-0 mt-1 w-full px-3"
-      >
-        <div class="flex justify-between w-full items-center">
-          <p class="font-bold text-base">{{ item?.position }}</p>
-          <div class="flex items-center gap-3">
-            <p class="font-semibold text-base">{{ item?.startDate }}</p>
-            <p class="font-semibold text-base">{{ item?.endDate }}</p>
+      <div class="flex flex-col gap-2">
+        <div
+          v-for="(item, index) in prop.data"
+          :key="index"
+          class="flex flex-col gap-0 mt-1 w-full px-3"
+        >
+          <div class="flex items-center justify-between w-full">
+            <div class="flex flex-col gap-0 items-start">
+              <p class="font-semibold text-base">{{ item?.position }}</p>
+              <p class="font-semibold text-base">{{ item?.name }}</p>
+            </div>
+            <div class="flex flex-col gap-0 items-end">
+              <div class="flex items-center font-semibold text-base">
+                <p class="font-semibold text-base">{{ item?.startDate }}</p>
+                <span> - </span>
+                <p class="font-semibold text-base">{{ item?.endDate }}</p>
+              </div>
+              <p class="font-semibold text-base">{{ item?.address }}</p>
+            </div>
           </div>
+          <p class="font-nomal text-sm">{{ item?.description }}</p>
         </div>
-        <div class="flex justify-between w-full items-center">
-          <p class="font-bold text-base">{{ item?.companyName }}</p>
-          <p class="font-semibold text-base">{{ item?.location }}</p>
-        </div>
-        <p class="text-sm font-normal mt-1">{{ item?.description }}</p>
       </div>
     </div>
     <div
@@ -69,13 +75,13 @@ const onSubmit = () => {}
           :key="index"
           class="flex items-start gap-x-4 w-full flex-col justify-center relative"
         >
-          <div class="form-data flex flex-col gap-1 w-[300px]">
-            <label for="name">Company Name</label>
+          <div class="form-data flex flex-col gap-1 w-1/2">
+            <label for="title">Company Name</label>
             <InputValidation
-              id="name"
-              placeholder="e.g., Youtube, Ecomdy, etc"
+              id="title"
+              placeholder="e.g., Meta, Shopee, etc."
               type="text"
-              name="name"
+              name="title"
               class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
             />
           </div>
@@ -122,13 +128,13 @@ const onSubmit = () => {}
             </div>
           </div>
           <ScrollArea class="flex flex-col gap-1 w-full mb-12">
-            <label for="end">Job Descriptions</label>
+            <label for="end">Descriptions</label>
             <div class="form-description h-40 w-full bg-white rounded-lg">
               <QuillEditor
                 ref="quillEditor"
                 v-model:content="content"
                 :toolbar="['bold', 'italic', 'underline', 'link']"
-                placeholder="Enter your post"
+                placeholder="e.g. Awarded for writing and presenting an outstading technical paper at a conference"
                 content-type="html"
                 theme="snow"
               />

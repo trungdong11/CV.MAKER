@@ -1,9 +1,19 @@
 <script lang="ts" setup>
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+interface Props {
+  name: string
+}
+const prop = withDefaults(defineProps<Props>(), {
+  name: '',
+})
+
+defineEmits<{
+  (e: 'edit', name: string): void
+}>()
 </script>
 
 <template>
-  <div class="flex flex-col p-5 rounded-lg hover:bg-slate-100 w-full relative group">
+  <div class="flex flex-col p-2 rounded-lg hover:bg-slate-100 w-full relative group">
     <slot />
     <div
       class="absolute opacity-0 scale-95 transition-all duration-300 hidden group-hover:flex group-hover:opacity-100 group-hover:scale-100 items-center justify-center -top-5 p-2 rounded-lg gap-2 right-5 border border-slate-300 bg-white"
@@ -11,7 +21,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('edit', prop.name)"
+            >
               <div
                 class="flex justify-center items-center p-1 rounded-lg cursor-pointer hover:bg-slate-50"
               >
@@ -19,7 +32,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
               </div>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent class="h-7">
             <p>Edit</p>
           </TooltipContent>
         </Tooltip>
@@ -35,7 +48,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
               </div>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent class="h-7">
             <p>Move up</p>
           </TooltipContent>
         </Tooltip>
@@ -51,7 +64,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
               </div>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent class="h-7">
             <p>Move Down</p>
           </TooltipContent>
         </Tooltip>
@@ -67,7 +80,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
               </div>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent class="h-7">
             <p>Delete</p>
           </TooltipContent>
         </Tooltip>

@@ -9,6 +9,9 @@ import MWorkExperient from './components/MWorkExperient.vue'
 import MProject from './components/MProject.vue'
 import MCertification from './components/MCertification.vue'
 import MAward from './components/MAward.vue'
+import MLanguage from './components/MLanguage.vue'
+import MOrganizational from './components/MOrganizational.vue'
+import MPublication from './components/MPublication.vue'
 
 const data: ITemplate = {
   id: '1',
@@ -87,7 +90,7 @@ const data: ITemplate = {
         ListOfSkill: 'JavaScript, TypeScript, Python',
       },
     ],
-    Tools: [
+    tools: [
       {
         ToolCategory: 'Frameworks',
         ListOfTool: 'React, Next.js, Node.js',
@@ -142,6 +145,25 @@ const data: ITemplate = {
         credentialId: 'AWS-12345',
       },
     ],
+    publication: [
+      {
+        title: 'Artificial',
+        publisher: 'National Library of Medicine',
+        url: 'http://trungdong.com',
+        publicationDate: 'Jan, 2034',
+        description: '',
+      },
+    ],
+    organization: [
+      {
+        name: 'Artificial',
+        position: 'National Library of Medicine',
+        address: 'http://trungdong.com',
+        startDate: 'Jan, 2034',
+        endDate: 'Present',
+        description: '',
+      },
+    ],
   },
 }
 
@@ -188,6 +210,21 @@ const isLoading = ref(false)
 
       <MAward
         :data="data.content.award"
+        :is-loading="isLoading"
+      />
+
+      <MLanguage
+        :data="data.content.languages"
+        :is-loading="isLoading"
+      />
+
+      <MOrganizational
+        :data="data?.content?.organization"
+        :is-loading="isLoading"
+      />
+
+      <MPublication
+        :data="data?.content?.publication"
         :is-loading="isLoading"
       />
     </div>

@@ -4,6 +4,7 @@ import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 interface Props {
   data: Record<string, any>
   isLoading: boolean
@@ -29,31 +30,31 @@ const onSubmit = () => {}
 
 <template>
   <BaseItemTemplate
-    :name="'certification'"
+    :name="'award'"
     class="items-start"
     @edit="openEdit"
   >
     <div class="w-full">
-      <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">
-        WORK EXPERIENCED
-      </h2>
+      <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">PUBLICATIONS</h2>
       <div
         v-for="(item, index) in prop.data"
         :key="index"
         class="flex flex-col gap-0 mt-1 w-full px-3"
       >
-        <div class="flex justify-between w-full items-center">
-          <p class="font-bold text-base">{{ item?.position }}</p>
-          <div class="flex items-center gap-3">
-            <p class="font-semibold text-base">{{ item?.startDate }}</p>
-            <p class="font-semibold text-base">{{ item?.endDate }}</p>
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-1">
+            <a
+              :href="item?.url"
+              class="text-base font-semibold hover:text-primary"
+              >{{ item?.title }}</a
+            >
+            <p>
+              on <span class="text-base font-semibold">{{ item?.publisher }}</span>
+            </p>
           </div>
+          <p class="text-base font-semibold">{{ item?.publicationDate }}</p>
         </div>
-        <div class="flex justify-between w-full items-center">
-          <p class="font-bold text-base">{{ item?.companyName }}</p>
-          <p class="font-semibold text-base">{{ item?.location }}</p>
-        </div>
-        <p class="text-sm font-normal mt-1">{{ item?.description }}</p>
+        <p clas="text-xm font-normal">{{ item?.description }}</p>
       </div>
     </div>
     <div
@@ -69,29 +70,41 @@ const onSubmit = () => {}
           :key="index"
           class="flex items-start gap-x-4 w-full flex-col justify-center relative"
         >
-          <div class="form-data flex flex-col gap-1 w-[300px]">
-            <label for="name">Company Name</label>
-            <InputValidation
-              id="name"
-              placeholder="e.g., Youtube, Ecomdy, etc"
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="flex items-center gap-x-3 flex-wrap">
-            <div class="form-data flex flex-col gap-1 w-[300px]">
-              <label for="position">Position</label>
+          <div class="flex items-center gap-x-3 w-1/2">
+            <div class="form-data flex flex-col gap-2 w-1/2 flex-1">
+              <label for="issuer">Title</label>
               <InputValidation
-                id="position"
-                placeholder="e.g., Frontend, Backend, etc"
+                id="issuer"
+                placeholder="e.g., Artifical intelligence"
                 type="text"
-                name="position"
+                name="issuer"
                 class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
               />
             </div>
-            <div class="form-data flex flex-col gap-1 w-[200px]">
-              <label for="city">City, Country</label>
+            <div class="form-data flex flex-col gap-1 w-1/2">
+              <label for="city">Publication/Publisher</label>
+              <InputValidation
+                id="city"
+                placeholder="e.g., National Library of medicine"
+                type="text"
+                name="city"
+                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-x-3 w-1/2">
+            <div class="form-data flex flex-col gap-2 w-1/2 flex-1">
+              <label for="issuer">Publication URL</label>
+              <InputValidation
+                id="issuer"
+                placeholder="http://cv.maker.come"
+                type="text"
+                name="issuer"
+                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              />
+            </div>
+            <div class="form-data flex flex-col gap-1 w-1/2">
+              <label for="city">Publication Date</label>
               <InputValidation
                 id="city"
                 placeholder="VietNam, UK, etc"
@@ -100,35 +113,15 @@ const onSubmit = () => {}
                 class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
               />
             </div>
-            <div class="form-data flex flex-col gap-1 w-[200px]">
-              <label for="start">Start Date</label>
-              <InputValidation
-                id="start"
-                placeholder="Start Date"
-                type="text"
-                name="start"
-                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-            </div>
-            <div class="form-data flex flex-col gap-1 w-[200px]">
-              <label for="end">End Date</label>
-              <InputValidation
-                id="end"
-                placeholder="End Date"
-                type="text"
-                name="end"
-                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-            </div>
           </div>
           <ScrollArea class="flex flex-col gap-1 w-full mb-12">
-            <label for="end">Job Descriptions</label>
+            <label for="end">Descriptions</label>
             <div class="form-description h-40 w-full bg-white rounded-lg">
               <QuillEditor
                 ref="quillEditor"
                 v-model:content="content"
                 :toolbar="['bold', 'italic', 'underline', 'link']"
-                placeholder="Enter your post"
+                placeholder="e.g. This paper presents the first study that attempts to synthesize research on AI in e-commerce"
                 content-type="html"
                 theme="snow"
               />

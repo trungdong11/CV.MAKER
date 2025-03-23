@@ -31,10 +31,12 @@ export interface IContent {
   award: IAward[]
   languages: ILanguage[]
   skills: ISkill[]
-  Tools: ITool[]
+  tools: ITool[]
   works: IWork[]
   projects: IProject[]
   certification: ICertification[]
+  publication: IPublication[]
+  organization: IOrganization[]
 }
 
 export interface IEducation {
@@ -93,4 +95,21 @@ export interface ICertification {
   issuedDate: string
   certificationLink: string
   credentialId: string
+}
+
+export interface IPublication {
+  title: string
+  publisher: string
+  url: string
+  publicationDate: string
+  description: string
+}
+
+export interface IOrganization {
+  name: string
+  position: string
+  address: string
+  startDate: string
+  endDate: string
+  description: string
 }

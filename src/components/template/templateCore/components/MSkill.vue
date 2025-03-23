@@ -13,11 +13,20 @@ const prop = withDefaults(defineProps<Props>(), {
   isLoading: false,
 })
 
+const isEdit = ref(false)
+const openEdit = () => {
+  isEdit.value = true
+}
+
 const onSubmit = () => {}
 </script>
 
 <template>
-  <BaseItemTemplate class="items-start">
+  <BaseItemTemplate
+    :name="'skill'"
+    class="items-start"
+    @edit="openEdit"
+  >
     <div class="items-start w-full">
       <h2 class="font-semibold text-base pb-2 border-b-2 border-slate-950 w-full mb-1">SKILLS</h2>
       <div
@@ -29,7 +38,10 @@ const onSubmit = () => {}
         <p class="font-normal text-sm">{{ item.ListOfSkill }}</p>
       </div>
     </div>
-    <div class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5">
+    <div
+      v-if="isEdit"
+      class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    >
       <form
         class="flex gap-2 w-full flex-col"
         @submit="onSubmit"
@@ -84,6 +96,7 @@ const onSubmit = () => {}
           <Button
             variant="secondary"
             class="w-32 h-11 flex gap-2 items-center text-primary"
+            @click="isEdit = false"
           >
             Cancel
           </Button>
