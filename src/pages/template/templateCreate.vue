@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/breadcrumb'
 import Button from '@/components/ui/button/Button.vue'
 import TemplateCore from '@/components/template/templateCore/index.vue'
+import Evaluation from '@/components/template/review/Evaluation.vue'
+import MatchResume from '@/components/template/review/MatchResume.vue'
 
 const isLoading = ref(false)
 </script>
@@ -66,6 +68,12 @@ const isLoading = ref(false)
         </Button>
       </div>
     </div>
-    <TemplateCore />
+    <div class="flex items-start gap-6">
+      <TemplateCore />
+      <div class="flex flex-col gap-6 w-1/3">
+        <Evaluation />
+        <MatchResume />
+      </div>
+    </div>
   </div>
 </template>
