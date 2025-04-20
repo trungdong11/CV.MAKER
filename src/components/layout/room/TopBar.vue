@@ -16,8 +16,8 @@ const getUser = computed(() => authStore.getUser)
         class="group relative avatar w-9 h-9 rounded-full border-2 border-slate-400 cursor-pointer"
       >
         <img
-          v-if="getUser?.user_info.avatar"
-          :src="getUser?.user_info.avatar"
+          v-if="getUser?.avatar"
+          :src="getUser?.avatar"
           alt=""
           class="w-9 h-full object-cover rounded-full"
         />

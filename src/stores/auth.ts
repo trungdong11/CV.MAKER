@@ -5,9 +5,9 @@ import { loginApi, loginGGApi } from '@/services/auth'
 import { showToast } from '@/utils/toast'
 import { apiError } from '@/utils/exceptionHandler'
 import type { IUser } from '@/types/user'
-import { getUserPlansApi } from '@/services/pricing'
+// import { getUserPlansApi } from '@/services/pricing'
 import type { UserPricing } from '@/types/pricing'
-import { isExpiredPlan } from '@/utils/time'
+// import { isExpiredPlan } from '@/utils/time'
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -23,14 +23,14 @@ export const useAuthStore = defineStore({
     plans: [] as UserPricing[],
   }),
   actions: {
-    async fetchUserPlan() {
-      try {
-        const { data } = await getUserPlansApi()
-        this.plans = data
-      } catch (error) {
-        console.error('Fetch user plan error', error)
-      }
-    },
+    // async fetchUserPlan() {
+    //   try {
+    //     const { data } = await getUserPlansApi()
+    //     this.plans = data
+    //   } catch (error) {
+    //     console.error('Fetch user plan error', error)
+    //   }
+    // },
     logout() {
       localStorage.removeItem('refresh_token')
       localStorage.removeItem('access_token')
@@ -94,13 +94,14 @@ export const useAuthStore = defineStore({
     async setupAuth() {
       try {
         const access_token = localStorage.getItem('access_token') as string
+        console.log(access_token, 'check access token')
 
         if (access_token) {
           this.token.access = access_token
           const { data: user } = await getInfoApi()
           user && (this.user = user)
           this.isLoggedIn = true
-          await this.fetchUserPlan()
+          // await this.fetchUserPlan()
         }
       } catch (error) {
         console.error('Setup auth error', error)
@@ -116,27 +117,27 @@ export const useAuthStore = defineStore({
   getters: {
     getUser: (state) => state.user,
     getIsLoggedIn: (state) => state.isLoggedIn,
-    getPlans: (state) => state.plans,
-    getActivePlans: (state) => {
-      const successPlans = state.plans.filter((p) => p.user_plan_status === 'SUCCESS')
-      const activePlan = successPlans.filter(
-        (plan) => plan.subscription_expired_at && !isExpiredPlan(plan.subscription_expired_at),
-      )
-      return activePlan
-    },
-    getHighestPlan: (state) => {
-      const successPlans = state.plans.filter((p) => p.user_plan_status === 'SUCCESS')
-      const activePlan = successPlans.filter(
-        (plan) => plan.subscription_expired_at && !isExpiredPlan(plan.subscription_expired_at),
-      )
+    //   getPlans: (state) => state.plans,
+    //   getActivePlans: (state) => {
+    //     const successPlans = state.plans.filter((p) => p.user_plan_status === 'SUCCESS')
+    //     const activePlan = successPlans.filter(
+    //       (plan) => plan.subscription_expired_at && !isExpiredPlan(plan.subscription_expired_at),
+    //     )
+    //     return activePlan
+    //   },
+    //   getHighestPlan: (state) => {
+    //     const successPlans = state.plans.filter((p) => p.user_plan_status === 'SUCCESS')
+    //     const activePlan = successPlans.filter(
+    //       (plan) => plan.subscription_expired_at && !isExpiredPlan(plan.subscription_expired_at),
+    //     )
 
-      if (activePlan.length === 0) {
-        return null // Không có plan nào phù hợp
-      }
+    //     if (activePlan.length === 0) {
+    //       return null // Không có plan nào phù hợp
+    //     }
 
-      return activePlan.reduce((highest, current) =>
-        current.subscription_plan.price > highest.subscription_plan.price ? current : highest,
-      )
-    },
+    //     return activePlan.reduce((highest, current) =>
+    //       current.subscription_plan.price > highest.subscription_plan.price ? current : highest,
+    //     )
+    //   },
   },
 })

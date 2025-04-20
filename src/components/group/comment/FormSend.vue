@@ -88,11 +88,11 @@ onMounted(() => {
     <div class="flex items-center gap-2 w-full">
       <Avatar>
         <AvatarImage
-          v-if="getUserInfor?.user_info.avatar"
-          :src="getUserInfor?.user_info.avatar"
+          v-if="getUserInfor?.avatar"
+          :src="getUserInfor?.avatar"
         />
-        <AvatarFallback v-if="getUserInfor?.user_info.name">{{
-          getUserInfor?.user_info.name.charAt(0).toUpperCase()
+        <AvatarFallback v-if="getUserInfor?.name">{{
+          getUserInfor?.name.charAt(0).toUpperCase()
         }}</AvatarFallback>
       </Avatar>
       <Input

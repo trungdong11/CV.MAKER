@@ -63,7 +63,7 @@ onBeforeMount(() => {
         <img
           v-image
           class="w-full h-full object-cover rounded-full"
-          :src="authStore.getUser?.user_info.avatar || ''"
+          :src="authStore.getUser?.avatar || ''"
           alt=""
         />
       </div>
@@ -72,7 +72,7 @@ onBeforeMount(() => {
         class="flex flex-col overflow-hidden"
       >
         <p>
-          {{ authStore.getUser?.user_info.name }}
+          {{ authStore.getUser?.name }}
         </p>
         <p class="truncate text-xs text-gray-500">
           {{ authStore.getUser?.email }}

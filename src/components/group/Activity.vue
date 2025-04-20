@@ -86,11 +86,11 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
         <div class="flex items-center gap-2 w-full">
           <Avatar>
             <AvatarImage
-              v-if="getUser?.user_info.avatar"
-              :src="getUser?.user_info.avatar"
+              v-if="getUser?.avatar"
+              :src="getUser?.avatar"
             />
-            <AvatarFallback v-if="getUser?.user_info.name">{{
-              getUser?.user_info.name.charAt(0).toUpperCase()
+            <AvatarFallback v-if="getUser?.name">{{
+              getUser?.name.charAt(0).toUpperCase()
             }}</AvatarFallback>
           </Avatar>
           <div

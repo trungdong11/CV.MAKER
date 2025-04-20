@@ -36,7 +36,7 @@ const loginGoogle = () => {
     <div class="flex-1 flex justify-center items-center">
       <div class="max-md:w-full max-sm:p-0 max-w-full p-5 rounded-xl shadow-lg">
         <form
-          class="rounded-xl max-md:w-full max-sm:p-0 w-96"
+          class="rounded-xl max-md:w-full max-sm:p-0 w-96 mb-4"
           @submit="onSubmit"
         >
           <div class="flex items-center gap-0.5 mb-4">
@@ -47,28 +47,32 @@ const loginGoogle = () => {
             <h2 class="mt-1 text-[#667085]">Sign in to start managing your projects</h2>
           </div>
           <div class="mt-6">
-            <div class="form-data">
+            <div class="form-data flex flex-col gap-2">
               <label for="email">Email</label>
-              <InputValidation
-                id="email"
-                placeholder="Enter email..."
-                type="email"
-                name="email"
-                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
+              <div class="">
+                <InputValidation
+                  id="email"
+                  placeholder="Enter email..."
+                  type="email"
+                  name="email"
+                  class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
+                />
+              </div>
             </div>
-            <div class="form-data mt-3">
+            <div class="form-data mt-3 flex flex-col gap-2">
               <label for="password">Password</label>
-              <InputValidation
-                id="password"
-                placeholder="Enter password..."
-                type="password"
-                name="password"
-                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
+              <div class="">
+                <InputValidation
+                  id="password"
+                  placeholder="Enter password..."
+                  type="password"
+                  name="password"
+                  class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
+                />
+              </div>
             </div>
           </div>
-          <div class="text-end">
+          <div class="text-end mb-2">
             <RouterLink
               class="text-[#0921D9] text-xs font-normal"
               to="/password/forgot"

@@ -88,66 +88,74 @@ const onSubmit = handleSubmit(async (values) => {
         @submit.prevent="onSubmit"
       >
         <form
-          class="rounded-xl max-md:w-full max-sm:p-0 w-96"
+          class="rounded-xl max-md:w-full max-sm:p-0 w-96 mb-4"
           @submit.prevent="onSubmit"
         >
           <div class="flex items-center gap-0.5 mb-4">
             <h1 class="text-[344054] text-lg font-semibold">Register account</h1>
           </div>
-          <div class="mt-6">
-            <div class="form-data">
-              <label for="email">Name</label>
-              <Input
-                v-model="name"
-                placeholder="Enter name..."
-                v-bind="nameAttrs"
-                :invalid="errors.name"
-                type="text"
-                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-              <ErrorMessage :error="errors.name" />
+          <div class="my-6 flex flex-col gap-2">
+            <div class="form-data flex flex-col gap-2">
+              <label for="name">Name</label>
+              <div>
+                <Input
+                  v-model="name"
+                  placeholder="Enter name..."
+                  v-bind="nameAttrs"
+                  :invalid="errors.name"
+                  type="text"
+                  class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
+                />
+                <ErrorMessage :error="errors.name" />
+              </div>
             </div>
-            <div class="form-data">
+            <div class="form-data flex flex-col gap-2">
               <label for="email">Email</label>
-              <Input
-                v-model="email"
-                placeholder="Enter email..."
-                v-bind="emailAttrs"
-                :invalid="errors.email"
-                type="email"
-                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-              <ErrorMessage :error="errors.email" />
+              <div>
+                <Input
+                  v-model="email"
+                  placeholder="Enter email..."
+                  v-bind="emailAttrs"
+                  :invalid="errors.email"
+                  type="email"
+                  class="h-10 bg-slate-50 border-slate-200 outline-none"
+                />
+                <ErrorMessage :error="errors.email" />
+              </div>
             </div>
-            <div class="form-data">
-              <label for="email">Password</label>
-              <Input
-                v-model="password"
-                placeholder="Enter password..."
-                v-bind="passwordAttrs"
-                :invalid="errors.password"
-                type="password"
-                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-              <ErrorMessage :error="errors.password" />
+            <div class="form-data flex flex-col gap-2">
+              <label for="password">Password</label>
+              <div>
+                <Input
+                  v-model="password"
+                  placeholder="Enter password..."
+                  v-bind="passwordAttrs"
+                  :invalid="errors.password"
+                  type="password"
+                  class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
+                />
+                <ErrorMessage :error="errors.password" />
+              </div>
             </div>
-            <div class="form-data">
-              <label for="email">Confirm password</label>
-              <Input
-                v-model="confirmPassword"
-                placeholder="Enter confirm password..."
-                v-bind="confirmPasswordAttrs"
-                :invalid="errors.confirmPassword"
-                type="password"
-                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
-              <ErrorMessage :error="errors.confirmPassword" />
+            <div class="form-data flex flex-col gap-2">
+              <label for="confirm-password">Confirm password</label>
+              <div>
+                <Input
+                  v-model="confirmPassword"
+                  placeholder="Enter confirm password..."
+                  v-bind="confirmPasswordAttrs"
+                  :invalid="errors.confirmPassword"
+                  type="password"
+                  class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
+                />
+                <ErrorMessage :error="errors.confirmPassword" />
+              </div>
             </div>
           </div>
 
           <Button
             :disabled="isLoading"
-            class="mt-6 w-full h-10 flex gap-2"
+            class="w-full h-10 flex gap-2"
           >
             <span
               v-if="isLoading"
@@ -163,7 +171,7 @@ const onSubmit = handleSubmit(async (values) => {
         </form>
 
         <Button
-          class="h-10 mt-8 w-full flex items-center gap-4 bg-slate-100"
+          class="h-10 w-full flex items-center gap-4 bg-slate-100"
           variant="secondary"
           @click="loginGoogle()"
         >

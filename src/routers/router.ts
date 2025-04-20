@@ -10,13 +10,13 @@ import {
   reportRoute,
   planRoute,
 } from './modules'
-// import { authGuard } from './auth-guard'
+import { authGuard } from './auth-guard'
 const { progress } = useIndicator()
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
-    // beforeEnter: [authGuard],
+    beforeEnter: [authGuard],
     component: () => import('@/pages/index.vue'),
     children: dashboardRoute,
   },
@@ -34,17 +34,17 @@ const routes: RouteRecordRaw[] = [
       layout: 'GuestLayout',
       public: true,
     },
-    // beforeEnter: [authGuard],
+    beforeEnter: [authGuard],
     children: authRoute,
   },
   {
     path: '/profiles',
-    // beforeEnter: [authGuard],
+    beforeEnter: [authGuard],
     children: profileRoute,
   },
   {
     path: '/templates',
-    // beforeEnter: [authGuard],
+    beforeEnter: [authGuard],
     children: templateRoute,
   },
   {

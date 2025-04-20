@@ -26,12 +26,12 @@ const { errors, handleSubmit, defineField } = useForm({
   validationSchema: yup.object({
     email: yup.string().email().required('Email is required'),
     name: yup.string().required('Name is required'),
-    username: yup.string().required('Username is required'),
+    // username: yup.string().required('Username is required'),
   }),
 })
 
 const [email] = defineField('email')
-const [username] = defineField('username')
+// const [username] = defineField('username')
 const [name, nameAttrs] = defineField('name')
 const avatar = ref('')
 const isLoading = ref(false)
@@ -41,10 +41,10 @@ onMounted(() => {
 })
 
 const setData = (data: any) => {
-  email.value = data.email
-  name.value = data.user_info.name
-  username.value = data.user_info.username
-  avatar.value = data.user_info.avatar
+  email.value = data?.email
+  name.value = data?.name
+  // username.value = data?.username
+  avatar.value = data?.avatar
 }
 
 const onSubmit = handleSubmit(async () => {
@@ -61,7 +61,7 @@ const onSubmit = handleSubmit(async () => {
   const data = {
     email: email.value,
     name: name.value,
-    username: username.value,
+    // username: username.value,
     avatar: avatar.value,
   }
   try {
@@ -127,9 +127,17 @@ const onChangeImg = (e: Event) => {
           @click="showChooseImg()"
         >
           <img
+            v-if="avatar"
             v-image
             class="w-full h-full rounded-lg object-cover"
             :src="avatar"
+            alt="Avatar"
+          />
+          <img
+            v-else
+            v-image
+            class="w-full h-full rounded-lg object-cover p-8"
+            src="@/assets/images/user.png"
             alt="Avatar"
           />
           <input
@@ -147,7 +155,7 @@ const onChangeImg = (e: Event) => {
           <!-- </div> -->
         </div>
         <div class="form flex items-center gap-4 flex-col w-full">
-          <div class="form-data w-full">
+          <!-- <div class="form-data w-full">
             <label
               for="username"
               class="font-medium text-sm"
@@ -161,7 +169,7 @@ const onChangeImg = (e: Event) => {
               type="username"
               class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
             />
-          </div>
+          </div> -->
           <div class="form-data w-full">
             <label
               for="name"

@@ -107,9 +107,9 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="flex items-center gap-2">
           <div class="w-10 h-10 rounded-full">
             <img
-              v-if="userInfo?.user_info.avatar"
+              v-if="userInfo?.avatar"
               class="w-full h-full object-cover rounded-full"
-              :src="userInfo.user_info.avatar"
+              :src="userInfo.user_info?.avatar"
               alt=""
             />
             <img
@@ -119,7 +119,7 @@ const onSubmit = handleSubmit(async (values) => {
               alt=""
             />
           </div>
-          <p class="text-base font-semibold">{{ userInfo?.user_info.name }}</p>
+          <p class="text-base font-semibold">{{ userInfo?.name }}</p>
         </div>
         <div class="">
           <p>

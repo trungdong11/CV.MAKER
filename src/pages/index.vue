@@ -78,7 +78,7 @@ const getCountUnreadNotification = async () => {
     <div class="flex justify-between items-center">
       <div>
         <h1 class="text-2xl font-medium text-black">
-          Hello, <span class="text-black/90">{{ authStore.getUser?.user_info.name }} 👋</span>
+          Hello, <span class="text-black/90">{{ authStore.getUser?.name }} 👋</span>
         </h1>
         <p class="mt-2 text-base text-gradient">How were you today?</p>
       </div>

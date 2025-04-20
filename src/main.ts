@@ -57,7 +57,7 @@ const initApp = async () => {
   app.use(vue3GoogleLogin, {
     clientId:
       import.meta.env.VITE_GOOGLE_CLIENTID ||
-      '563447497067-u78208rfehdrpj8moabi9tdp4r581nrq.apps.googleusercontent.com',
+      '312492351105-gp49uf5d4grsffm60jmaltbg6iii67d4.apps.googleusercontent.com',
   })
   app.config.globalProperties.$sanitize = sanitizeHTML
 
