@@ -22,7 +22,7 @@ const onSubmit = () => {}
         />
         <p class="font-medium text-base">Match Resume with job Opening</p>
       </div>
-      <p class="text-base text-slate-500">
+      <p class="text-xs text-slate-500">
         Build your resume based on the job opening you want to apply.
         <span class="font-semibold">Copy and paste the job descriptions</span> of that job opening
         and get keyword suggestion to optimise your resume.

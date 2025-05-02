@@ -126,32 +126,36 @@ const [email, emailAttrs] = defineField('email')
             class="form-data"
             @submit.prevent="handleForgot"
           >
-            <label for="email">Email</label>
-            <Input
-              v-if="!isForgot"
-              id="email"
-              v-model="email"
-              placeholder="Enter email..."
-              v-bind="emailAttrs"
-              :invalid="errors.email"
-              type="email"
-              class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
+            <div class="form-data flex flex-col gap-2">
+              <label for="email">Email</label>
+              <Input
+                v-if="!isForgot"
+                id="email"
+                v-model="email"
+                placeholder="Enter email..."
+                v-bind="emailAttrs"
+                :invalid="errors.email"
+                type="email"
+                class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
+              />
+            </div>
             <ErrorMessage
               class="text-xs mt-0.5"
               :error="errors.email"
             />
-            <Button
-              :disabled="isLoading"
-              type="submit"
-              class="mt-4 w-full h-10 bg-primary flex gap-2"
-            >
-              <span
-                v-if="isLoading"
-                class="i-svg-spinners-ring-resize"
-              ></span>
-              Submit
-            </Button>
+            <div class="mt-8">
+              <Button
+                :disabled="isLoading"
+                type="submit"
+                class="w-full h-10 bg-primary flex gap-2"
+              >
+                <span
+                  v-if="isLoading"
+                  class="i-svg-spinners-ring-resize"
+                ></span>
+                Submit
+              </Button>
+            </div>
           </form>
           <Button
             v-else-if="!isCountdown"

@@ -60,7 +60,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       </div>
       <div class="body flex items-start gap-8">
         <div class="form flex items-center flex-col w-full">
-          <div class="form-data w-full font-medium text-base">
+          <div class="form-data w-full font-medium flex flex-col gap-1 text-xs">
             <label
               for="oldPassword"
               class="font-medium text-sm"
@@ -74,7 +74,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
               class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
             />
           </div>
-          <div class="form-data w-full font-medium text-base">
+          <div class="form-data w-full font-medium text-xs flex flex-col gap-1">
             <label
               for="newPassword"
               class="font-medium text-sm"
@@ -88,7 +88,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
               class="h-10 mt-1 bg-slate-50 border-slate-200 outline-none"
             />
           </div>
-          <div class="form-data w-full font-medium text-base">
+          <div class="form-data w-full font-medium text-xs flex flex-col gap-1">
             <label
               for="confirmNewPassword"
               class="font-medium text-sm"

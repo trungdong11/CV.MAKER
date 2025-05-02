@@ -59,7 +59,7 @@ const menus = ref<Menu[]>([
     ],
   },
   {
-    title: 'Plan',
+    title: 'PLAN',
     children: [
       {
         class: 'i-solar-money-bag-bold-duotone',
@@ -103,7 +103,7 @@ const menus = ref<Menu[]>([
         {{ menu.title }}
       </p>
 
-      <div class="flex flex-col mt-2">
+      <div class="flex flex-col mt-2 mb-4">
         <RouterLink
           v-for="sub in menu.children"
           :key="sub.title"

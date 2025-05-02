@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+
 interface Props {
   name: string
 }
@@ -9,6 +10,9 @@ const prop = withDefaults(defineProps<Props>(), {
 
 defineEmits<{
   (e: 'edit', name: string): void
+  (e: 'delete', name: string): void
+  (e: 'move-up', name: string): void
+  (e: 'move-down', name: string): void
 }>()
 </script>
 
@@ -40,7 +44,10 @@ defineEmits<{
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('move-up', prop.name)"
+            >
               <div
                 class="flex justify-center items-center p-1 rounded-lg cursor-pointer hover:bg-slate-50"
               >
@@ -56,7 +63,10 @@ defineEmits<{
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('move-down', prop.name)"
+            >
               <div
                 class="flex justify-center items-center p-1 rounded-lg cursor-pointer hover:bg-slate-50"
               >
@@ -72,7 +82,10 @@ defineEmits<{
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('delete', prop.name)"
+            >
               <div
                 class="flex justify-center items-center p-1 rounded-lg cursor-pointer hover:bg-slate-50"
               >

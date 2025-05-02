@@ -1,57 +1,76 @@
 <script lang="ts" setup>
-import BaseItemTemplate from '@/components/base/BaseItemTemplate.vue'
+import { ref, watch, defineExpose } from 'vue'
 import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 interface Props {
-  data: Record<string, any>
+  data: Record<string, any>[]
   isLoading: boolean
 }
 const prop = withDefaults(defineProps<Props>(), {
-  data: () => reactive({}),
+  data: () => [],
   isLoading: false,
 })
 
-const content = ref('')
+// Bản sao phản ứng của dữ liệu để chỉnh sửa
+const localData = ref(prop.data)
 
-onMounted(() => {
-  content.value = prop.data?.description
-})
+// Đồng bộ localData khi prop.data thay đổi
+watch(
+  () => prop.data,
+  (newData) => {
+    localData.value = newData
+  },
+  { deep: true },
+)
 
+// Trạng thái chỉnh sửa
 const isEdit = ref(false)
 const openEdit = () => {
   isEdit.value = true
 }
 
-const onSubmit = () => {}
+// Expose openEdit để Index.vue có thể gọi
+defineExpose({
+  openEdit,
+})
+
+// Hủy chỉnh sửa
+const cancelEdit = () => {
+  isEdit.value = false
+  localData.value = prop.data // Khôi phục dữ liệu gốc
+}
+
+// Phát sự kiện khi submit form
+const emit = defineEmits<{
+  (e: 'update:data', value: Record<string, any>[]): void
+}>()
+const onSubmit = () => {
+  emit('update:data', localData.value)
+  isEdit.value = false
+}
 </script>
 
 <template>
-  <BaseItemTemplate
-    :name="'award'"
-    class="items-start"
-    @edit="openEdit"
-  >
-    <div class="w-full">
-      <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">AWARDS</h2>
-      <div
-        v-for="(item, index) in prop.data"
-        :key="index"
-        class="flex flex-col gap-0 mt-1 w-full px-3"
-      >
-        <div class="flex justify-between w-full items-center">
-          <a
-            :href="item?.awardTitleLink"
-            class="cursor-pointer"
-          >
-            <span class="font-semibold text-base">{{ item?.awardTitle }}</span>
-          </a>
-          <p class="font-semibold text-base">{{ item?.issuedDate }}</p>
-        </div>
-        <p class="font-normal text-base">{{ item?.issuer }}</p>
+  <div class="w-full">
+    <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">AWARDS</h2>
+    <div
+      v-for="(item, index) in prop.data"
+      :key="index"
+      class="flex flex-col gap-0 mt-1 w-full px-3"
+    >
+      <div class="flex justify-between w-full items-center">
+        <a
+          :href="item?.awardTitleLink"
+          class="cursor-pointer"
+        >
+          <span class="font-semibold text-base">{{ item?.awardTitle }}</span>
+        </a>
+        <p class="font-semibold text-base">{{ item?.issuedDate }}</p>
       </div>
+      <p class="font-normal text-base">{{ item?.issuer }}</p>
     </div>
     <div
       v-if="isEdit"
@@ -59,10 +78,10 @@ const onSubmit = () => {}
     >
       <form
         class="flex gap-2 w-full flex-col"
-        @submit="onSubmit"
+        @submit.prevent="onSubmit"
       >
         <div
-          v-for="(item, index) in prop.data"
+          v-for="(item, index) in localData"
           :key="index"
           class="flex items-start gap-x-4 w-full flex-col justify-center relative"
         >
@@ -70,6 +89,7 @@ const onSubmit = () => {}
             <label for="title">Title</label>
             <InputValidation
               id="title"
+              v-model="item.awardTitle"
               placeholder="e.g., Best Technical Paper Award, Bug Bounty Recognition etc."
               type="text"
               name="title"
@@ -81,6 +101,7 @@ const onSubmit = () => {}
               <label for="issuer">Issuer</label>
               <InputValidation
                 id="issuer"
+                v-model="item.issuer"
                 placeholder="e.g., National University of VietNam"
                 type="text"
                 name="issuer"
@@ -88,58 +109,46 @@ const onSubmit = () => {}
               />
             </div>
             <div class="form-data flex flex-col gap-1 w-[150px]">
-              <label for="city">Issued Date</label>
+              <label for="issuedDate">Issued Date</label>
               <InputValidation
-                id="city"
-                placeholder="VietNam, UK, etc"
+                id="issuedDate"
+                v-model="item.issuedDate"
+                placeholder="e.g., Jan 2023"
                 type="text"
-                name="city"
+                name="issuedDate"
                 class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
               />
             </div>
           </div>
-          <ScrollArea class="flex flex-col gap-1 w-full mb-12">
-            <label for="end">Descriptions</label>
+          <div class="flex flex-col gap-1 w-full mb-12">
+            <label for="description">Descriptions</label>
             <div class="form-description h-40 w-full bg-white rounded-lg">
               <QuillEditor
-                ref="quillEditor"
-                v-model:content="content"
+                v-model:content="item.description"
                 :toolbar="['bold', 'italic', 'underline', 'link']"
-                placeholder="e.g. Awarded for writing and presenting an outstading technical paper at a conference"
+                placeholder="e.g. Awarded for writing and presenting an outstanding technical paper at a conference"
                 content-type="html"
                 theme="snow"
               />
             </div>
-          </ScrollArea>
+          </div>
           <div
-            v-if="index + 1 < prop.data.length"
+            v-if="index + 1 < localData.length"
             class="border-b border-slate-950 mb-5 w-full mt-5"
           ></div>
-          <div
-            class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
-          >
-            <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
-          </div>
         </div>
-        <Button
-          variant="outline"
-          class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
-        >
-          <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
-          <span class="text-primary">Add more</span>
-        </Button>
         <div class="flex items-center justify-end gap-2">
           <Button
             variant="secondary"
             class="w-32 h-11 flex gap-2 items-center"
-            @click="isEdit = false"
+            @click="cancelEdit"
           >
             Cancel
           </Button>
           <Button
             :disabled="isLoading"
             class="w-32 h-11 bg-primary flex gap-2 items-center"
-            @click="onSubmit"
+            type="submit"
           >
             <span
               v-if="isLoading"
@@ -150,8 +159,9 @@ const onSubmit = () => {}
         </div>
       </form>
     </div>
-  </BaseItemTemplate>
+  </div>
 </template>
+
 <style lang="scss" scoped>
 .form-description {
   &:deep() {
