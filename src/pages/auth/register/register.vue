@@ -161,7 +161,7 @@ const onSubmit = handleSubmit(async (values) => {
               v-if="isLoading"
               class="i-svg-spinners-ring-resize"
             ></span>
-            Sign Up
+            <span class="text-white">Sign Up</span>
           </Button>
           <div class="flex items-center gap-2 w-full mt-8">
             <span class="h-px bg-slate-200 w-full"></span>

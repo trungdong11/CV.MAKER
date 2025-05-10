@@ -5,7 +5,7 @@
         src=""
         alt=""
       />
-      <h2 class="text-xl font-medium text-primary">CV.Maker</h2>
+      <h2 class="text-3xl font-semibold text-primary">CV.Maker</h2>
     </div>
     <div class="right flex items-center gap-8">
       <Button
@@ -27,7 +27,7 @@
           })
         "
       >
-        Sign in
+        <span class="text-white font-medium">Sign in</span>
       </Button>
     </div>
   </div>

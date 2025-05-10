@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import BaseItemTemplate from '@/components/base/BaseItemTemplate.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
@@ -14,72 +13,85 @@ const prop = withDefaults(defineProps<Props>(), {
   isLoading: false,
 })
 
-const content = ref('')
+const localData = ref(prop.summary)
 
-onMounted(() => {
-  content.value = prop.summary
-})
+watch(
+  () => prop.summary,
+  (newData) => {
+    localData.value = newData
+  },
+  { deep: true },
+)
 
 const isEdit = ref(false)
 const openEdit = () => {
   isEdit.value = true
 }
 
-const onSubmit = () => {}
+defineExpose({
+  openEdit,
+})
+
+const cancelEdit = () => {
+  isEdit.value = false
+  localData.value = prop.summary
+}
+
+const emit = defineEmits<{
+  (e: 'update:data', value: Record<string, any>[]): void
+}>()
+const onSubmit = () => {
+  emit('update:data', localData.value)
+  isEdit.value = false
+}
 </script>
 
 <template>
-  <BaseItemTemplate
-    :name="'description'"
-    class=""
-    @edit="openEdit"
+  <div class="flex">
+    <p class="ont-normal text-slate-600 text-sm">{{ prop.summary }}</p>
+  </div>
+  <div
+    v-if="isEdit"
+    class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
   >
-    <div class="flex">
-      <p class="ont-normal text-slate-600 text-sm">{{ prop.summary }}</p>
-    </div>
-    <div
-      v-if="isEdit"
-      class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    <form
+      class="flex flex-col gap-2 w-full"
+      @submit="onSubmit"
     >
-      <form
-        class="flex flex-col gap-2 w-full"
-        @submit="onSubmit"
-      >
-        <ScrollArea class="flex flex-col gap-8">
-          <div class="form-description h-40 w-full bg-white rounded-lg">
-            <QuillEditor
-              ref="quillEditor"
-              v-model:content="content"
-              :toolbar="['bold', 'italic', 'underline', 'link']"
-              placeholder="Enter your post"
-              content-type="html"
-              theme="snow"
-            />
-          </div>
-        </ScrollArea>
-        <div class="flex items-center justify-end gap-2 mt-16">
-          <Button
-            variant="secondary"
-            class="w-32 h-11 flex gap-2 items-center text-primary"
-            @click="isEdit = false"
-          >
-            Cancel
-          </Button>
-          <Button
-            :disabled="isLoading"
-            class="w-32 h-11 bg-primary flex gap-2 items-center"
-            @click="onSubmit"
-          >
-            <span
-              v-if="isLoading"
-              class="i-svg-spinners-ring-resize"
-            ></span>
-            Save
-          </Button>
+      <ScrollArea class="flex flex-col gap-8">
+        <div class="form-description h-40 w-full bg-white rounded-lg">
+          <QuillEditor
+            ref="quillEditor"
+            v-model:content="localData"
+            :toolbar="['bold', 'italic', 'underline', 'link']"
+            placeholder="Enter your post"
+            content-type="html"
+            theme="snow"
+          />
         </div>
-      </form>
-    </div>
-  </BaseItemTemplate>
+      </ScrollArea>
+      <div class="flex items-center justify-end gap-2 mt-16">
+        <Button
+          variant="secondary"
+          class="w-32 h-11 flex gap-2 items-center text-primary"
+          @click="cancelEdit"
+        >
+          Cancel
+        </Button>
+        <Button
+          :disabled="isLoading"
+          class="w-32 h-11 bg-primary flex gap-2 items-center"
+          @click="onSubmit"
+        >
+          <span
+            v-if="isLoading"
+            class="i-svg-spinners-ring-resize"
+          ></span>
+          Save
+        </Button>
+      </div>
+    </form>
+  </div>
 </template>
 <style lang="scss" scoped>
 .form-description {

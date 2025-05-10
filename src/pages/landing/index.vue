@@ -12,14 +12,14 @@
           easy to use
         </p>
         <Button
-          class="h-10 w-40 text-white font-medium"
+          class="h-10 w-40 font-medium"
           @click.prevent.stop="
             router.push({
               name: 'login',
             })
           "
         >
-          Try for free
+          <span class="text-white">Try for free</span>
         </Button>
 
         <div class="absolute w-full -top-20 left-0 rectangular-animation">
@@ -185,7 +185,7 @@
               })
             "
           >
-            Create Resume
+            <span class="text-white">Create Resume</span>
           </Button>
           <div class="flex">
             <div class="flex flex-col">
@@ -257,7 +257,7 @@
             })
           "
         >
-          Read More
+          <span class="text-white">Read More</span>
         </Button>
       </div>
     </div>

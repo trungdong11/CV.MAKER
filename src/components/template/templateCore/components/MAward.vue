@@ -10,21 +10,25 @@ interface Props {
   isLoading: boolean
 }
 const prop = withDefaults(defineProps<Props>(), {
-  data: () => [],
+  data: () => [], // Mặc định là mảng rỗng
   isLoading: false,
 })
 
-// Bản sao phản ứng của dữ liệu để chỉnh sửa
-const localData = ref(prop.data)
+// Tạo bản sao dữ liệu để chỉnh sửa
+const localData = ref(JSON.parse(JSON.stringify(prop.data)))
 
 // Đồng bộ localData khi prop.data thay đổi
 watch(
   () => prop.data,
   (newData) => {
-    localData.value = newData
+    localData.value = JSON.parse(JSON.stringify(newData))
   },
-  { deep: true },
+  // { deep: true },
 )
+
+onBeforeMount(() => {
+  localData.value = JSON.parse(JSON.stringify(prop.data))
+})
 
 // Trạng thái chỉnh sửa
 const isEdit = ref(false)
@@ -32,18 +36,16 @@ const openEdit = () => {
   isEdit.value = true
 }
 
-// Expose openEdit để Index.vue có thể gọi
-defineExpose({
-  openEdit,
-})
+// Expose openEdit cho Index.vue
+defineExpose({ openEdit })
 
 // Hủy chỉnh sửa
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = prop.data // Khôi phục dữ liệu gốc
+  localData.value = JSON.parse(JSON.stringify(prop.data))
 }
 
-// Phát sự kiện khi submit form
+// Gửi dữ liệu khi submit
 const emit = defineEmits<{
   (e: 'update:data', value: Record<string, any>[]): void
 }>()
@@ -89,7 +91,7 @@ const onSubmit = () => {
             <label for="title">Title</label>
             <InputValidation
               id="title"
-              v-model="item.awardTitle"
+              v-model:value="item.awardTitle"
               placeholder="e.g., Best Technical Paper Award, Bug Bounty Recognition etc."
               type="text"
               name="title"
@@ -101,7 +103,7 @@ const onSubmit = () => {
               <label for="issuer">Issuer</label>
               <InputValidation
                 id="issuer"
-                v-model="item.issuer"
+                v-model:value="item.issuer"
                 placeholder="e.g., National University of VietNam"
                 type="text"
                 name="issuer"
@@ -124,7 +126,7 @@ const onSubmit = () => {
             <label for="description">Descriptions</label>
             <div class="form-description h-40 w-full bg-white rounded-lg">
               <QuillEditor
-                v-model:content="item.description"
+                v-model:value="item.description"
                 :toolbar="['bold', 'italic', 'underline', 'link']"
                 placeholder="e.g. Awarded for writing and presenting an outstanding technical paper at a conference"
                 content-type="html"

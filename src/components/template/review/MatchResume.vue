@@ -46,7 +46,7 @@ const onSubmit = () => {}
           v-if="isLoading"
           class="i-svg-spinners-ring-resize"
         ></span>
-        Match Resume
+        <span class="text-white">Match Resume</span>
       </Button>
     </form>
   </BaseSubItem>

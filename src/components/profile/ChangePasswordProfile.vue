@@ -114,7 +114,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
           v-if="isLoading"
           class="i-svg-spinners-ring-resize"
         ></span>
-        Save
+        <span class="text-white">Save</span>
       </Button>
     </div>
     <div class="w-2/4 flex flex-col gap-10"></div>

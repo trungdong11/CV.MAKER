@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import BaseItemTemplate from '@/components/base/BaseItemTemplate.vue'
 import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 
@@ -12,146 +11,166 @@ const prop = withDefaults(defineProps<Props>(), {
   isLoading: false,
 })
 
+const localData = ref(prop.data)
+
+watch(
+  () => prop.data,
+  (newData) => {
+    localData.value = newData
+  },
+  { deep: true },
+)
+
 const isEdit = ref(false)
 const openEdit = () => {
   isEdit.value = true
 }
 
-const onSubmit = () => {}
+defineExpose({
+  openEdit,
+})
+
+const cancelEdit = () => {
+  isEdit.value = false
+  localData.value = prop.data
+}
+
+const emit = defineEmits<{
+  (e: 'update:data', value: Record<string, any>[]): void
+}>()
+const onSubmit = () => {
+  emit('update:data', localData.value)
+  isEdit.value = false
+}
 </script>
 
 <template>
-  <BaseItemTemplate
-    :name="'personal'"
-    @edit="openEdit"
-  >
-    <div class="items-center flex flex-col justify-center gap-3 w-full">
-      <h2 class="font-semibold text-3xl">{{ prop.data.fullname }}</h2>
+  <div class="items-center flex flex-col justify-center gap-3 w-full">
+    <h2 class="font-semibold text-3xl">{{ prop.data.fullname }}</h2>
+    <div
+      class="flex items-center gap-1 justify-center font-normal text-slate-600 text-sm flex-wrap"
+    >
+      <p>{{ prop.data.address }}</p>
+      <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
+      <p>{{ prop.data.email }}</p>
+      <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
+      <p>{{ prop.data.phoneNumber }}</p>
+      <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
       <div
-        class="flex items-center gap-1 justify-center font-normal text-slate-600 text-sm flex-wrap"
+        v-for="(item, index) in prop.data.socials"
+        :key="index"
+        class="flex items-center justify-center gap-2"
       >
-        <p>{{ prop.data.address }}</p>
-        <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-        <p>{{ prop.data.email }}</p>
-        <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-        <p>{{ prop.data.phoneNumber }}</p>
-        <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
+        <p>{{ item?.link }}</p>
         <div
-          v-for="(item, index) in prop.data.socials"
-          :key="index"
-          class="flex items-center justify-center gap-2"
+          v-if="index + 1 < prop.data.socials.length"
+          class="font-semibold text-base -mt-2 flex justify-center items-center"
         >
-          <p>{{ item?.link }}</p>
-          <div
-            v-if="index + 1 < prop.data.socials.length"
-            class="font-semibold text-base -mt-2 flex justify-center items-center"
-          >
-            .
-          </div>
+          .
         </div>
       </div>
     </div>
-    <div
-      v-if="isEdit"
-      class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+  </div>
+  <div
+    v-if="isEdit"
+    class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+  >
+    <form
+      class="flex flex-col gap-2 w-full"
+      @submit="onSubmit"
     >
-      <form
-        class="flex flex-col gap-2 w-full"
-        @submit="onSubmit"
-      >
-        <div class="flex items-center gap-x-4 w-full flex-wrap justify-center">
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">Name</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your name..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">Location</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your location..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">Email</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your email..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">Phone Number</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your phone number..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">LinkedIn</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your linkedIn..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">Github</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your github..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-1/4">
-            <label for="name">Other Link</label>
-            <InputValidation
-              id="name"
-              placeholder="Enter your other link..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
+      <div class="flex items-center gap-x-4 w-full flex-wrap justify-center">
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">Name</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your name..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
         </div>
-        <div class="flex items-center justify-end gap-2">
-          <Button
-            variant="secondary"
-            class="w-32 h-11 flex gap-2 items-center text-primary"
-            @click="isEdit = false"
-          >
-            Cancel
-          </Button>
-          <Button
-            :disabled="isLoading"
-            class="w-32 h-11 bg-primary flex gap-2 items-center"
-            @click="onSubmit"
-          >
-            <span
-              v-if="isLoading"
-              class="i-svg-spinners-ring-resize"
-            ></span>
-            Save
-          </Button>
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">Location</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your location..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
         </div>
-      </form>
-    </div>
-  </BaseItemTemplate>
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">Email</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your email..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
+        </div>
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">Phone Number</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your phone number..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
+        </div>
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">LinkedIn</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your linkedIn..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
+        </div>
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">Github</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your github..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
+        </div>
+        <div class="form-data flex flex-col gap-1 w-1/4">
+          <label for="name">Other Link</label>
+          <InputValidation
+            id="name"
+            placeholder="Enter your other link..."
+            type="text"
+            name="name"
+            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+          />
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2">
+        <Button
+          variant="secondary"
+          class="w-32 h-11 flex gap-2 items-center text-primary"
+          @click="cancelEdit"
+        >
+          Cancel
+        </Button>
+        <Button
+          :disabled="isLoading"
+          class="w-32 h-11 bg-primary flex gap-2 items-center"
+          @click="onSubmit"
+        >
+          <span
+            v-if="isLoading"
+            class="i-svg-spinners-ring-resize"
+          ></span>
+          Save
+        </Button>
+      </div>
+    </form>
+  </div>
 </template>

@@ -15,7 +15,6 @@ import MLanguage from './components/MLanguage.vue'
 import MOrganizational from './components/MOrganizational.vue'
 import MPublication from './components/MPublication.vue'
 
-// Dữ liệu CV (sử dụng reactive để đảm bảo cập nhật giao diện)
 const data = reactive<ITemplate>({
   id: '1',
   lngCode: 'en',
@@ -72,7 +71,6 @@ const data = reactive<ITemplate>({
         ListOfSkill: 'JavaScript, TypeScript, Python',
       },
     ],
-    tools: [{ ToolCategory: 'Frameworks', ListOfTool: 'React, Next.js, Node.js' }],
     works: [
       {
         companyName: 'Tech Corp',

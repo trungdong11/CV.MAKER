@@ -144,7 +144,7 @@ const getCountUnreadNotification = async () => {
             >
               <span class="text-primary text-xl i-material-symbols-light-add-2-rounded"></span>
             </div>
-            <p>Create new quizzfly</p>
+            <p>Create new cv</p>
           </div>
 
           <RouterLink
@@ -244,7 +244,7 @@ const getCountUnreadNotification = async () => {
             class="text-xs w-full"
             @click="handleClickCreateQuiz"
           >
-            Create new quizzfly
+            Create new cv
           </Button>
         </div>
       </div>

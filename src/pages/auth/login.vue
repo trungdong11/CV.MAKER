@@ -82,13 +82,13 @@ const loginGoogle = () => {
           </div>
           <Button
             :disabled="isLoading"
-            class="mt-6 w-full h-10 bg-primary flex gap-2 items-center"
+            class="mt-6 w-full h-10 bg-primary flex gap-2 items-center text-white"
           >
             <span
               v-if="isLoading"
               class="i-svg-spinners-ring-resize"
             ></span>
-            Sign in
+            <span class="text-white">Sign in</span>
           </Button>
           <div class="flex items-center gap-2 w-full mt-8">
             <span class="h-px bg-slate-200 w-full"></span>

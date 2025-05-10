@@ -4,11 +4,9 @@ import {
   dashboardRoute,
   profileRoute,
   templateRoute,
-  roomRoute,
-  playRoute,
-  groupRoute,
-  reportRoute,
   planRoute,
+  evaluateRoute,
+  resumeRoute,
 } from './modules'
 import { authGuard } from './auth-guard'
 const { progress } = useIndicator()
@@ -48,30 +46,14 @@ const routes: RouteRecordRaw[] = [
     children: templateRoute,
   },
   {
-    path: '/room',
-    // beforeEnter: [authGuard],
-    component: () => import('@/pages/room/index.vue'),
-    children: roomRoute,
+    path: '/evaluate',
+    beforeEnter: [authGuard],
+    children: evaluateRoute,
   },
   {
-    path: '/groups',
-    // beforeEnter: [authGuard],
-    component: () => import('@/pages/groups/detail/index.vue'),
-    children: groupRoute,
-  },
-  {
-    path: '/play',
-    meta: {
-      layout: 'GuestLayout',
-      unAuth: true,
-    },
-    // beforeEnter: [authGuard],
-    children: playRoute,
-  },
-  {
-    path: '/reports',
-    // beforeEnter: [authGuard],
-    children: reportRoute,
+    path: '/resumes',
+    beforeEnter: [authGuard],
+    children: resumeRoute,
   },
   {
     path: '/billing-plan',

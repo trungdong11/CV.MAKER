@@ -153,7 +153,7 @@ const [email, emailAttrs] = defineField('email')
                   v-if="isLoading"
                   class="i-svg-spinners-ring-resize"
                 ></span>
-                Submit
+                <span class="text-white">Submit</span>
               </Button>
             </div>
           </form>
@@ -164,7 +164,7 @@ const [email, emailAttrs] = defineField('email')
             :disable-cache="isCountdown"
             @click="handleResentEmail(5)"
           >
-            Resend
+            <span :class="{ 'text-white': !isCountdown }">Resend</span>
           </Button>
           <div class="flex items-center justify-center w-full">
             <div

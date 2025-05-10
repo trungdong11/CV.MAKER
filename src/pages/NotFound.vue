@@ -138,7 +138,7 @@ import { Button } from '@/components/ui/button'
       </g>
     </svg>
     <RouterLink to="/">
-      <Button>Go Home</Button>
+      <Button><span class="text-white">Go Home</span></Button>
     </RouterLink>
   </div>
 </template>

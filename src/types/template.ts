@@ -31,7 +31,6 @@ export interface IContent {
   award: IAward[]
   languages: ILanguage[]
   skills: ISkill[]
-  tools: ITool[]
   works: IWork[]
   projects: IProject[]
   certification: ICertification[]
@@ -65,11 +64,6 @@ export interface ILanguage {
 export interface ISkill {
   skillCategory: string
   ListOfSkill: string
-}
-
-export interface ITool {
-  ToolCategory: string
-  ListOfTool: string
 }
 
 export interface IWork {

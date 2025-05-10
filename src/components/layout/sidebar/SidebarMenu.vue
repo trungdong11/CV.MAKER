@@ -36,11 +36,6 @@ const menus = ref<Menu[]>([
         title: 'Profiles',
         link: '/profiles',
       },
-      // {
-      //   class: 'i-solar-users-group-rounded-bold-duotone',
-      //   title: 'Groups',
-      //   link: '/groups',
-      // },
       {
         class: 'i-solar-clipboard-list-bold',
         title: 'Templates',
