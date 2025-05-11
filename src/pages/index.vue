@@ -1,53 +1,24 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/auth'
-import { useQuizzflyStore } from '@/stores/quizzfly/quizzfly'
+// import { useQuizzflyStore } from '@/stores/quizzfly/quizzfly'
 import { useConfirmDialog } from '@/stores/modal'
-import NotificationPopup from '@/components/notification/NotificationPopup.vue'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { getCountUnreadNotificationApi } from '@/services/notification'
-import { showToast } from '@/utils/toast'
-import { apiError } from '@/utils/exceptionHandler'
-import { useNotificationSocketStore } from '@/stores/socket/notification'
+// import { showToast } from '@/utils/toast'
+// import { apiError } from '@/utils/exceptionHandler'
 
-import { useGroupStore } from '@/stores/group/group'
+// import { useGroupStore } from '@/stores/group/group'
 const authStore = useAuthStore()
-const quizzflyStore = useQuizzflyStore()
-const quizzflys = computed(() => quizzflyStore.getQuizzflys)
 const confirmDialog = useConfirmDialog()
-const countUnreadNotification = ref(0)
-const notificationStore = useNotificationSocketStore()
-
-const getMessage = computed(() => {
-  return notificationStore.getMessage
-})
-const groupStore = useGroupStore()
 
 const handleClickCreateQuiz = async () => {
-  await quizzflyStore.initQuizzflyDraft()
+  // await quizzflyStore.initQuizzflyDraft()
 }
 
 onBeforeMount(() => {
-  quizzflyStore.fetchQuizzflys()
-  getCountUnreadNotification()
-  groupStore.fetchGroups({ page: 1 })
+  // quizzflyStore.fetchQuizzflys()
+  // getCountUnreadNotification()
+  // groupStore.fetchGroups({ page: 1 })
 })
-
-watch(getMessage, (val: any) => {
-  if (val.event === 'notification') {
-    countUnreadNotification.value++
-  }
-})
-
-const handleAllNotification = (data: boolean) => {
-  if (data) {
-    countUnreadNotification.value = 0
-  }
-}
-
-const handleOpenHostLive = (quizzflyId: string) => {
-  window.open(`/room/host-live/${quizzflyId}`, '_blank')
-}
 
 const handleOpenCreateWithAI = async () => {
   const { isConfirmed } = await confirmDialog.open({
@@ -56,19 +27,7 @@ const handleOpenCreateWithAI = async () => {
   })
 
   if (isConfirmed) {
-    quizzflyStore.initQuizzflyDraft()
-  }
-}
-
-const getCountUnreadNotification = async () => {
-  try {
-    const data = await getCountUnreadNotificationApi()
-    countUnreadNotification.value = data.data
-  } catch (error) {
-    showToast({
-      description: apiError(error).message,
-      variant: 'destructive',
-    })
+    // quizzflyStore.initQuizzflyDraft()
   }
 }
 </script>
@@ -88,24 +47,6 @@ const getCountUnreadNotification = async () => {
         >
           <span class="i-solar-magnifer-linear text-lg"></span>
         </div>
-        <Popover>
-          <PopoverTrigger>
-            <div
-              class="max-md:hidden w-10 h-10 hover:bg-slate-200 flex justify-center items-center rounded-full cursor-pointer relative"
-            >
-              <span class="i-solar-bell-line-duotone text-lg"></span>
-              <div
-                v-if="countUnreadNotification > 0"
-                class="flex rounded-full items-center justify-center absolute top-1 right-1 bg-red-600 text-white w-4 h-4 text-xs font-medium"
-              >
-                {{ countUnreadNotification }}
-              </div>
-            </div>
-          </PopoverTrigger>
-          <PopoverContent class="mr-4">
-            <NotificationPopup @read-all-notification="handleAllNotification" />
-          </PopoverContent>
-        </Popover>
       </div>
     </div>
 
@@ -119,14 +60,14 @@ const getCountUnreadNotification = async () => {
         ✨ Create with AI
       </button>
 
-      <RouterLink
-        :to="{ name: 'groups', query: { create: 'true' } }"
+      <!-- <RouterLink
+        :to="{ name: 'templates', query: { create: 'true' } }"
         class="h-9 btn-gradient"
       >
         <div class="flex items-center h-full w-full bg-white text-black rounded-full px-3 py-[6px]">
           Create your group
         </div>
-      </RouterLink>
+      </RouterLink> -->
     </div>
     <!-- body -->
     <div class="flex max-md:flex-col mt-10 gap-5">
@@ -148,7 +89,7 @@ const getCountUnreadNotification = async () => {
           </div>
 
           <RouterLink
-            :to="{ name: 'groups' }"
+            to="/"
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
           >
             <div
@@ -157,13 +98,13 @@ const getCountUnreadNotification = async () => {
               <span class="text-[#9521c8] text-xl i-material-symbols-light-groups-2"></span>
             </div>
             <div>
-              <p>Your groups</p>
-              <p class="text-xs text-gray-500">Create a new group</p>
+              <p>Your CV</p>
+              <p class="text-xs text-gray-500">Create a new cv</p>
             </div>
           </RouterLink>
 
           <RouterLink
-            :to="{ name: 'billing-plan' }"
+            to="/"
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
           >
             <div
@@ -178,7 +119,7 @@ const getCountUnreadNotification = async () => {
           </RouterLink>
 
           <RouterLink
-            :to="{ name: 'billing-plan-history' }"
+            to="/"
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
           >
             <div
@@ -197,7 +138,7 @@ const getCountUnreadNotification = async () => {
       <!-- quizzfly -->
       <div class="flex-1 flex flex-col gap-3 p-6 border bg-white rounded-xl shadow-sm">
         <p>Quick access</p>
-        <div
+        <!-- <div
           v-for="group in groupStore.getGroups"
           :key="group.group.id"
           class="flex gap-3 border-b mb-2 pb-2 items-center"
@@ -221,14 +162,14 @@ const getCountUnreadNotification = async () => {
             class="flex items-center hover:bg-gray-100 border ml-auto text-xs h-[30px] px-5 rounded-md"
             >Detail</RouterLink
           >
-        </div>
+        </div> -->
       </div>
     </div>
 
     <!-- recent -->
     <div class="mt-10">
       <p class="text-lg font-medium mb-4">Recent activities</p>
-      <div
+      <!-- <div
         v-if="!quizzflyStore.getIsFetching && quizzflyStore.getQuizzflys.length === 0"
         class="h-full w-full flex flex-col justify-center items-center"
       >
@@ -247,8 +188,8 @@ const getCountUnreadNotification = async () => {
             Create new cv
           </Button>
         </div>
-      </div>
-      <div class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 gap-5">
+      </div> -->
+      <!-- <div class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 gap-5">
         <div
           v-for="quizzfly in quizzflys"
           :key="quizzfly.id"
@@ -289,8 +230,8 @@ const getCountUnreadNotification = async () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped lang="scss"></style>

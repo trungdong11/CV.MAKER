@@ -3,7 +3,7 @@ import type { NavigationGuardWithThis } from 'vue-router'
 
 export const authGuard: NavigationGuardWithThis<any> = async (to, from, next) => {
   // Set default page title
-  document.title = (to.meta?.title as string) || 'CV.Maker - Create, Share, Evaluate Resumes'
+  document.title = (to.meta?.title as string) || 'CV.Maker - Create, Update, Evaluate Resumes'
 
   const authStore = useAuthStore()
   const isLoggedIn = authStore.getIsLoggedIn
