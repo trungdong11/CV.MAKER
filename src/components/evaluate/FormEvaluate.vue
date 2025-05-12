@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button'
 import { showToast } from '@/utils/toast'
 
 import { useEvaluateStore } from '@/stores/evaluate'
-const router = useRouter()
+// const router = useRouter()
 
 const evaluateStore = useEvaluateStore()
 
 const { evaluateCV } = evaluateStore
-const { evaluateDetail } = toRefs(evaluateStore)
+// const { evaluateDetail } = toRefs(evaluateStore)
 
 const isLoading = ref<boolean>(false)
 const refInput = ref()
@@ -46,9 +46,9 @@ const onSubmit = async () => {
       description: 'Check detail evaluate and improve your CV',
       variant: 'default',
     })
-    if (evaluateDetail.value) {
-      router.push(`evaluate/${evaluateDetail.value?.cv_id}`)
-    }
+    // if (evaluateDetail.value) {
+    //   router.push(`evaluate/${evaluateDetail.value?.cv_id}`)
+    // }
   } catch (error) {
     showToast({
       description: 'Evaluate CV failed',

@@ -1,6 +1,7 @@
 export interface IEvaluate {
   cv_id: string
   sections: ISections[]
+  total_final_score: number
 }
 
 export interface ISections {
@@ -11,7 +12,7 @@ export interface ISections {
     minor: number
     severe: number
   }
-  grammar_errors_detailed?: [
+  grammar_errors_detailed: [
     {
       location: string
       type: string

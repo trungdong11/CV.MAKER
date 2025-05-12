@@ -1,6 +1,7 @@
 import type { BaseResponse } from '@/types/api'
 import type { Quiz } from '@/types/question'
 import { config } from '@/api/config'
+import type { IEvaluate } from '@/types/ai'
 
 interface Option {
   numberOfQuestion?: number
@@ -38,7 +39,7 @@ export const getModelList = async (): Promise<Model[]> => {
   })
 }
 
-export const evaluateCVApi = async (data: any): Promise<BaseResponse<any>> => {
+export const evaluateCVApi = async (data: any): Promise<BaseResponse<IEvaluate>> => {
   return $api('/upload_cv', {
     method: 'POST',
     body: data,

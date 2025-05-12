@@ -3,7 +3,7 @@ import type { IEvaluate } from '@/types/ai'
 import { showToast } from '@/utils/toast'
 import { defineStore } from 'pinia'
 import { apiError } from '@/utils/exceptionHandler'
-import router from '@/routers/router'
+// import router from '@/routers/router'
 import { evaluateCVApi } from '@/services/ai'
 
 export const useEvaluateStore = defineStore({
@@ -11,25 +11,30 @@ export const useEvaluateStore = defineStore({
   state: () => ({
     isLoading: false,
     evaluateDetail: {} as IEvaluate,
+    isCheckUpload: false,
   }),
   actions: {
     async evaluateCV(val: any) {
       try {
         this.isLoading = true
-        const { data } = await evaluateCVApi(val)
+        const data = await evaluateCVApi(val)
         this.setDetailEvaluate(data)
+        this.isCheckUpload = true
       } catch (error) {
         console.error(error)
         showToast({
           description: apiError(error).message,
           variant: 'destructive',
         })
-        router.push(`/evaluate/${this.evaluateDetail?.cv_id}`)
+        // router.push(`/evaluate/${this.evaluateDetail?.cv_id}`)
       }
+      this.isLoading = false
     },
     setDetailEvaluate(val: IEvaluate) {
-      // Object.assign(this.evaluateDetail, val)
       this.evaluateDetail = val
+    },
+    resetIsCheckUpload() {
+      this.isCheckUpload = false
     },
     // async getevaluateDetail(id: string) {
     //   try {
