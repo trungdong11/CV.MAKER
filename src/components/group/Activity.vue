@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import Card from '../ui/card/Card.vue'
 import Button from '../ui/button/Button.vue'
 import MCreatePost from '@/components/group/modal/MCreatePost.vue'
@@ -141,7 +141,7 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
               </Avatar>
               <div class="flex-auto">
                 <div class="flex flex-auto justify-between">
-                  <!-- name -->
+                  name
                   <div class="flex items-center gap-2">
                     <div class="flex flex-col gap-0">
                       <div class="flex items-center gap-2">
@@ -150,10 +150,10 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
                           {{ formatDateTime(post.created_at) }}
                         </p>
                       </div>
-                      <!-- <p class="text-x text-slate-600">Host</p> -->
+                      <p class="text-x text-slate-600">Host</p>
                     </div>
                   </div>
-                  <!-- menu options -->
+                  menu options
                   <div @click.stop.prevent>
                     <Popover>
                       <PopoverTrigger>
@@ -178,7 +178,7 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
                   </div>
                 </div>
 
-                <!-- content -->
+                content
                 <div class="">
                   <div class="flex flex-col gap-4">
                     <div
@@ -187,7 +187,7 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
                       v-html="$sanitize(post?.content)"
                     ></div>
 
-                    <!-- list images -->
+                    list images
                     <div
                       v-if="post.files.length"
                       v-viewer:gallery
@@ -227,7 +227,7 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
                         </div>
                       </div>
                     </div>
-                    <!-- end list images -->
+                    end list images
 
                     <Card v-if="post.quizzfly?.id">
                       <div class="flex w-full h-28">
@@ -382,3 +382,4 @@ const handleHtmlLinkClick = (event: MouseEvent) => {
   }
 }
 </style>
+-->

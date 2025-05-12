@@ -28,7 +28,7 @@ import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { createMultipleQuizApi } from '@/services/quizzes'
 import { useQuizzflyStore } from '@/stores/quizzfly/quizzfly'
-import { useAuthStore } from '@/stores/auth'
+// import { useAuthStore } from '@/stores/auth'
 
 const quizzflyStore = useQuizzflyStore()
 const { handleSubmit } = useForm({
@@ -69,8 +69,9 @@ const handleSelectQuizType = (type: string) => {
 }
 
 const isLoading = ref(false)
-const authStore = useAuthStore()
-const hightestPlanUser = computed(() => authStore.getHighestPlan)
+// const authStore = useAuthStore()
+const hightestPlanUser = ref()
+// computed(() => authStore.getHighestPlan)
 const handleCreateWithAI = handleSubmit(async (value) => {
   popoverState.value = false
   if (!hightestPlanUser.value || hightestPlanUser.value?.subscription_plan?.price === 0) {

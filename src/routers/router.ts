@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
     beforeEnter: [authGuard],
-    component: () => import('@/pages/index.vue'),
+    // component: () => import('@/pages/index.vue'),
     children: dashboardRoute,
   },
   {

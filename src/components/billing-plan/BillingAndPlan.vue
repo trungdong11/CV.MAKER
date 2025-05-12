@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { getSubscriptionsApi } from '@/services/pricing'
 import { useAuthStore } from '@/stores/auth'
 import { useConfirmDialog } from '@/stores/modal'
@@ -61,7 +61,7 @@ const plansComputed = computed(() => {
           <div>
             <div class="flex items-start justify-between">
               <p class="text-base font-medium">{{ pricing.name }}</p>
-              <!-- popular chip -->
+              popular chip
               <div
                 v-if="index === 1"
                 class="bg-[#eef9f4] text-[#0caa7c] text-xs px-2 py-1 rounded-full"
@@ -105,4 +105,8 @@ const plansComputed = computed(() => {
       </div>
     </div>
   </div>
+</template> -->
+
+<template>
+  <div></div>
 </template>

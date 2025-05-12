@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
+// import { useAuthStore } from '@/stores/auth'
 
 defineProps<{
   isCollapsed: boolean
   sidebarMode: 'dark' | 'light'
 }>()
 
-const authStore = useAuthStore()
+// const authStore = useAuthStore()
 interface Menu {
   title: string
   children: {
@@ -53,22 +53,22 @@ const menus = ref<Menu[]>([
       },
     ],
   },
-  {
-    title: 'PLAN',
-    children: [
-      {
-        class: 'i-solar-money-bag-bold-duotone',
-        title: 'Billing & plan',
-        link: '/billing-plan/plans',
-        item_right: authStore.getHighestPlan ? authStore.getHighestPlan.subscription_plan.name : '',
-      },
-      {
-        class: 'i-solar-alarm-bold',
-        title: 'Payment history',
-        link: '/billing-plan/history',
-      },
-    ],
-  },
+  // {
+  //   title: 'PLAN',
+  //   children: [
+  //     {
+  //       class: 'i-solar-money-bag-bold-duotone',
+  //       title: 'Billing & plan',
+  //       link: '/billing-plan/plans',
+  //       item_right: authStore.getHighestPlan ? authStore.getHighestPlan.subscription_plan.name : '',
+  //     },
+  //     {
+  //       class: 'i-solar-alarm-bold',
+  //       title: 'Payment history',
+  //       link: '/billing-plan/history',
+  //     },
+  //   ],
+  // },
 ])
 </script>
 <template>
