@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="flex rounded-xl p-6 shadow-common border-color w-full heigh-full">
+  <div class="flex flex-auto rounded-xl p-6 shadow-common border-color w-full heigh-full">
     <slot />
   </div>
 </template>
