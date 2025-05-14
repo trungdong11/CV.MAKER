@@ -19,5 +19,14 @@ import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
         We are currently evaluating your resume. This process may take a few moments.
       </p>
     </div>
+    <div class="absolute -bottom-32 left-0">
+      <DotLottieVue
+        class=""
+        style="height: 600px; width: 800px"
+        autoplay
+        loop
+        src="https://lottie.host/b1ad3a5a-5b9c-4d1d-bdd2-dfecdf5a5300/JvdNPJDWS8.lottie"
+      />
+    </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FormEvaluate from '@/components/evaluate/FormEvaluate.vue'
-import DetailView from '@/components/evaluate/detail/detailView.vue'
-import GeneralView from '@/components/evaluate/detail/generalView.vue'
+import DetailView from '@/components/evaluate/detail/DetailView.vue'
+import GeneralView from '@/components/evaluate/detail/GeneralView.vue'
 import ModalLoading from '@/components/evaluate/detail/ModalLoading.vue'
 import { useEvaluateStore } from '@/stores/evaluate'
 
