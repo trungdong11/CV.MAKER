@@ -1,32 +1,9 @@
 export interface ITemplate {
-  id: string
-  lngCode: string
-  isPremium: boolean
   createdAt: string
   updatedAt: string
-  status: string
   summary: string
-  personalDetails: IPersonalDetail
-  content: IContent
-}
-
-export interface IPersonalDetail {
-  fullname: string
-  phoneNumber: string
-  address: string
-  birthday: string
-  email: string
-  avatar: string
-  jobTitle: string
-  socials: Isocial[]
-}
-
-export interface Isocial {
-  icon: string
-  link: string
-}
-
-export interface IContent {
+  personalDetails: IPersonalDetails
+  socials: ISocial[]
   education: IEducation[]
   award: IAward[]
   languages: ILanguage[]
@@ -38,7 +15,68 @@ export interface IContent {
   organization: IOrganization[]
 }
 
-export interface IEducation {
+interface IOrganization {
+  name: string
+  position: string
+  address: string
+  startDate: string
+  endDate: string
+  description: string
+}
+
+interface IPublication {
+  title: string
+  publisher: string
+  url: string
+  publicationDate: string
+  description: string
+}
+
+interface ICertification {
+  certificationName: string
+  issuingOrganization: string
+  issuedDate: string
+  certificationLink: string
+  credentialId: string
+}
+
+interface IProject {
+  projectName: string
+  projectLink: string
+  startDate: string
+  endDate: string
+  description: string
+}
+
+interface IWork {
+  companyName: string
+  isCurrentWorking: boolean
+  position: string
+  location: string
+  startDate: string
+  endDate: string
+  description: string
+}
+
+interface ISkill {
+  skillCategory: string
+  listOfSkill: string
+}
+
+interface ILanguage {
+  language: string
+  proficiency: string
+}
+
+interface IAward {
+  awardTitle: string
+  awardTitleLink: string
+  issuer: string
+  issuedDate: string
+  description: string
+}
+
+interface IEducation {
   degree: string
   school: string
   startDate: string
@@ -49,61 +87,17 @@ export interface IEducation {
   description: string
 }
 
-export interface IAward {
-  awardTitle: string
-  awardTitleLink: string
-  issuer: string
-  issuedDate: string
+interface ISocial {
+  icon: string
+  link: string
 }
 
-export interface ILanguage {
-  language: string
-  proficiency: string
-}
-
-export interface ISkill {
-  skillCategory: string
-  ListOfSkill: string
-}
-
-export interface IWork {
-  companyName: string
-  iscurrentWorking: boolean
-  position: string
-  location: string
-  startDate: string
-  endDate: string
-  description: string
-}
-
-export interface IProject {
-  projectName: string
-  projectLink: string
-  startDate: string
-  endDate: string
-  description: string
-}
-export interface ICertification {
-  certificationName: string
-  issuingOrganization: string
-  issuedDate: string
-  certificationLink: string
-  credentialId: string
-}
-
-export interface IPublication {
-  title: string
-  publisher: string
-  url: string
-  publicationDate: string
-  description: string
-}
-
-export interface IOrganization {
-  name: string
-  position: string
+interface IPersonalDetails {
+  fullname: string
+  phoneNumber: string
   address: string
-  startDate: string
-  endDate: string
-  description: string
+  birthday: string
+  email: string
+  avatar: string
+  jobTitle: string
 }

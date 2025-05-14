@@ -15,8 +15,8 @@ const isLoading = ref(false)
 </script>
 
 <template>
-  <div class="p-8 flex flex-col gap-8">
-    <div class="flex items-center justify-between">
+  <div class="p-8 px-0 flex flex-col gap-8 h-full overflow-y-hidden">
+    <div class="px-8 flex items-center justify-between">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -68,9 +68,10 @@ const isLoading = ref(false)
         </Button>
       </div>
     </div>
-    <div class="flex items-start gap-6">
+
+    <div class="px-8 flex gap-6 overflow-y-hidden p-1">
       <TemplateCore />
-      <div class="flex flex-col gap-6 w-1/3">
+      <div class="flex flex-col gap-6 min-w-[300px]">
         <Evaluation />
         <MatchResume />
       </div>
