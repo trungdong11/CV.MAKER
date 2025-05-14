@@ -1,12 +1,74 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { showToast } from '@/utils/toast'
+
+import { useEvaluateStore } from '@/stores/evaluate'
+// const router = useRouter()
+
+const evaluateStore = useEvaluateStore()
+
+const { evaluateCV } = evaluateStore
+// const { evaluateDetail } = toRefs(evaluateStore)
+
+const isLoading = ref<boolean>(false)
+const refInput = ref()
+const fileUpload = ref()
+
+const onChangeFile = async (e: Event) => {
+  const element = e.currentTarget as HTMLInputElement
+  const fileList: FileList | null = element.files
+  if (!fileList) return
+  const data = fileList[0] as any
+
+  if (data) {
+    fileUpload.value = data
+    await onSubmit()
+  }
+}
+
+const onSubmit = async () => {
+  if (!fileUpload.value) {
+    showToast({
+      description: 'Please select a file first',
+      variant: 'destructive',
+    })
+    return
+  }
+
+  isLoading.value = true
+  const formData = new FormData()
+  formData.append('file', fileUpload.value)
+
+  try {
+    await evaluateCV(formData)
+    showToast({
+      title: 'Evaluate CV success',
+      description: 'Check detail evaluate and improve your CV',
+      variant: 'default',
+    })
+    // if (evaluateDetail.value) {
+    //   router.push(`evaluate/${evaluateDetail.value?.cv_id}`)
+    // }
+  } catch (error) {
+    showToast({
+      description: 'Evaluate CV failed',
+      variant: 'destructive',
+    })
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleButtonClick = () => {
+  refInput.value?.click()
+}
 </script>
 
 <template>
-  <div class="-flex flex-col gap-4 justify-center items-center">
-    <h1 class="text-2xl font-medium">Upload Existing Resume</h1>
+  <div class="flex w-full flex-col gap-4 justify-center items-center">
+    <h1 class="text-3xl font-medium">Upload Existing Resume</h1>
     <div
-      class="flex flex-col p-8 rounded-lg gap-5 text-center items-center justify-center bg-white border-2"
+      class="w-3/4 py-12 px-8 my-4 rounded-md shadow flex flex-col items-center justify-center text-center gap-8 max-lg:w-full bg-white"
     >
       <img
         src="@/assets/svg/funnel-upload.svg"
@@ -17,19 +79,30 @@ import { Button } from '@/components/ui/button'
         <h2 class="text-xl font-medium">Drag and drop your resume here</h2>
         <p>
           You can upload your resume in PDF, DOC, DOCX or
-          <span class="text-primary text-[14px] font-medium cursor hover:underline"
+          <span class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
             >choose your resume</span
           >
         </p>
       </div>
-      <Button class="w-1/2 h-11">
+      <Button
+        class="w-1/2 h-11"
+        :disabled="isLoading"
+        @click="handleButtonClick"
+      >
         <span
           class="i-material-symbols-light-upload-rounded text-white text-[20px] font-semibold"
         ></span>
-        <span class="text-white ml-2">Upload Resume</span>
+        <span class="text-white ml-2">{{ isLoading ? 'Uploading...' : 'Upload Resume' }}</span>
+        <input
+          ref="refInput"
+          type="file"
+          class="hidden"
+          accept=".pdf,.doc,.docx"
+          @change="onChangeFile"
+        />
       </Button>
     </div>
-    <div class="mt-4">
+    <div class="">
       <p class="text-[14px]">
         Or you can always
         <span class="text-primary font-medium cursor-pointer hover:underline"
@@ -41,4 +114,10 @@ import { Button } from '@/components/ui/button'
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.shadow {
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+</style>

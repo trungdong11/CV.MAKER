@@ -8,6 +8,7 @@ import { Icon } from '@iconify/vue'
 import 'driver.js/dist/driver.css'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/reset.css'
+import veProgress from "vue-ellipse-progress"
 
 /* layouts */
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
@@ -39,6 +40,7 @@ const initApp = async () => {
   app.use(VImage)
   app.use(Viewer)
   app.use(Antd)
+  app.use(veProgress)
   app.use(VueTippy, {
     directive: 'tippy', // => v-tippy
     component: 'tippy', // => <tippy/>

@@ -15,6 +15,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "@iconify/vue": "^4.1.1",
+    "@lottiefiles/dotlottie-vue": "^0.6.3",
     "@radix-icons/vue": "^1.0.0",
     "@stomp/stompjs": "^7.0.0",
     "@vueup/vue-quill": "^1.2.0",
@@ -54,6 +55,7 @@
     "vue-chartjs": "^5.3.2",
     "vue-confetti-explosion": "^1.0.2",
     "vue-drag-scroller": "^1.8.1",
+    "vue-ellipse-progress": "^2.2.0",
     "vue-i18n": "9",
     "vue-router": "^4.3.0",
     "vue-tippy": "v6",

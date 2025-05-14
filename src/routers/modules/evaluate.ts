@@ -6,4 +6,9 @@ export const evaluateRoute: RouteRecordRaw[] = [
     name: 'evaluate',
     component: () => import('@/pages/evaluate/index.vue'),
   },
+  {
+    path: ':id',
+    name: 'evaluate-detail',
+    component: () => import('@/pages/evaluate/detail.vue'),
+  },
 ]
