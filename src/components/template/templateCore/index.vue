@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
-import BaseTemplate from '@/components/base/BaseTemplate.vue'
-import BaseItemTemplate from '@/components/base/BaseItemTemplate.vue'
-import { type ITemplate } from '@/types/template'
+import { ref, computed } from 'vue'
 import MPersonal from './components/MPersonal.vue'
 import MDescription from './components/MDescription.vue'
 import MSkill from './components/MSkill.vue'
@@ -65,18 +62,40 @@ const sections = [
   },
 ]
 
-const sectionInitial = shallowRef([sections[2]])
+const sectionInitialIndex = ref([0, 1, 2,3])
+
+const sectionNotAdded = computed(() => {
+  return sections.filter((section) => {
+    return !sectionInitialIndex.value.includes(sections.indexOf(section))
+  })
+})
 </script>
 
 <template>
   <Card class="flex flex-col flex-auto w-[952px] min-w-[952px] overflow-auto">
     <ScrollArea class="h-full flex flex-col gap-6 p-5">
       <component
-        :is="section.component"
-        v-for="section in sectionInitial"
-        :key="section.key"
+        :is="sections[index].component"
+        v-for="index in sectionInitialIndex"
+        :key="index"
       />
     </ScrollArea>
+
+    <div class="flex justify-center pb-5">
+      <div class="max-w-[50%] flex flex-wrap justify-center gap-2">
+        <div
+          v-for="item in sectionNotAdded"
+          :key="item.key"
+          class="flex items-center gap-2 border px-3 py-2 rounded-full hover:bg-gray-100 cursor-pointer"
+          @click="sectionInitialIndex.push(sections.indexOf(item))"
+        >
+          <span class="i-material-symbols-light-add-2-rounded"></span>
+          <div>
+            {{ item.key }}
+          </div>
+        </div>
+      </div>
+    </div>
   </Card>
 </template>
 

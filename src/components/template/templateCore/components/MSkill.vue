@@ -3,10 +3,12 @@ import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import TextareaValidation from '@/components/base/TextareaValidation.vue'
 import { useResumeStore } from '@/stores/resume/resume'
-import { useForm } from 'vee-validate'
+import { useForm, type GenericObject } from 'vee-validate'
+import { cloneDeep } from 'lodash-es'
 
 const resumeStore = useResumeStore()
-const localData = ref(resumeStore.data.skills)
+const localData = ref(cloneDeep(resumeStore.data.skills))
+const { handleSubmit } = useForm()
 
 const isEdit = ref(false)
 const isLoading = ref(false)
@@ -35,12 +37,30 @@ const deleteSkill = (index: number) => {
   localData.value.splice(index, 1)
 }
 
-const { handleSubmit } = useForm()
-const onSubmit = handleSubmit(async () => {
+const handleUpdateSkills = (value: GenericObject) => {
+  localData.value = localData.value
+    .map((item, index) => {
+      const skillCategory = value[`skillCategory-${index}`]
+      const listOfSkill = value[`listOfSkill-${index}`]
+      return {
+        skillCategory: skillCategory,
+        listOfSkill: listOfSkill,
+      }
+    })
+    .filter((item) => {
+      return item.skillCategory !== '' && item.listOfSkill !== ''
+    })
+
+  return localData.value
+}
+
+const onSubmit = handleSubmit(async (value) => {
   try {
     isLoading.value = true
-    // await resumeStore.updateSkills()
-    console.log(localData.value, 'check localData')
+    const newSkills = handleUpdateSkills(value)
+    resumeStore.updateSkills(newSkills)
+    console.log(localData.value, 'check localData', newSkills)
+
     isEdit.value = false
   } catch (error) {
     console.error('Error updating skills:', error)
@@ -59,28 +79,38 @@ const data = computed(() => {
 
 <template>
   <div
-    :class="isEdit ? 'bg-gray-100' : 'bg-white'"
-    class="items-center group flex flex-col justify-start gap-3 w-full hover:bg-gray-100 rounded-lg p-5 py-2"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+    class="relative items-center group flex flex-col justify-start gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
     <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
       @click="openEdit"
     >
       <span class="i-solar-pen-bold text-primary"></span>
     </div>
     <!-- End edit button -->
 
-    <h2 class="font-semibold text-base pb-2 border-b-2 border-slate-950 w-full mb-1">SKILLS</h2>
+    <h2 class="font-bold text-base pb-2 border-b border-slate-950 w-full mb-1">SKILLS</h2>
     <div class="flex flex-col w-full">
       <div
         v-for="(item, index) in data"
         :key="index"
         class="flex items-center justify-start w-full gap-2 px-3"
       >
-        <p class="font-bold text-base">{{ item.skillCategory }}:</p>
-        <p class="font-normal text-sm">{{ item.listOfSkill }}</p>
+        <p
+          v-if="item.skillCategory"
+          class="font-semibold text-base"
+        >
+          {{ item.skillCategory }}:
+        </p>
+        <p
+          v-if="item.listOfSkill"
+          class="font-normal text-sm"
+        >
+          {{ item.listOfSkill }}
+        </p>
       </div>
     </div>
 
@@ -96,19 +126,27 @@ const data = computed(() => {
           <div
             v-for="(item, index) in localData"
             :key="index"
-            class="w-full relative"
+            class="w-full relative border-b border-slate-950 mb-5"
           >
-            <div class="form-data flex flex-col gap-1 w-full">
-              <label for="name">Skill Category</label>
-              <InputValidation
-                :id="`name-${index}`"
-                :initial-value="localData[index].skillCategory"
-                placeholder="Enter your skill..."
-                type="text"
-                :name="`name-${index}`"
-                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-              />
+            <div class="flex items-center justify-between w-full">
+              <div class="form-data flex flex-col gap-1 w-full">
+                <label for="name">Skill Category</label>
+              </div>
+              <div
+                class="rounded-lg mb-2 cursor-pointer p-2 border bg-white flex items-center justify-center"
+                @click="deleteSkill(index)"
+              >
+                <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+              </div>
             </div>
+            <InputValidation
+              :id="`skillCategory-${index}`"
+              :initial-value="localData[index].skillCategory"
+              placeholder="Enter your skill..."
+              type="text"
+              :name="`skillCategory-${index}`"
+              class="h-11 bg-white border-slate-200 outline-none"
+            />
             <div class="form-data flex flex-col gap-1 w-full">
               <label for="listOfSkill">List of skills</label>
               <TextareaValidation
@@ -117,18 +155,8 @@ const data = computed(() => {
                 type="text"
                 :name="`listOfSkill-${index}`"
                 placeholder="Enter list of skill..."
-                class="h-18 mt-1 bg-slate-50 border-slate-200 outline-none"
+                class="h-18 mt-1 bg-white border-slate-200 outline-none"
               />
-            </div>
-            <div
-              v-if="index + 1 < localData.length"
-              class="border-b border-slate-950 mb-5"
-            ></div>
-            <div
-              class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
-              @click="deleteSkill(index)"
-            >
-              <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
             </div>
           </div>
         </div>
