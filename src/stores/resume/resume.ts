@@ -145,16 +145,20 @@ export const useResumeStore = defineStore({
     },
 
     updateSkills(skills: ITemplate['skills']) {
-      this.data.skills = {
-        ...this.data.skills,
-        ...skills,
-      }
+      this.data.skills = skills
     },
 
     updateWorkExperience(works: ITemplate['works']) {
       this.data.works = {
         ...this.data.works,
         ...works,
+      }
+    },
+
+    updateEducation(education: ITemplate['education']) {
+      this.data.education = {
+        ...this.data.education,
+        ...education,
       }
     },
   },

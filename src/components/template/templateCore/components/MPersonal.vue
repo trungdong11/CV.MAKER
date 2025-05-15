@@ -3,10 +3,11 @@ import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { useResumeStore } from '@/stores/resume/resume'
 import { useForm } from 'vee-validate'
+import { cloneDeep } from 'lodash-es'
 
 const resumeStore = useResumeStore()
-const localData = ref(resumeStore.data.personalDetails)
-const localSocialData = ref(resumeStore.data.socials)
+const localData = ref(cloneDeep(resumeStore.data.personalDetails))
+const localSocialData = ref(cloneDeep(resumeStore.data.socials))
 
 const isEdit = ref(false)
 const openEdit = () => {
@@ -60,8 +61,8 @@ const isLoading = ref(false)
 
 <template>
   <div
-    :class="isEdit ? 'bg-gray-100' : 'bg-white'"
-    class="items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-100 rounded-lg p-5 py-2"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+    class="items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
     <div
