@@ -1,27 +1,14 @@
 <script lang="ts" setup>
 import Button from '@/components/ui/button/Button.vue'
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import TextareaValidation from '@/components/base/TextareaValidation.vue'
+// import { QuillEditor } from '@vueup/vue-quill'
+// import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { useResumeStore } from '@/stores/resume/resume'
+import { useForm } from 'vee-validate'
 // import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue'
 
-interface Props {
-  summary: string
-  isLoading: boolean
-}
-const prop = withDefaults(defineProps<Props>(), {
-  summary: '',
-  isLoading: false,
-})
-
-const localData = ref(prop.summary)
-
-watch(
-  () => prop.summary,
-  (newData) => {
-    localData.value = newData
-  },
-  { deep: true },
-)
+const resumeStore = useResumeStore()
+const localData = ref(resumeStore.data.summary)
 
 const isEdit = ref(false)
 const openEdit = () => {
@@ -34,63 +21,95 @@ defineExpose({
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = prop.summary
+  localData.value = resumeStore.data.summary
 }
 
-const emit = defineEmits<{
-  (e: 'update:data', value: Record<string, any>[]): void
-}>()
-const onSubmit = () => {
-  emit('update:data', localData.value)
+const { handleSubmit } = useForm()
+const onSubmit = handleSubmit(async (value) => {
+  resumeStore.updateSummary(value.summary)
   isEdit.value = false
-}
+})
+
+const data = computed(() => {
+  if (isEdit.value) {
+    return localData.value
+  }
+  return resumeStore.data.summary
+})
+
+const isLoading = ref(false)
 </script>
 
 <template>
-  <div class="flex">
-    <p class="ont-normal text-slate-600 text-sm">{{ prop.summary }}</p>
-  </div>
   <div
-    v-if="isEdit"
-    class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    :class="isEdit ? 'bg-gray-100' : 'bg-white'"
+    class="items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-100 rounded-lg p-5 py-2"
   >
-    <form
-      class="flex flex-col gap-2 w-full"
-      @submit="onSubmit"
+    <!-- Edit button -->
+    <div
+      v-if="!isEdit"
+      class="absolute hidden group-hover:flex top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      @click="openEdit"
     >
-      <ScrollArea class="flex flex-col gap-8">
-        <div class="form-description h-40 w-full bg-white rounded-lg">
-          <QuillEditor
-            ref="quillEditor"
-            v-model:content="localData"
-            :toolbar="['bold', 'italic', 'underline', 'link']"
-            placeholder="Enter your post"
-            content-type="html"
-            theme="snow"
+      <span class="i-solar-pen-bold text-primary"></span>
+    </div>
+    <!-- End edit button -->
+
+    <p class="ont-normal text-slate-600 text-sm">{{ data }}</p>
+
+    <!-- Edit area -->
+    <div
+      v-if="isEdit"
+      class="w-full rounded-lg p-5 mt-5"
+    >
+      <form
+        class="flex flex-col gap-2 w-full"
+        @submit.prevent
+      >
+        <!-- <ScrollArea class="flex flex-col gap-8">
+          <div class="form-description h-40 w-full bg-white rounded-lg">
+            <QuillEditor
+              ref="quillEditor"
+              v-model:content="localData"
+              :toolbar="['bold', 'italic', 'underline', 'link']"
+              placeholder="Enter your post"
+              content-type="html"
+              theme="snow"
+            />
+          </div>
+        </ScrollArea> -->
+        <div class="form-data">
+          <TextareaValidation
+            id="summary"
+            type="text"
+            name="summary"
+            placeholder="Enter summary..."
+            :initial-value="data"
+            class="h-28 mt-1 bg-slate-50 border-slate-200 outline-none"
           />
         </div>
-      </ScrollArea>
-      <div class="flex items-center justify-end gap-2 mt-16">
-        <Button
-          variant="secondary"
-          class="w-32 h-11 flex gap-2 items-center text-primary"
-          @click="cancelEdit"
-        >
-          Cancel
-        </Button>
-        <Button
-          :disabled="isLoading"
-          class="w-32 h-11 bg-primary flex gap-2 items-center"
-          @click="onSubmit"
-        >
-          <span
-            v-if="isLoading"
-            class="i-svg-spinners-ring-resize"
-          ></span>
-          Save
-        </Button>
-      </div>
-    </form>
+        <div class="flex items-center justify-end gap-2">
+          <Button
+            variant="secondary"
+            class="w-32 h-11 flex gap-2 items-center text-primary"
+            @click="cancelEdit"
+          >
+            Cancel
+          </Button>
+          <Button
+            :disabled="isLoading"
+            class="w-32 h-11 bg-primary flex gap-2 items-center"
+            @click="onSubmit"
+          >
+            <span
+              v-if="isLoading"
+              class="i-svg-spinners-ring-resize"
+            ></span>
+            <p class="text-white">Save</p>
+          </Button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>

@@ -25,7 +25,6 @@ const cancelEdit = () => {
 
 const { handleSubmit } = useForm()
 const onSubmit = handleSubmit(async (values) => {
-  console.log('submit', values)
   resumeStore.updatePersonalDetails({
     ...resumeStore.data.personalDetails,
     ...values,

@@ -65,7 +65,7 @@ const sections = [
   },
 ]
 
-const sectionInitial = shallowRef([sections[0]])
+const sectionInitial = shallowRef([sections[2]])
 </script>
 
 <template>

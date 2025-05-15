@@ -2,27 +2,15 @@
 import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import TextareaValidation from '@/components/base/TextareaValidation.vue'
+import { useResumeStore } from '@/stores/resume/resume'
+import { useForm } from 'vee-validate'
 
-interface Props {
-  data: Record<string, any>
-  isLoading: boolean
-}
-const prop = withDefaults(defineProps<Props>(), {
-  data: () => reactive({}),
-  isLoading: false,
-})
-
-const localData = ref(prop.data)
-
-watch(
-  () => prop.data,
-  (newData) => {
-    localData.value = newData
-  },
-  { deep: true },
-)
+const resumeStore = useResumeStore()
+const localData = ref(resumeStore.data.skills)
 
 const isEdit = ref(false)
+const isLoading = ref(false)
+
 const openEdit = () => {
   isEdit.value = true
 }
@@ -33,104 +21,146 @@ defineExpose({
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = prop.data
+  localData.value = resumeStore.data.skills
 }
 
-const emit = defineEmits<{
-  (e: 'update:data', value: Record<string, any>[]): void
-}>()
-const onSubmit = () => {
-  emit('update:data', localData.value)
-  isEdit.value = false
+const addMore = () => {
+  localData.value.push({
+    skillCategory: '',
+    listOfSkill: '',
+  })
 }
+
+const deleteSkill = (index: number) => {
+  localData.value.splice(index, 1)
+}
+
+const { handleSubmit } = useForm()
+const onSubmit = handleSubmit(async () => {
+  try {
+    isLoading.value = true
+    // await resumeStore.updateSkills()
+    console.log(localData.value, 'check localData')
+    isEdit.value = false
+  } catch (error) {
+    console.error('Error updating skills:', error)
+  } finally {
+    isLoading.value = false
+  }
+})
+
+const data = computed(() => {
+  if (isEdit.value) {
+    return localData.value
+  }
+  return resumeStore.data.skills
+})
 </script>
 
 <template>
-  <div class="items-start w-full">
-    <h2 class="font-semibold text-base pb-2 border-b-2 border-slate-950 w-full mb-1">SKILLS</h2>
-    <div
-      v-for="(item, index) in prop.data"
-      :key="index"
-      class="flex items-center gap-2 px-3"
-    >
-      <p class="font-bold text-base">{{ item.skillCategory }}:</p>
-      <p class="font-normal text-sm">{{ item.ListOfSkill }}</p>
-    </div>
-  </div>
   <div
-    v-if="isEdit"
-    class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    :class="isEdit ? 'bg-gray-100' : 'bg-white'"
+    class="items-center group flex flex-col justify-start gap-3 w-full hover:bg-gray-100 rounded-lg p-5 py-2"
   >
-    <form
-      class="flex gap-2 w-full flex-col"
-      @submit="onSubmit"
+    <!-- Edit button -->
+    <div
+      v-if="!isEdit"
+      class="absolute hidden group-hover:flex top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      @click="openEdit"
     >
-      <div class="flex items-center w-full flex-col justify-center">
-        <div
-          v-for="(item, index) in prop.data"
-          :key="index"
-          class="w-full relative"
-        >
-          <div class="form-data flex flex-col gap-1 w-full">
-            <label for="name">Skill Category</label>
-            <InputValidation
-              id="name"
-              v-model="item.skillCategory"
-              placeholder="Enter your skill..."
-              type="text"
-              name="name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-full">
-            <label for="name">List of skills</label>
-            <TextareaValidation
-              id="ListOfSkill"
-              v-model="item.ListOfSkill"
-              type="text"
-              name="ListOfSkill"
-              placeholder="Enter list of skill..."
-              class="h-18 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
+      <span class="i-solar-pen-bold text-primary"></span>
+    </div>
+    <!-- End edit button -->
+
+    <h2 class="font-semibold text-base pb-2 border-b-2 border-slate-950 w-full mb-1">SKILLS</h2>
+    <div class="flex flex-col w-full">
+      <div
+        v-for="(item, index) in data"
+        :key="index"
+        class="flex items-center justify-start w-full gap-2 px-3"
+      >
+        <p class="font-bold text-base">{{ item.skillCategory }}:</p>
+        <p class="font-normal text-sm">{{ item.listOfSkill }}</p>
+      </div>
+    </div>
+
+    <div
+      v-if="isEdit"
+      class="w-full rounded-lg p-5"
+    >
+      <form
+        class="flex gap-2 w-full flex-col"
+        @submit.prevent
+      >
+        <div class="flex items-center w-full flex-col justify-center">
           <div
-            v-if="index + 1 < prop.data.length"
-            class="border-b border-slate-950 mb-5"
-          ></div>
-          <div
-            class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+            v-for="(item, index) in localData"
+            :key="index"
+            class="w-full relative"
           >
-            <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+            <div class="form-data flex flex-col gap-1 w-full">
+              <label for="name">Skill Category</label>
+              <InputValidation
+                :id="`name-${index}`"
+                :initial-value="localData[index].skillCategory"
+                placeholder="Enter your skill..."
+                type="text"
+                :name="`name-${index}`"
+                class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              />
+            </div>
+            <div class="form-data flex flex-col gap-1 w-full">
+              <label for="listOfSkill">List of skills</label>
+              <TextareaValidation
+                :id="`listOfSkill-${index}`"
+                :initial-value="localData[index].listOfSkill"
+                type="text"
+                :name="`listOfSkill-${index}`"
+                placeholder="Enter list of skill..."
+                class="h-18 mt-1 bg-slate-50 border-slate-200 outline-none"
+              />
+            </div>
+            <div
+              v-if="index + 1 < localData.length"
+              class="border-b border-slate-950 mb-5"
+            ></div>
+            <div
+              class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+              @click="deleteSkill(index)"
+            >
+              <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+            </div>
           </div>
         </div>
-      </div>
-      <Button
-        variant="outline"
-        class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
-      >
-        <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
-        <span class="text-primary">Add more</span>
-      </Button>
-      <div class="flex items-center justify-end gap-2">
         <Button
-          variant="secondary"
-          class="w-32 h-11 flex gap-2 items-center text-primary"
-          @click="cancelEdit"
+          variant="outline"
+          class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
+          @click="addMore"
         >
-          Cancel
+          <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
+          <span class="text-primary">Add more</span>
         </Button>
-        <Button
-          :disabled="isLoading"
-          class="w-32 h-11 bg-primary flex gap-2 items-center"
-          @click="onSubmit"
-        >
-          <span
-            v-if="isLoading"
-            class="i-svg-spinners-ring-resize"
-          ></span>
-          Save
-        </Button>
-      </div>
-    </form>
+        <div class="flex items-center justify-end gap-2">
+          <Button
+            variant="secondary"
+            class="w-32 h-11 flex gap-2 items-center text-primary"
+            @click="cancelEdit"
+          >
+            Cancel
+          </Button>
+          <Button
+            :disabled="isLoading"
+            class="w-32 h-11 bg-primary flex gap-2 items-center"
+            @click="onSubmit"
+          >
+            <span
+              v-if="isLoading"
+              class="i-svg-spinners-ring-resize"
+            ></span>
+            <p class="text-white">Save</p>
+          </Button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
