@@ -42,25 +42,25 @@ const isLoading = ref(false)
 
 <template>
   <div
-    :class="isEdit ? 'bg-gray-100' : 'bg-white'"
-    class="items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-100 rounded-lg p-5 py-2"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+    class="relative items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
     <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
       @click="openEdit"
     >
       <span class="i-solar-pen-bold text-primary"></span>
     </div>
     <!-- End edit button -->
 
-    <p class="ont-normal text-slate-600 text-sm">{{ data }}</p>
+    <p class="ont-normal text-slate-800 text-sm">{{ data }}</p>
 
     <!-- Edit area -->
     <div
       v-if="isEdit"
-      class="w-full rounded-lg p-5 mt-5"
+      class="w-full rounded-lg p-5"
     >
       <form
         class="flex flex-col gap-2 w-full"
@@ -85,7 +85,7 @@ const isLoading = ref(false)
             name="summary"
             placeholder="Enter summary..."
             :initial-value="data"
-            class="h-28 mt-1 bg-slate-50 border-slate-200 outline-none"
+            class="h-28 mt-1 bg-white border-slate-200 outline-none"
           />
         </div>
         <div class="flex items-center justify-end gap-2">
