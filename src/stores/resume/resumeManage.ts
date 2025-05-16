@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 // import { apiError } from '@/utils/exceptionHandler'
 import type { IPaging } from '@/types'
 
-export const useQuizzflyStore = defineStore({
+export const useResumeManageStore = defineStore({
   id: 'resumeManage',
   state: () => ({
     resumeInfo: {} as ITemplate,

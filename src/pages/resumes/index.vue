@@ -3,9 +3,9 @@ import { useRouteQuery } from '@vueuse/router'
 import { useDebounceFn } from '@vueuse/core'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import QuizzflyList from '@/components/quizzfly/list/QuizzflyList.vue'
-import { useQuizzflyStore } from '@/stores/quizzfly/quizzfly'
-import QuizzflyFilter from '@/components/quizzfly/list/QuizzflyFilter.vue'
+import ResumeFilter from '@/components/resumes/ResumeFilter.vue'
+import ResumeList from '@/components/resumes/ResumeList.vue'
+import { useResumeManageStore } from '@/stores/resume/resumeManage'
 
 import {
   Pagination,
@@ -15,7 +15,7 @@ import {
   PaginationNext,
   PaginationPrev,
 } from '@/components/ui/pagination'
-const quizzflyStore = useQuizzflyStore()
+const resumeManageStore = useResumeManageStore()
 
 const search = useRouteQuery('k', '')
 const pageQuery = useRouteQuery<number>('page', 1)
@@ -24,23 +24,23 @@ const pageQueryComputed = computed({
   get: () => Number(pageQuery.value),
   set: (value) => {
     pageQuery.value = value
-    fetchQuizzflys()
+    fetchResumes()
   },
 })
 
-const fetchQuizzflys = () => {
-  quizzflyStore.fetchQuizzflys({
+const fetchResumes = () => {
+  resumeManageStore.fetchResumes({
     page: pageQueryComputed.value,
     keyword: search.value,
   })
 }
 
 onBeforeMount(() => {
-  fetchQuizzflys()
+  fetchResumes()
 })
 
 const handleClickCreateQuiz = async () => {
-  await quizzflyStore.initQuizzflyDraft()
+  // await resumeManageStore.initQuizzflyDraft()
 }
 
 const debouncedFn = useDebounceFn((value) => {
@@ -86,11 +86,11 @@ const debouncedFn = useDebounceFn((value) => {
         <span class="text-sm font-semibold">{{ search }}</span>
       </div>
       <!-- filter -->
-      <QuizzflyFilter />
+      <ResumeFilter />
     </div>
     <div class="flex-auto overflow-y-auto">
       <div
-        v-if="!quizzflyStore.getIsFetching && quizzflyStore.getQuizzflys.length === 0"
+        v-if="!resumeManageStore.getIsFetching && resumeManageStore.getResumes.length === 0"
         class="h-full w-full flex flex-col justify-center items-center"
       >
         <img
@@ -100,17 +100,17 @@ const debouncedFn = useDebounceFn((value) => {
         />
         <p>No resume found. Create one now!</p>
       </div>
-      <QuizzflyList v-else />
+      <ResumeList v-else />
     </div>
     <div
-      v-if="quizzflyStore.getQuizzflyMeta"
+      v-if="resumeManageStore.getResumeMeta"
       class="flex justify-center"
     >
       <Pagination
         v-slot="{ page }"
         v-model:page="pageQueryComputed"
-        :total="quizzflyStore.getQuizzflyMeta.total_records"
-        :items-per-page="quizzflyStore.getQuizzflyMeta.limit"
+        :total="resumeManageStore.getResumeMeta.total_records"
+        :items-per-page="resumeManageStore.getResumeMeta.limit"
         :sibling-count="1"
         show-edges
       >
