@@ -12,6 +12,7 @@
 <script setup>
 import { ref } from 'vue'
 import jsPDF from 'jspdf'
+import { formatDateUs } from '@/utils/format'
 
 const cvData = ref({
   createdAt: '2024-03-07T13:39:44.967Z',
@@ -146,19 +147,6 @@ const cvData = ref({
     },
   ],
 })
-
-const formatDate = (dateString) => {
-  try {
-    if (!dateString) return 'Present'
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-    })
-  } catch (error) {
-    console.error('Invalid date format:', dateString, error)
-    return 'Unknown'
-  }
-}
 
 const checkPageOverflow = (doc, currentY, additionalHeight = 10) => {
   const pageHeight = doc.internal.pageSize.height
@@ -349,7 +337,7 @@ const generatePDF = () => {
         doc.setFontSize(10)
         doc.text(edu.degree, marginLeft, y)
 
-        const eduDate = `${formatDate(edu.startDate)} - ${formatDate(edu.endDate)}`
+        const eduDate = `${formatDateUs(edu.startDate)} - ${formatDateUs(edu.endDate)}`
         const dateWidth = doc.getTextWidth(eduDate)
         doc.text(eduDate, pageWidth - marginRight - dateWidth, y)
 
@@ -382,8 +370,8 @@ const generatePDF = () => {
         doc.setFontSize(10)
         doc.text(work.position, marginLeft, y)
 
-        const workDate = `${formatDate(work.startDate)} - ${
-          work.isCurrentWorking ? 'Present' : formatDate(work.endDate)
+        const workDate = `${formatDateUs(work.startDate)} - ${
+          work.isCurrentWorking ? 'Present' : formatDateUs(work.endDate)
         }`
         const dateWidth = doc.getTextWidth(workDate)
         doc.text(workDate, pageWidth - marginRight - dateWidth, y)
@@ -431,8 +419,8 @@ const generatePDF = () => {
         const link = project.link
         doc.textWithLink(title, marginLeft, y, { url: link })
 
-        const projectDate = `${formatDate(project.startDate)} - ${
-          project.isOngoing ? 'Present' : formatDate(project.endDate)
+        const projectDate = `${formatDateUs(project.startDate)} - ${
+          project.isOngoing ? 'Present' : formatDateUs(project.endDate)
         }`
         doc.setFont(undefined, 'bold')
         doc.text(projectDate, pageWidth - marginRight, y, { align: 'right' })
@@ -524,7 +512,7 @@ const generatePDF = () => {
 
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(0, 0, 0)
-        const certDate = formatDate(cert.issuedDate)
+        const certDate = formatDateUs(cert.issuedDate)
         doc.text(certDate, pageWidth - marginRight, y, { align: 'right' })
 
         y += 5
@@ -563,7 +551,7 @@ const generatePDF = () => {
         doc.text(org.position, marginLeft, y)
 
         // Date (right side)
-        const dateRange = `${formatDate(org.startDate)} - ${formatDate(org.endDate)}`
+        const dateRange = `${formatDateUs(org.startDate)} - ${formatDateUs(org.endDate)}`
         doc.text(dateRange, pageWidth - marginRight, y, { align: 'right' })
         y += 5
 
@@ -610,7 +598,7 @@ const generatePDF = () => {
         const issuerText = ` (${aw.issuer})`
         doc.text(issuerText, marginLeft + doc.getTextWidth(aw.awardTitle + 4), y)
 
-        const awardDate = formatDate(aw.issuedDate)
+        const awardDate = formatDateUs(aw.issuedDate)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(0, 0, 0)
         doc.text(awardDate, pageWidth - marginRight, y, { align: 'right' })

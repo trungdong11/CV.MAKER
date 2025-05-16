@@ -62,7 +62,7 @@ const sections = [
   },
 ]
 
-const sectionInitialIndex = ref([0, 1, 2,3])
+const sectionInitialIndex = ref([0, 1, 2, 3])
 
 const sectionNotAdded = computed(() => {
   return sections.filter((section) => {

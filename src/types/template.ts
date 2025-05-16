@@ -1,4 +1,5 @@
 export interface ITemplate {
+  id?: string
   createdAt: string
   updatedAt: string
   summary: string
