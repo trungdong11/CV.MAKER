@@ -1,11 +1,28 @@
 <template>
-  <div class="container">
+  <div class="container flex flex-col gap-10">
     <button
       class="btn"
       @click="generatePDF()"
     >
       Download CV as PDF
     </button>
+
+    <div class="mt-10">
+      <p>Test Date picker ant design</p>
+      <a-config-provider
+        :theme="{
+          token: {
+            colorPrimary: '#FF5C00',
+          },
+        }"
+      >
+        <a-date-picker
+          v-model:value="value3"
+          :format="monthFormat"
+          picker="month"
+        />
+      </a-config-provider>
+    </div>
   </div>
 </template>
 

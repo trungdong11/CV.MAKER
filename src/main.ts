@@ -8,7 +8,7 @@ import { Icon } from '@iconify/vue'
 import 'driver.js/dist/driver.css'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/reset.css'
-import veProgress from "vue-ellipse-progress"
+import veProgress from 'vue-ellipse-progress'
 
 /* layouts */
 import DefaultLayout from '@/layouts/DefaultLayout.vue'

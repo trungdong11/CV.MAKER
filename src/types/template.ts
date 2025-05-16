@@ -3,7 +3,7 @@ export interface ITemplate {
   createdAt: string
   updatedAt: string
   summary: string
-  personalDetails: IPersonalDetails
+  personal_details: IPersonalDetails
   socials: ISocial[]
   education: IEducation[]
   award: IAward[]

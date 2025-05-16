@@ -101,7 +101,7 @@ const onSubmit = handleSubmit(async (value) => {
             class="h-11 mt-1 bg-white border-slate-200 outline-none"
           />
         </div>
-        <div class="flex items-center gap-x-3 flex-wrap">
+        <div class="flex gap-x-3 flex-wrap">
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="name">Degree</label>
             <InputValidation
@@ -126,25 +126,53 @@ const onSubmit = handleSubmit(async (value) => {
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="name">Start Date</label>
-            <InputValidation
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                :format="monthFormat"
+                :initial-value="new Date(education.startDate).toLocaleDateString()"
+                picker="month"
+              />
+            </a-config-provider>
+            <!-- <InputValidation
               id="startDate"
               placeholder="Start Date"
               type="text"
               name="startDate"
-              :initial-value="new Date(education.startDate).toLocaleDateString()"
+              :initial-value=""
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            />
+            /> -->
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="name">Graduation Date</label>
-            <InputValidation
+            <!-- <InputValidation
               id="endDate"
               placeholder="Graduation Date"
               type="text"
               name="endDate"
               :initial-value="new Date(education.endDate).toLocaleDateString()"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            />
+            /> -->
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                :format="monthFormat"
+                :initial-value="new Date(education.startDate).toLocaleDateString()"
+                picker="month"
+              />
+            </a-config-provider>
           </div>
         </div>
         <ScrollArea class="flex flex-col gap-8 w-full mb-12">

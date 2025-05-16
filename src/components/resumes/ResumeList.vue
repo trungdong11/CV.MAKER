@@ -12,8 +12,8 @@ const resumes = computed(() => resumeManageStore.getResumes)
 
 const handleConfirmDelete = async (resumeId: string) => {
   const { isConfirmed } = await confirmDialog.open({
-    title: 'Delete Quizzfly',
-    question: 'Are you sure you want to delete this quizzfly?',
+    title: 'Delete Resume',
+    question: 'Are you sure you want to delete this resume?',
     warning: true,
   })
 
@@ -34,22 +34,20 @@ const handleConfirmDelete = async (resumeId: string) => {
           <img
             v-image
             class="w-[80px] h-[80px] object-cover rounded-sm"
-            src=""
+            src="/src/assets/svg/funnel-upload.svg"
             alt=""
           />
         </div>
         <div class="flex flex-col w-full justify-between">
           <div class="flex items-center justify-between">
             <div class="flex item-center gap-3">
-              <h2 class="title text-base font-medium">{{ resume?.title || 'Untitled' }}</h2>
-              <!-- <Chip
-                :name="quizzfly.quizzfly_status"
-                color="#df223a"
-              /> -->
+              <h2 class="title text-base font-medium w-full">
+                {{ resume?.personal_details?.fullname || 'Untitled' }}
+              </h2>
             </div>
             <div class="flex items-center gap-2">
               <span
-                class="i-material-symbols-light-delete-outline cursor-pointer text-2xl"
+                class="i-material-symbols-light-delete-outline cursor-pointer text-xl"
                 @click="handleConfirmDelete(resume?.id)"
               ></span>
             </div>
@@ -59,12 +57,14 @@ const handleConfirmDelete = async (resumeId: string) => {
             <div class="flex gap-5">
               <RouterLink
                 target="_blank"
-                :to="{ name: 'host-live', params: { resumeId: resume.id } }"
-                ><Button class="flex items-center h-6 w-17 text-xs"> Host live</Button>
+                :to="{ name: 'evaluate' }"
+                ><Button class="flex items-center h-6 w-17 text-xs text-white"
+                  ><span class="text-white">Evaluate</span></Button
+                >
               </RouterLink>
               <RouterLink
-                :to="{ name: 'resume-create', params: { resumeId: resume.id } }"
-                class="flex items-center cursor-pointer hover:text-[#0061ff] gap-2 hover:underline"
+                to="{ name: 'resume-create', params: { resumeId: resume.id } }"
+                class="flex items-center cursor-pointer hover:text-primary gap-2 hover:underline"
               >
                 <span>Edit</span>
                 <span class="i-material-symbols-light-arrow-right-alt text-2xl"></span>
