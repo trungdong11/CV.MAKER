@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { showToast } from '@/utils/toast'
 import router from '@/routers/router'
 import dayjs from 'dayjs'
+import { cloneDeep } from 'lodash-es'
 
 export const useResumeStore = defineStore({
   id: 'resume',
@@ -199,7 +200,7 @@ export const useResumeStore = defineStore({
       const newData = { ...data }
 
       if (Array.isArray(newData.education)) {
-        newData.education = newData.education.map((item) => ({
+        newData.education = newData.education.map((item: any) => ({
           ...item,
           start_date: item.start_date ? dayjs(item.start_date) : null,
           end_date: item.end_date ? dayjs(item.end_date) : null,
@@ -228,14 +229,33 @@ export const useResumeStore = defineStore({
     },
 
     updateWorkExperience(works: ITemplate['works']) {
-      this.dataResume.works = {
-        ...this.dataResume.works,
-        ...works,
-      }
+      this.dataResume.works = cloneDeep(works)
+
+      this.updateResume(this.dataResume.id, this.dataResume)
     },
 
     updateEducation(educations: ITemplate['education']) {
       this.dataResume.education = educations
+      this.updateResume(this.dataResume.id, this.dataResume)
+    },
+
+    updateProjects(projects: ITemplate['projects']) {
+      this.dataResume.projects = cloneDeep(projects)
+      this.updateResume(this.dataResume.id, this.dataResume)
+    },
+
+    updateCertifications(certifications: ITemplate['certification']) {
+      this.dataResume.certification = cloneDeep(certifications)
+      this.updateResume(this.dataResume.id, this.dataResume)
+    },
+
+    updateLanguages(languages: ITemplate['languages']) {
+      this.dataResume.languages = cloneDeep(languages)
+      this.updateResume(this.dataResume.id, this.dataResume)
+    },
+
+    updateAwards(awards: ITemplate['award']) {
+      this.dataResume.award = cloneDeep(awards)
       this.updateResume(this.dataResume.id, this.dataResume)
     },
   },

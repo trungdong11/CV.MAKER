@@ -11,7 +11,7 @@ import { formatDateUs } from '@/utils/format'
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
 
-const localData = ref(cloneDeep(resumeStore.data?.works))
+const localData = ref(cloneDeep(resumeStore.dataResume?.works))
 
 const isLoading = ref(false)
 const isEdit = ref(false)
@@ -21,19 +21,49 @@ const openEdit = () => {
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = resumeStore.data?.works
+  localData.value = resumeStore.dataResume?.works
 }
 
-defineExpose({
-  openEdit,
+const descriptions = ref<string[]>([])
+onBeforeMount(() => {
+  console.log('localData', localData.value)
+  if (!localData.value) {
+    localData.value = []
+  }
+
+  if (localData.value.length === 0) {
+    localData.value.push({
+      company_name: 'Tech Solutions Inc.',
+      is_current_working: true,
+      position: 'Senior Software Engineer',
+      location: 'Ho Chi Minh City, Vietnam',
+      start_date: '2020-01-01T00:00:00.000Z',
+      end_date: '2023-12-31T00:00:00.000Z',
+      description: 'Led development of enterprise applications using React and Node.js',
+    })
+
+    resumeStore.updateWorkExperience(localData.value)
+  }
+
+  localData.value.forEach((item, index) => {
+    descriptions.value[index] = item.description
+  })
 })
 
 const onSubmit = handleSubmit(async (value) => {
-  localData.value[0] = {
-    ...localData.value[0],
-    ...value,
-  }
-  // resumeStore.updateEducation(value)
+  console.log(value, 'check data before', descriptions.value)
+
+  localData.value = localData.value.map((item, index) => ({
+    ...item,
+    position: value[`position-${index}`],
+    company_name: value[`company_name-${index}`],
+    location: value[`city-${index}`],
+    description: descriptions.value[index],
+  }))
+
+  console.log(localData.value, 'check data after')
+  resumeStore.updateWorkExperience(localData.value)
+
   isEdit.value = false
 })
 </script>
@@ -59,17 +89,20 @@ const onSubmit = handleSubmit(async (value) => {
       class="flex flex-col gap-0 mt-1 w-full px-3"
     >
       <div class="flex justify-between w-full items-center">
-        <p class="font-bold text-base">{{ item?.position }}</p>
+        <p class="font-semibold text-base">{{ item?.position }}</p>
         <div class="flex items-center gap-3">
           <p class="font-semibold text-base">{{ formatDateUs(item?.start_date) }}</p>
           <p class="font-semibold text-base">{{ formatDateUs(item?.end_date) }}</p>
         </div>
       </div>
       <div class="flex justify-between w-full items-center">
-        <p class="font-bold text-base">{{ item?.company_name }}</p>
+        <p class="font-semibold text-base">{{ item?.company_name }}</p>
         <p class="font-semibold text-base">{{ item?.location }}</p>
       </div>
-      <p class="text-sm font-normal mt-1">{{ item?.description }}</p>
+      <p
+        class="text-sm font-normal mt-1"
+        v-html="item?.description"
+      ></p>
     </div>
   </div>
   <div
@@ -89,12 +122,12 @@ const onSubmit = handleSubmit(async (value) => {
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="name">Company Name</label>
             <InputValidation
-              id="name"
+              id="company_name"
               placeholder="e.g., Youtube, Ecomdy, etc"
               type="text"
-              name="name"
+              :name="`company_name-${index}`"
               :initial-value="item?.company_name"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
           <div class="form-data flex flex-col gap-1 w-[300px]">
@@ -104,8 +137,8 @@ const onSubmit = handleSubmit(async (value) => {
               :initial-value="item?.position"
               placeholder="e.g., Frontend, Backend, etc"
               type="text"
-              name="position"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              :name="`position-${index}`"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
         </div>
@@ -114,11 +147,11 @@ const onSubmit = handleSubmit(async (value) => {
             <label for="city">City, Country</label>
             <InputValidation
               id="city"
-              :initial-value="item?.city"
+              :initial-value="item?.location"
               placeholder="VietNam, UK, etc"
               type="text"
-              name="city"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              :name="`city-${index}`"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
@@ -159,6 +192,7 @@ const onSubmit = handleSubmit(async (value) => {
           <div class="form-description h-40 w-full bg-white rounded-lg">
             <QuillEditor
               ref="quillEditor"
+              v-model:content="descriptions[index]"
               :toolbar="['bold', 'italic', 'underline', 'link']"
               placeholder="Enter your post"
               content-type="html"
