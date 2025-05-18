@@ -3,65 +3,70 @@ import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
-interface Props {
-  data: Record<string, any>
-  isLoading: boolean
-}
-const prop = withDefaults(defineProps<Props>(), {
-  data: () => reactive({}),
-  isLoading: false,
-})
+import { useForm } from 'vee-validate'
+import { cloneDeep } from 'lodash-es'
+import { useResumeStore } from '@/stores/resume/resume'
+import { formatDateUs } from '@/utils/format'
 
-const localData = ref(prop.data)
+const resumeStore = useResumeStore()
+const { handleSubmit } = useForm()
 
-watch(
-  () => prop.data,
-  (newData) => {
-    localData.value = newData
-  },
-  { deep: true },
-)
+const localData = ref(cloneDeep(resumeStore.data?.works))
 
+const isLoading = ref(false)
 const isEdit = ref(false)
 const openEdit = () => {
   isEdit.value = true
+}
+
+const cancelEdit = () => {
+  isEdit.value = false
+  localData.value = resumeStore.data?.works
 }
 
 defineExpose({
   openEdit,
 })
 
-const cancelEdit = () => {
+const onSubmit = handleSubmit(async (value) => {
+  localData.value[0] = {
+    ...localData.value[0],
+    ...value,
+  }
+  // resumeStore.updateEducation(value)
   isEdit.value = false
-  localData.value = prop.data
-}
-
-const emit = defineEmits<{
-  (e: 'update:data', value: Record<string, any>[]): void
-}>()
-const onSubmit = () => {
-  emit('update:data', localData.value)
-  isEdit.value = false
-}
+})
 </script>
 
 <template>
-  <div class="w-full">
+  <div
+    class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+  >
+    <!-- Edit button -->
+    <div
+      v-if="!isEdit"
+      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      @click="openEdit"
+    >
+      <span class="i-solar-pen-bold text-primary"></span>
+    </div>
+    <!-- End edit button -->
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">WORK EXPERIENCED</h2>
     <div
-      v-for="(item, index) in prop.data"
+      v-for="(item, index) in localData"
       :key="index"
       class="flex flex-col gap-0 mt-1 w-full px-3"
     >
       <div class="flex justify-between w-full items-center">
         <p class="font-bold text-base">{{ item?.position }}</p>
         <div class="flex items-center gap-3">
-          <p class="font-semibold text-base">{{ item?.startDate }}</p>
-          <p class="font-semibold text-base">{{ item?.endDate }}</p>
+          <p class="font-semibold text-base">{{ formatDateUs(item?.start_date) }}</p>
+          <p class="font-semibold text-base">{{ formatDateUs(item?.end_date) }}</p>
         </div>
       </div>
       <div class="flex justify-between w-full items-center">
-        <p class="font-bold text-base">{{ item?.companyName }}</p>
+        <p class="font-bold text-base">{{ item?.company_name }}</p>
         <p class="font-semibold text-base">{{ item?.location }}</p>
       </div>
       <p class="text-sm font-normal mt-1">{{ item?.description }}</p>
@@ -69,42 +74,47 @@ const onSubmit = () => {
   </div>
   <div
     v-if="isEdit"
-    class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    class="w-full bg-gray-50 p-5"
   >
     <form
       class="flex gap-2 w-full flex-col"
       @submit="onSubmit"
     >
       <div
-        v-for="(item, index) in prop.data"
+        v-for="(item, index) in localData"
         :key="index"
         class="flex items-start gap-x-4 w-full flex-col justify-center relative"
       >
-        <div class="form-data flex flex-col gap-1 w-[300px]">
-          <label for="name">Company Name</label>
-          <InputValidation
-            id="name"
-            placeholder="e.g., Youtube, Ecomdy, etc"
-            type="text"
-            name="name"
-            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-          />
-        </div>
-        <div class="flex items-center gap-x-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="form-data flex flex-col gap-1 w-[300px]">
+            <label for="name">Company Name</label>
+            <InputValidation
+              id="name"
+              placeholder="e.g., Youtube, Ecomdy, etc"
+              type="text"
+              name="name"
+              :initial-value="item?.company_name"
+              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+            />
+          </div>
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="position">Position</label>
             <InputValidation
               id="position"
+              :initial-value="item?.position"
               placeholder="e.g., Frontend, Backend, etc"
               type="text"
               name="position"
               class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
             />
           </div>
+        </div>
+        <div class="flex gap-x-3 flex-wrap">
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="city">City, Country</label>
             <InputValidation
               id="city"
+              :initial-value="item?.city"
               placeholder="VietNam, UK, etc"
               type="text"
               name="city"
@@ -113,23 +123,35 @@ const onSubmit = () => {
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="start">Start Date</label>
-            <InputValidation
-              id="start"
-              placeholder="Start Date"
-              type="text"
-              name="start"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                :initial-value="formatDateUs(item?.start_date)"
+                picker="month"
+              />
+            </a-config-provider>
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="end">End Date</label>
-            <InputValidation
-              id="end"
-              placeholder="End Date"
-              type="text"
-              name="end"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                :initial-value="formatDateUs(item?.end_date)"
+                picker="month"
+              />
+            </a-config-provider>
           </div>
         </div>
         <ScrollArea class="flex flex-col gap-1 w-full mb-12">
@@ -137,7 +159,6 @@ const onSubmit = () => {
           <div class="form-description h-40 w-full bg-white rounded-lg">
             <QuillEditor
               ref="quillEditor"
-              v-model:content="localData.description"
               :toolbar="['bold', 'italic', 'underline', 'link']"
               placeholder="Enter your post"
               content-type="html"
@@ -146,7 +167,7 @@ const onSubmit = () => {
           </div>
         </ScrollArea>
         <div
-          v-if="index + 1 < prop.data.length"
+          v-if="index + 1 < localData.length"
           class="border-b border-slate-950 mb-5 w-full mt-5"
         ></div>
         <div
@@ -179,7 +200,7 @@ const onSubmit = () => {
             v-if="isLoading"
             class="i-svg-spinners-ring-resize"
           ></span>
-          Save
+          <span class="text-white">Save</span>
         </Button>
       </div>
     </form>

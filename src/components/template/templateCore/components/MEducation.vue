@@ -6,31 +6,72 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
+import { formatDateUs } from '@/utils/format'
+import { watch, ref, computed } from 'vue'
+import dayjs, { type Dayjs } from 'dayjs'
 
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
 
-const localData = ref(cloneDeep(resumeStore.data.education))
-
 const isEdit = ref(false)
+const localData = ref(cloneDeep(resumeStore.dataResume?.education))
+
+const data = computed(() => {
+  return isEdit.value ? localData.value : resumeStore.dataResume?.education || []
+})
+
 const openEdit = () => {
   isEdit.value = true
 }
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = resumeStore.data.education
+  localData.value = resumeStore.dataResume.education
 }
 
-const onSubmit = handleSubmit(async (value) => {
-  console.log('value', value)
-  localData.value[0] = {
-    ...localData.value[0],
-    ...value,
+const defaultEducation = {
+  school: '',
+  degree: '',
+  gpa: '',
+  start_date: null,
+  end_date: null,
+  description: '',
+  school_link: '',
+  city: '',
+}
+
+const addEducation = () => {
+  localData.value.push({ ...defaultEducation })
+}
+
+const deleteEducation = (index: number) => {
+  if (localData.value.length > 1) {
+    localData.value.splice(index, 1)
   }
-  // resumeStore.updateEducation(value)
+}
+
+const onSubmit = handleSubmit(async () => {
+  const transformedData = localData.value.map((item) => ({
+    ...item,
+    start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
+    end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
+  }))
+
+  console.log(transformedData, 'check data before')
+
+  await resumeStore.updateEducation(transformedData)
   isEdit.value = false
 })
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.education)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -50,7 +91,7 @@ const onSubmit = handleSubmit(async (value) => {
 
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">EDUCATION</h2>
     <div
-      v-for="(item, index) in localData"
+      v-for="(item, index) in data"
       :key="index"
       class="flex flex-col gap-0 mt-1 w-full px-3"
     >
@@ -58,17 +99,17 @@ const onSubmit = handleSubmit(async (value) => {
         <p class="font-semibold text-base">{{ item?.degree }}</p>
         <div class="flex items-center gap-3">
           <p class="font-semibold text-base">
-            {{ new Date(item?.startDate).toLocaleDateString() }}
+            {{ formatDateUs(item?.start_date) }}
           </p>
           <p class="font-semibold text-base">
-            {{ new Date(item?.endDate).toLocaleDateString() }}
+            {{ formatDateUs(item?.end_date) }}
           </p>
         </div>
       </div>
       <div class="">
         <div class="flex justify-between w-full items-center">
           <h4 class="text-base font-normal">{{ item?.school }}</h4>
-          <p class="font-semibold text-base">GPA: {{ item?.GPA }}</p>
+          <p class="font-semibold text-base">GPA: {{ item?.gpa }}</p>
         </div>
         <p
           class="text-sm font-normal"
@@ -90,16 +131,24 @@ const onSubmit = handleSubmit(async (value) => {
         :key="index"
         class="flex items-start gap-x-4 w-full flex-col justify-center relative"
       >
-        <div class="form-data flex flex-col gap-1 w-[300px]">
-          <label for="name">Educational Institution Name</label>
-          <InputValidation
-            id="school"
-            placeholder="University of CVMaker"
-            type="text"
-            name="school"
-            :initial-value="education.school"
-            class="h-11 mt-1 bg-white border-slate-200 outline-none"
-          />
+        <div class="flex justify-between items-start w-full">
+          <div class="form-data flex flex-col gap-1 w-[300px]">
+            <label for="name">Educational Institution Name</label>
+            <InputValidation
+              id="school"
+              placeholder="University of CVMaker"
+              type="text"
+              name="school"
+              :initial-value="education.school"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
+            />
+          </div>
+          <div
+            class="rounded-lg mb-2 cursor-pointer p-2 border bg-white flex items-center justify-center"
+            @click="deleteEducation(index)"
+          >
+            <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+          </div>
         </div>
         <div class="flex gap-x-3 flex-wrap">
           <div class="form-data flex flex-col gap-1 w-[300px]">
@@ -120,7 +169,7 @@ const onSubmit = handleSubmit(async (value) => {
               placeholder="3.4 of 4.0"
               type="text"
               name="GPA"
-              :initial-value="education.GPA.toString()"
+              :initial-value="education.gpa.toString()"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
@@ -134,9 +183,8 @@ const onSubmit = handleSubmit(async (value) => {
               }"
             >
               <a-date-picker
+                v-model:value="localData[index].start_date"
                 class="h-11 mt-1 bg-white border-slate-200 outline-none"
-                :format="monthFormat"
-                :initial-value="new Date(education.startDate).toLocaleDateString()"
                 picker="month"
               />
             </a-config-provider>
@@ -167,9 +215,8 @@ const onSubmit = handleSubmit(async (value) => {
               }"
             >
               <a-date-picker
+                v-model:value="localData[index].end_date"
                 class="h-11 mt-1 bg-white border-slate-200 outline-none"
-                :format="monthFormat"
-                :initial-value="new Date(education.startDate).toLocaleDateString()"
                 picker="month"
               />
             </a-config-provider>
@@ -188,13 +235,17 @@ const onSubmit = handleSubmit(async (value) => {
           </div>
         </ScrollArea>
       </div>
-      <!-- <Button
+      <Button
         variant="outline"
         class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
       >
         <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
-        <span class="text-primary">Add more</span>
-      </Button> -->
+        <span
+          class="text-primary"
+          @click.stop.prevent="addEducation()"
+          >Add more</span
+        >
+      </Button>
       <div class="flex items-center justify-end gap-2">
         <Button
           variant="secondary"
@@ -210,7 +261,7 @@ const onSubmit = handleSubmit(async (value) => {
           <!-- <span
             class="i-svg-spinners-ring-resize"
           ></span> -->
-          Save
+          <span class="text-white">Save</span>
         </Button>
       </div>
     </form>

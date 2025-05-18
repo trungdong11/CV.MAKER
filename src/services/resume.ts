@@ -1,5 +1,4 @@
 import type { BaseResponse } from '@/types/api'
-import type { IQuizzflyInfo } from '@/types/quizzfly'
 import type { ITemplate } from '@/types/template'
 
 export const getCVsApi = async ({ page = 1, keyword = '' }): Promise<BaseResponse<ITemplate[]>> => {
@@ -24,7 +23,7 @@ export const deleteCVApi = async (id: string): Promise<BaseResponse<null>> => {
   })
 }
 
-export const createCVApi = async (data: ITemplate): Promise<BaseResponse<IQuizzflyInfo>> => {
+export const createCVApi = async (data: ITemplate): Promise<BaseResponse<ITemplate>> => {
   return $api('/cv', {
     method: 'POST',
     body: data,

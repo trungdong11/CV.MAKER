@@ -10,6 +10,21 @@ import Button from '@/components/ui/button/Button.vue'
 import TemplateCore from '@/components/template/templateCore/index.vue'
 import Evaluation from '@/components/template/review/Evaluation.vue'
 import MatchResume from '@/components/template/review/MatchResume.vue'
+import { useResumeStore } from '@/stores/resume/resume'
+import { useRoute } from 'vue-router'
+
+const resumeStore = useResumeStore()
+const { getResumeDetail } = resumeStore
+const route = useRoute()
+
+const idResume = computed(() => route.params?.id as string)
+const fetchResumeDetail = async () => {
+  await getResumeDetail(idResume.value)
+}
+
+onMounted(() => {
+  fetchResumeDetail()
+})
 
 const isLoading = ref(false)
 </script>

@@ -8,7 +8,7 @@ import { useForm } from 'vee-validate'
 // import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue'
 
 const resumeStore = useResumeStore()
-const localData = ref(resumeStore.data.summary)
+const localData = ref(resumeStore.dataResume.summary)
 
 const isEdit = ref(false)
 const openEdit = () => {
@@ -21,7 +21,7 @@ defineExpose({
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = resumeStore.data.summary
+  localData.value = resumeStore.dataResume.summary
 }
 
 const { handleSubmit } = useForm()
@@ -34,10 +34,20 @@ const data = computed(() => {
   if (isEdit.value) {
     return localData.value
   }
-  return resumeStore.data.summary
+  return resumeStore.dataResume.summary
 })
 
 const isLoading = ref(false)
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = newVal.summary
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>

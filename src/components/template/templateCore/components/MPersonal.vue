@@ -6,8 +6,8 @@ import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 
 const resumeStore = useResumeStore()
-const localData = ref(cloneDeep(resumeStore.data.personalDetails))
-const localSocialData = ref(cloneDeep(resumeStore.data.socials))
+const localData = ref(cloneDeep(resumeStore.dataResume?.personal_details))
+const localSocialData = ref(cloneDeep(resumeStore.dataResume?.socials))
 
 const isEdit = ref(false)
 const openEdit = () => {
@@ -20,14 +20,14 @@ defineExpose({
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = resumeStore.data.personalDetails
-  localSocialData.value = resumeStore.data.socials
+  localData.value = resumeStore.dataResume?.personal_details
+  localSocialData.value = resumeStore.dataResume?.socials
 }
 
 const { handleSubmit } = useForm()
 const onSubmit = handleSubmit(async (values) => {
   resumeStore.updatePersonalDetails({
-    ...resumeStore.data.personalDetails,
+    ...resumeStore.dataResume?.personal_details,
     ...values,
   })
 
@@ -46,17 +46,28 @@ const data = computed(() => {
   if (isEdit.value) {
     return localData.value
   }
-  return resumeStore.data.personalDetails
+  return resumeStore.dataResume.personal_details
 })
 
 const socialData = computed(() => {
   if (isEdit.value) {
     return localSocialData.value
   }
-  return resumeStore.data.socials
+  return resumeStore.dataResume.socials
 })
 
 const isLoading = ref(false)
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.personal_details)
+      localSocialData.value = cloneDeep(newVal.socials)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -74,15 +85,15 @@ const isLoading = ref(false)
     </div>
     <!-- End edit button -->
 
-    <h2 class="font-semibold text-3xl">{{ data.fullname }}</h2>
+    <h2 class="font-semibold text-3xl">{{ data?.full_name }}</h2>
     <div
       class="flex items-center gap-1 justify-center font-normal text-slate-600 text-sm flex-wrap"
     >
-      <p>{{ data.address }}</p>
+      <p>{{ data?.address }}</p>
       <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-      <p>{{ data.email }}</p>
+      <p>{{ data?.email }}</p>
       <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-      <p>{{ data.phoneNumber }}</p>
+      <p>{{ data?.phone_number }}</p>
       <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
       <div
         v-for="(item, index) in socialData"
@@ -114,8 +125,8 @@ const isLoading = ref(false)
               id="name"
               placeholder="Enter your name..."
               type="text"
-              name="fullname"
-              :initial-value="data.fullname"
+              name="full_name"
+              :initial-value="data?.full_name"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
@@ -126,7 +137,7 @@ const isLoading = ref(false)
               placeholder="Enter your location..."
               type="text"
               name="address"
-              :initial-value="data.address"
+              :initial-value="data?.address"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
@@ -137,7 +148,7 @@ const isLoading = ref(false)
               placeholder="Enter your email..."
               type="text"
               name="email"
-              :initial-value="data.email"
+              :initial-value="data?.email"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
@@ -148,7 +159,7 @@ const isLoading = ref(false)
               placeholder="Enter your phone number..."
               type="text"
               name="phoneNumber"
-              :initial-value="data.phoneNumber"
+              :initial-value="data?.phone_number"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>

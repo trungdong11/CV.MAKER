@@ -6,9 +6,4 @@ export const templateRoute: RouteRecordRaw[] = [
     name: 'templates',
     component: () => import('@/pages/template/index.vue'),
   },
-  {
-    path: 'create',
-    name: 'templates-create',
-    component: () => import('@/pages/template/templateCreate.vue'),
-  },
 ]

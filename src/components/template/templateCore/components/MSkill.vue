@@ -7,7 +7,7 @@ import { useForm, type GenericObject } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 
 const resumeStore = useResumeStore()
-const localData = ref(cloneDeep(resumeStore.data.skills))
+const localData = ref(cloneDeep(resumeStore.dataResume?.skills))
 const { handleSubmit } = useForm()
 
 const isEdit = ref(false)
@@ -23,13 +23,13 @@ defineExpose({
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = resumeStore.data.skills
+  localData.value = resumeStore.dataResume.skills
 }
 
 const addMore = () => {
   localData.value.push({
-    skillCategory: '',
-    listOfSkill: '',
+    skill_category: '',
+    list_of_skill: '',
   })
 }
 
@@ -37,19 +37,15 @@ const deleteSkill = (index: number) => {
   localData.value.splice(index, 1)
 }
 
-const handleUpdateSkills = (value: GenericObject) => {
+const clean = (v?: unknown) => (typeof v === 'string' ? v.trim() : '')
+
+const handleUpdateSkills = (values: GenericObject) => {
   localData.value = localData.value
-    .map((item, index) => {
-      const skillCategory = value[`skillCategory-${index}`]
-      const listOfSkill = value[`listOfSkill-${index}`]
-      return {
-        skillCategory: skillCategory,
-        listOfSkill: listOfSkill,
-      }
-    })
-    .filter((item) => {
-      return item.skillCategory !== '' && item.listOfSkill !== ''
-    })
+    .map((_, idx) => ({
+      skill_category: clean(values[`skillCategory-${idx}`]),
+      list_of_skill: clean(values[`listOfSkill-${idx}`]),
+    }))
+    .filter((item) => item.skill_category && item.list_of_skill)
 
   return localData.value
 }
@@ -59,7 +55,6 @@ const onSubmit = handleSubmit(async (value) => {
     isLoading.value = true
     const newSkills = handleUpdateSkills(value)
     resumeStore.updateSkills(newSkills)
-    console.log(localData.value, 'check localData', newSkills)
 
     isEdit.value = false
   } catch (error) {
@@ -73,8 +68,18 @@ const data = computed(() => {
   if (isEdit.value) {
     return localData.value
   }
-  return resumeStore.data.skills
+  return resumeStore.dataResume.skills
 })
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.skills)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -100,23 +105,23 @@ const data = computed(() => {
         class="flex items-center justify-start w-full gap-2 px-3"
       >
         <p
-          v-if="item.skillCategory"
+          v-if="item.skill_category"
           class="font-semibold text-base"
         >
-          {{ item.skillCategory }}:
+          {{ item.skill_category }}:
         </p>
         <p
-          v-if="item.listOfSkill"
+          v-if="item.list_of_skill"
           class="font-normal text-sm"
         >
-          {{ item.listOfSkill }}
+          {{ item.list_of_skill }}
         </p>
       </div>
     </div>
 
     <div
       v-if="isEdit"
-      class="w-full rounded-lg p-5"
+      class="w-full rounded-lg p-5 pt-0"
     >
       <form
         class="flex gap-2 w-full flex-col"
@@ -141,7 +146,7 @@ const data = computed(() => {
             </div>
             <InputValidation
               :id="`skillCategory-${index}`"
-              :initial-value="localData[index].skillCategory"
+              :initial-value="localData[index].skill_category"
               placeholder="Enter your skill..."
               type="text"
               :name="`skillCategory-${index}`"
@@ -151,7 +156,7 @@ const data = computed(() => {
               <label for="listOfSkill">List of skills</label>
               <TextareaValidation
                 :id="`listOfSkill-${index}`"
-                :initial-value="localData[index].listOfSkill"
+                :initial-value="localData[index].list_of_skill"
                 type="text"
                 :name="`listOfSkill-${index}`"
                 placeholder="Enter list of skill..."
