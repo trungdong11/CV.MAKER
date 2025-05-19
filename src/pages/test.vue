@@ -26,19 +26,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import jsPDF from 'jspdf'
 import { formatDateUs } from '@/utils/format'
 
 const cvData = ref({
-  createdAt: '2024-03-07T13:39:44.967Z',
-  updatedAt: '2024-03-07T13:39:44.967Z',
   summary:
     'Experienced Front-end developer with 2 years of expertise in Web Development. I am confident in my ability to solve technical challenges and contribute to delivering high-quality products. Im seeking opportunities that allow me to make meaningful contributions while continuing to grow my skills.',
-  personalDetails: {
-    fullname: 'Le Trung Dong',
-    phoneNumber: '0353504690',
+  personal_details: {
+    full_name: 'Le Trung Dong',
+    phone_number: '0353504690',
     address: 'Vietnam, Da Nang City',
     email: 'trungdong0811@gmail.com',
   },
@@ -50,11 +48,11 @@ const cvData = ref({
     {
       degree: 'Bachelor of Computer Science',
       school: 'University of Technology',
-      startDate: '2013-09-01T00:00:00.000Z',
-      endDate: '2017-06-30T00:00:00.000Z',
-      schoolLink: 'https://university.edu',
+      start_date: '2013-09-01T00:00:00.000Z',
+      end_date: '2017-06-30T00:00:00.000Z',
+      school_link: 'https://university.edu',
       city: 'Ho Chi Minh City',
-      GPA: 3.8,
+      gpa: 3.8,
       description: 'Major in Software Engineering',
     },
   ],
@@ -70,43 +68,43 @@ const cvData = ref({
   ],
   skills: [
     {
-      skillCategory: 'Programming Languages',
-      listOfSkill: 'JavaScript, TypeScript, Python, Java',
+      skill_category: 'Programming Languages',
+      list_of_skill: 'JavaScript, TypeScript, Python, Java',
     },
     {
-      skillCategory: 'Frameworks',
-      listOfSkill: 'React, Node.js, Express, NestJS',
+      skill_category: 'Frameworks',
+      list_of_skill: 'React, Node.js, Express, NestJS',
     },
   ],
   works: [
     {
-      companyName: 'Tech Solutions Inc.',
-      isCurrentWorking: true,
+      company_name: 'Tech Solutions Inc.',
+      is_current_working: true,
       position: 'Senior Software Engineer',
       location: 'Ho Chi Minh City, Vietnam',
-      startDate: '2020-01-01T00:00:00.000Z',
-      endDate: '2023-12-31T00:00:00.000Z',
+      start_date: '2020-01-01T00:00:00.000Z',
+      end_date: '2023-12-31T00:00:00.000Z',
       description:
         'As a FrontEnd Developer at Sucodev, I mainly develop in JavaScript with framework VueJS to expand the online learning and booking system capabilities. These two systems are the company’s main products. Tasks are managed on a Trello board using Kanban methodology. Technology Used: Javascript, VueJS, NuxtJs, SCSS, Tailwind, NPM, HTML, CSS, TypeScript',
     },
     {
-      companyName: 'StartUp Co.',
-      isCurrentWorking: false,
+      company_name: 'StartUp Co.',
+      is_current_working: false,
       position: 'Software Developer',
       location: 'Hanoi, Vietnam',
-      startDate: '2017-07-01T00:00:00.000Z',
-      endDate: '2019-12-31T00:00:00.000Z',
+      start_date: '2017-07-01T00:00:00.000Z',
+      end_date: '2019-12-31T00:00:00.000Z',
       description:
         'As a FrontEnd Developer at Sucodev, I mainly develop in JavaScript with framework VueJS to expand the online learning and booking system capabilities. These two systems are the company’s main products. Tasks are managed on a Trello board using Kanban methodology. Technology Used: Javascript, VueJS, NuxtJs, SCSS, Tailwind, NPM, HTML, CSS, TypeScript',
     },
   ],
   projects: [
     {
-      name: 'QUIZZFLY',
-      link: 'https://quizzfly.com',
-      startDate: '2024-09-01',
-      endDate: '',
-      isOngoing: true,
+      project_name: 'QUIZZFLY',
+      project_link: 'https://quizzfly.com',
+      start_date: '2024-09-01',
+      end_date: '',
+      is_ongoing: true,
       description: `
       <p>Role: FrontEnd Developer, Project Manager</p>
       <p>Technology: HTML, TAILWIND, VUEJS 3, TYPESCRIPT</p>
@@ -122,11 +120,11 @@ const cvData = ref({
     `,
     },
     {
-      name: 'S-Booking',
-      link: 'https://s-booking.com',
-      startDate: '2024-01-01',
-      endDate: '',
-      isOngoing: true,
+      project_name: 'S-Booking',
+      project_link: 'https://s-booking.com',
+      start_date: '2024-01-01',
+      end_date: '',
+      is_ongoing: true,
       description: `
       <p>Role: FrontEnd Developer </p>
       <p>Technology: HTML, SCSS, VueJS 3 </p>
@@ -137,11 +135,11 @@ const cvData = ref({
   ],
   certification: [
     {
-      certificationName: 'AWS Certified Developer',
-      issuingOrganization: 'Amazon Web Services',
-      issuedDate: '2022-03-15T00:00:00.000Z',
-      certificationLink: 'https://aws.amazon.com/certification',
-      credentialId: 'AWS-123456',
+      certification_name: 'AWS Certified Developer',
+      issuing_organization: 'Amazon Web Services',
+      issued_date: '2022-03-15T00:00:00.000Z',
+      certification_link: 'https://aws.amazon.com/certification',
+      credential_id: 'AWS-123456',
     },
   ],
   organization: [
@@ -149,23 +147,23 @@ const cvData = ref({
       name: 'Vietnam Developer Community',
       position: 'Technical Lead',
       address: 'Ho Chi Minh City, Vietnam',
-      startDate: '2021-01-01T00:00:00.000Z',
-      endDate: '2023-12-31T00:00:00.000Z',
+      start_date: '2021-01-01T00:00:00.000Z',
+      end_date: '2023-12-31T00:00:00.000Z',
       description: 'Leading technical workshops and mentoring junior developers',
     },
   ],
   award: [
     {
-      awardTitle: 'Best Developer Award',
-      awardTitleLink: 'https://example.com/award',
+      award_title: 'Best Developer Award',
+      award_title_link: 'https://example.com/award',
       issuer: 'Tech Community Vietnam',
-      issuedDate: '2022-12-15T00:00:00.000Z',
+      issued_date: '2022-12-15T00:00:00.000Z',
       description: 'Awarded for outstanding contribution to open source projects',
     },
   ],
 })
 
-const checkPageOverflow = (doc, currentY, additionalHeight = 10) => {
+const checkPageOverflow = (doc: jsPDF, currentY: number, additionalHeight = 10): number => {
   const pageHeight = doc.internal.pageSize.height
   const marginBottom = 20
   if (currentY + additionalHeight > pageHeight - marginBottom) {
@@ -173,10 +171,6 @@ const checkPageOverflow = (doc, currentY, additionalHeight = 10) => {
     return 20
   }
   return currentY
-}
-
-const addLetterSpacing = (text, spacing = 0.6) => {
-  return text.split('').join(' '.repeat(spacing))
 }
 
 const generatePDF = () => {
@@ -187,7 +181,7 @@ const generatePDF = () => {
       format: [250, 350],
     })
 
-    const { personalDetails, summary, socials, skills } = cvData.value
+    const { personal_details, summary, socials, skills } = cvData.value
     let y = 20
     const pageWidth = doc.internal.pageSize.width
     const marginLeft = 10
@@ -195,41 +189,37 @@ const generatePDF = () => {
     const contentWidth = pageWidth - marginLeft - marginRight
 
     // parse HTML for description
-    const parseHTMLToLines = (html) => {
+    const parseHTMLToLines = (html: string): string[] => {
       const parser = new DOMParser()
-      const doc = parser.parseFromString(html, 'text/html')
-      const lines = []
+      const parsed = parser.parseFromString(html, 'text/html')
+      const lines: string[] = []
 
-      const walk = (node) => {
-        if (node.nodeName === '#text') {
-          const text = node.textContent.trim()
+      const walk = (node: Node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent?.trim()
           if (text) lines.push(text)
-        } else if (node.nodeName === 'P') {
+        } else if (
+          (node as HTMLElement).nodeName === 'P' ||
+          (node as HTMLElement).nodeName === 'UL'
+        ) {
           walkChildren(node)
-        } else if (node.nodeName === 'UL') {
-          node.childNodes.forEach((li) => {
-            if (li.nodeName === 'LI') {
-              const bullet = '• ' + li.textContent.trim()
-              lines.push(bullet)
-            }
-          })
         } else {
           walkChildren(node)
         }
       }
 
-      const walkChildren = (node) => {
+      const walkChildren = (node: Node) => {
         node.childNodes.forEach(walk)
       }
 
-      walkChildren(doc.body)
+      walkChildren(parsed.body)
       return lines
     }
 
     // Header: Name
     doc.setFontSize(20)
     doc.setFont('helvetica', 'bold')
-    const name = personalDetails.fullname.toUpperCase()
+    const name = personal_details.full_name.toUpperCase()
     const nameX = (pageWidth - doc.getTextWidth(name)) / 2
     doc.text(name, nameX, y)
     y += 5
@@ -240,9 +230,9 @@ const generatePDF = () => {
     doc.setTextColor(143, 143, 143)
 
     const contactItems = [
-      personalDetails.address,
-      personalDetails.email,
-      personalDetails.phoneNumber,
+      personal_details.address,
+      personal_details.email,
+      personal_details.phone_number,
       ...socials.map((s) => s.link),
     ]
 
@@ -318,8 +308,8 @@ const generatePDF = () => {
       doc.setFontSize(10)
 
       skills.forEach((skillItem) => {
-        const label = `${skillItem.skillCategory}:`
-        const content = skillItem.listOfSkill
+        const label = `${skillItem.skill_category}:`
+        const content = skillItem.list_of_skill
         const boldWidth = doc.getTextWidth(label)
 
         doc.setFont('helvetica', 'bold')
@@ -354,7 +344,7 @@ const generatePDF = () => {
         doc.setFontSize(10)
         doc.text(edu.degree, marginLeft, y)
 
-        const eduDate = `${formatDateUs(edu.startDate)} - ${formatDateUs(edu.endDate)}`
+        const eduDate = `${formatDateUs(edu.start_date)} - ${formatDateUs(edu.end_date)}`
         const dateWidth = doc.getTextWidth(eduDate)
         doc.text(eduDate, pageWidth - marginRight - dateWidth, y)
 
@@ -387,8 +377,8 @@ const generatePDF = () => {
         doc.setFontSize(10)
         doc.text(work.position, marginLeft, y)
 
-        const workDate = `${formatDateUs(work.startDate)} - ${
-          work.isCurrentWorking ? 'Present' : formatDateUs(work.endDate)
+        const workDate = `${formatDateUs(work.start_date)} - ${
+          work.is_current_working ? 'Present' : formatDateUs(work.end_date)
         }`
         const dateWidth = doc.getTextWidth(workDate)
         doc.text(workDate, pageWidth - marginRight - dateWidth, y)
@@ -396,7 +386,7 @@ const generatePDF = () => {
         y += 5
 
         doc.setFont('helvetica', 'bold')
-        doc.text(work.companyName, marginLeft, y)
+        doc.text(work.company_name, marginLeft, y)
 
         const locationWidth = doc.getTextWidth(work.location)
         doc.setFont('helvetica', 'normal')
@@ -432,12 +422,12 @@ const generatePDF = () => {
       projects.forEach((project) => {
         doc.setFont('helvetica', 'bold')
         doc.setFontSize(10)
-        const title = project.name
-        const link = project.link
+        const title = project.project_name
+        const link = project.project_link
         doc.textWithLink(title, marginLeft, y, { url: link })
 
-        const projectDate = `${formatDateUs(project.startDate)} - ${
-          project.isOngoing ? 'Present' : formatDateUs(project.endDate)
+        const projectDate = `${formatDateUs(project.start_date)} - ${
+          project.is_ongoing ? 'Present' : formatDateUs(project.end_date)
         }`
         doc.setFont(undefined, 'bold')
         doc.text(projectDate, pageWidth - marginRight, y, { align: 'right' })
@@ -520,24 +510,24 @@ const generatePDF = () => {
       certification.forEach((cert) => {
         doc.setFont('helvetica', 'bold')
         doc.setFontSize(10)
-        doc.text(cert.certificationName, marginLeft, y)
+        doc.text(cert.certification_name, marginLeft, y)
 
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(100)
-        const orgText = ` by ${cert.issuingOrganization}`
-        doc.text(orgText, marginLeft + doc.getTextWidth(cert.certificationName + 4), y)
+        const orgText = ` by ${cert.issuing_organization}`
+        doc.text(orgText, marginLeft + doc.getTextWidth(cert.certification_name + 4), y)
 
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(0, 0, 0)
-        const certDate = formatDateUs(cert.issuedDate)
+        const certDate = formatDateUs(cert.issued_date)
         doc.text(certDate, pageWidth - marginRight, y, { align: 'right' })
 
         y += 5
 
-        if (cert.credentialId) {
+        if (cert.credential_id) {
           doc.setTextColor(100)
-          doc.textWithLink(`Credential ID: ${cert.credentialId}`, marginLeft, y, {
-            url: cert.certificationLink,
+          doc.textWithLink(`Credential ID: ${cert.credential_id}`, marginLeft, y, {
+            url: cert.certification_link,
           })
           y += 6
         } else {
@@ -568,7 +558,7 @@ const generatePDF = () => {
         doc.text(org.position, marginLeft, y)
 
         // Date (right side)
-        const dateRange = `${formatDateUs(org.startDate)} - ${formatDateUs(org.endDate)}`
+        const dateRange = `${formatDateUs(org.start_date)} - ${formatDateUs(org.end_date)}`
         doc.text(dateRange, pageWidth - marginRight, y, { align: 'right' })
         y += 5
 
@@ -608,14 +598,14 @@ const generatePDF = () => {
       award.forEach((aw) => {
         doc.setFont('helvetica', 'bold')
         doc.setFontSize(10)
-        doc.textWithLink(aw.awardTitle, marginLeft, y, { url: aw.awardTitleLink })
+        doc.textWithLink(aw.award_title, marginLeft, y, { url: aw.award_title_link })
 
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(100)
         const issuerText = ` (${aw.issuer})`
-        doc.text(issuerText, marginLeft + doc.getTextWidth(aw.awardTitle + 4), y)
+        doc.text(issuerText, marginLeft + doc.getTextWidth(aw.award_title + 4), y)
 
-        const awardDate = formatDateUs(aw.issuedDate)
+        const awardDate = formatDateUs(aw.issued_date)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(0, 0, 0)
         doc.text(awardDate, pageWidth - marginRight, y, { align: 'right' })
@@ -637,7 +627,7 @@ const generatePDF = () => {
     }
 
     //save file
-    doc.save(`${personalDetails.fullname}_CV.pdf`)
+    doc.save(`${personal_details.full_name}_CV.pdf`)
   } catch (error) {
     console.error('Error generating PDF:', error)
     alert('Failed to generate PDF. Please try again.')

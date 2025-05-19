@@ -55,7 +55,7 @@ const sections = [
     component: MLanguage,
   },
   {
-    key: 'organization-not',
+    key: 'organization',
     component: MOrganizational,
   },
   {

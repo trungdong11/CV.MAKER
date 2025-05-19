@@ -157,7 +157,7 @@ const isLoading = ref(false)
             v-if="isLoading"
             class="i-svg-spinners-ring-resize"
           ></span>
-          Save
+          <span class="text-white">Save</span>
         </Button>
       </div>
     </form>

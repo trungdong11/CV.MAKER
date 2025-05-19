@@ -47,6 +47,7 @@ interface IProject {
   start_date: string
   end_date: string
   description: string
+  is_ongoing: boolean
 }
 
 interface IWork {
@@ -72,7 +73,7 @@ interface ILanguage {
 interface IAward {
   award_title: string
   award_title_link: string
-  issuer: string
+  issued_by: string
   issued_date: string
   description: string
 }

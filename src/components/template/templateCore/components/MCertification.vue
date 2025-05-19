@@ -18,7 +18,7 @@ const openEdit = () => {
 
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = resumeStore.dataResume.education as any
+  localData.value = resumeStore.dataResume.certification
 }
 
 const isLoading = ref(false)
@@ -27,7 +27,7 @@ const onSubmit = handleSubmit(async (value) => {
     ...item,
     certification_name: value[`certification_name-${index}`],
     issuing_organization: value[`issuing_organization-${index}`],
-    issued_date: value[`issued_date-${index}`],
+    issued_date: item.issued_date ? new Date(item.issued_date).toISOString() : null,
     credential_id: value[`credential_id-${index}`],
     certification_link: value[`certification_link-${index}`],
   }))
@@ -54,11 +54,21 @@ onBeforeMount(() => {
   }
 })
 
-const deleteSkill = (index: number) => {
+const deleteCertification = (index: number) => {
   if (localData.value.length > 1) {
     localData.value.splice(index, 1)
   }
 }
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.certification)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -78,7 +88,7 @@ const deleteSkill = (index: number) => {
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">CERTIFICATION</h2>
     <template v-if="!isEdit">
       <div
-        v-for="(item, index) in resumeStore.dataResume?.certification"
+        v-for="(item, index) in localData"
         :key="index"
         class="flex flex-col gap-0 mt-1 w-full px-3"
       >
@@ -127,7 +137,7 @@ const deleteSkill = (index: number) => {
             class="h-11 mt-1 bg-white border-slate-200 outline-none"
           />
         </div>
-        <div class="flex items-center gap-x-3 flex-wrap">
+        <div class="flex items-start gap-x-3 flex-wrap">
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="position">Issuing Organization</label>
             <InputValidation
@@ -141,14 +151,20 @@ const deleteSkill = (index: number) => {
           </div>
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="city">Issued Date</label>
-            <InputValidation
-              :id="`issued_date-${index}`"
-              placeholder="issued day"
-              type="text"
-              :name="`issued_date-${index}`"
-              :initial-value="item?.issued_date"
-              class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            />
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                v-model:value="localData[index].issued_date"
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                picker="month"
+                :name="`startDate-${index}`"
+              />
+            </a-config-provider>
           </div>
         </div>
         <div class="flex items-center gap-x-3 flex-wrap">
@@ -176,7 +192,7 @@ const deleteSkill = (index: number) => {
         </div>
         <div
           class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
-          @click="deleteSkill(index)"
+          @click="deleteCertification(index)"
         >
           <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
         </div>
@@ -207,7 +223,7 @@ const deleteSkill = (index: number) => {
             v-if="isLoading"
             class="i-svg-spinners-ring-resize"
           ></span>
-          Save
+          <span class="text-white">Save</span>
         </Button>
       </div>
     </form>

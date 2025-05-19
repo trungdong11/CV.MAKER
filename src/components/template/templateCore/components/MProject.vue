@@ -12,17 +12,34 @@ const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
 
 const localData = ref(cloneDeep(resumeStore.dataResume?.projects))
+const descriptions = ref<string[]>([])
 
-// Trạng thái chỉnh sửa
+const defaultProject = {
+  project_name: '',
+  project_link: '',
+  start_date: null,
+  end_date: null,
+  description: '',
+}
+
 const isEdit = ref(false)
 const openEdit = () => {
   isEdit.value = true
 }
 
-// Hủy chỉnh sửa
 const cancelEdit = () => {
   isEdit.value = false
   localData.value = resumeStore.dataResume?.projects
+}
+
+const addProject = () => {
+  localData.value.push({ ...defaultProject })
+}
+
+const deleteProject = (index: number) => {
+  if (localData.value.length > 1) {
+    localData.value.splice(index, 1)
+  }
 }
 
 onBeforeMount(() => {
@@ -41,23 +58,38 @@ onBeforeMount(() => {
 
     resumeStore.updateProjects(localData.value)
   }
+
+  localData.value.forEach((item, index) => {
+    descriptions.value[index] = item.description
+  })
 })
 
-const onSubmit = handleSubmit(async (values) => {
-  const transformedData = localData.value.map((item, index) => ({
+const onSubmit = handleSubmit(async (value) => {
+  localData.value = localData.value.map((item, index) => ({
     ...item,
-    project_link: values[`project_link-${index}`],
-    project_name: values[`project_name-${index}`],
+    project_link: value[`project_link-${index}`],
+    project_name: value[`project_name-${index}`],
+    description: descriptions.value[index],
+    start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
+    end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
   }))
 
-  console.log(transformedData, 'check data before')
-
-  resumeStore.updateProjects(transformedData)
+  resumeStore.updateProjects(localData.value)
 
   isEdit.value = false
 })
 
 const isLoading = ref(false)
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.projects)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -127,7 +159,7 @@ const isLoading = ref(false)
             class="h-11 mt-1 bg-white border-slate-200 outline-none"
           />
         </div>
-        <div class="flex items-center gap-x-3 flex-wrap">
+        <div class="flex items-start gap-x-3 flex-wrap">
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="position">Project Link</label>
             <InputValidation
@@ -141,24 +173,37 @@ const isLoading = ref(false)
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="city">Start Date</label>
-            <InputValidation
-              id="start_date"
-              placeholder="start day"
-              type="text"
-              name="start_date"
-              :initial-value="item.start_date"
-              class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            />
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                v-model:value="localData[index].start_date"
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                picker="month"
+                :name="`startDate-${index}`"
+              />
+            </a-config-provider>
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="end">End Date</label>
-            <InputValidation
-              :id="`end_date-${index}`"
-              placeholder="End Date"
-              type="text"
-              :name="`end_date-${index}`"
-              class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            />
+            <a-config-provider
+              :theme="{
+                token: {
+                  colorPrimary: '#FF5C00',
+                },
+              }"
+            >
+              <a-date-picker
+                v-model:value="localData[index].end_date"
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                picker="month"
+                :name="`endDate-${index}`"
+              />
+            </a-config-provider>
           </div>
         </div>
         <ScrollArea class="flex flex-col gap-1 w-full mb-12">
@@ -166,7 +211,7 @@ const isLoading = ref(false)
           <div class="form-description h-40 w-full bg-white rounded-lg">
             <QuillEditor
               ref="quillEditor"
-              v-model:content="localData[index].description"
+              v-model:content="descriptions[index]"
               :toolbar="['bold', 'italic', 'underline', 'link']"
               placeholder="Enter your post"
               content-type="html"
@@ -174,12 +219,22 @@ const isLoading = ref(false)
             />
           </div>
         </ScrollArea>
+        <div
+          class="border-b border-slate-950 mb-5 w-full mt-5"
+          @click.stop.prevent="deleteProject(index)"
+        >
+          <div
+            class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+          >
+            <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+          </div>
+        </div>
       </div>
       <Button
         variant="outline"
         type="button"
-        @click="localData.push({})"
         class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
+        @click="addProject()"
       >
         <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
         <span class="text-primary">Add more</span>
@@ -201,7 +256,7 @@ const isLoading = ref(false)
             v-if="isLoading"
             class="i-svg-spinners-ring-resize"
           ></span>
-          Save
+          <span class="text-white">Save</span>
         </Button>
       </div>
     </form>

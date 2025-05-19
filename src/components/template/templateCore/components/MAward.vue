@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
@@ -23,20 +22,27 @@ const cancelEdit = () => {
   localData.value = resumeStore.dataResume.award
 }
 
-// Trạng thái chỉnh sửa
-const isEdit = ref(false)
+const deleteAward = (index: number) => {
+  if (localData.value.length > 1) {
+    localData.value.splice(index, 1)
+  }
+}
 
-const onSubmit = handleSubmit(async (values) => {
-  const transformedData = localData.value.map((item, index) => ({
+const isEdit = ref(false)
+const descriptions = ref<string[]>([])
+
+const onSubmit = handleSubmit(async (value) => {
+  localData.value = localData.value.map((item, index) => ({
     ...item,
-    award_title: values[`title-${index}`],
-    issuer: values[`issuer-${index}`],
-    issued_date: values[`issued_date-${index}`],
+    award_title: value[`title-${index}`],
+    issuer: value[`issuer-${index}`],
+    description: descriptions.value[index],
+    issued_date: item.issued_date ? new Date(item.issued_date).toISOString() : null,
   }))
 
-  console.log(transformedData, 'check data before')
+  console.log(localData.value, 'check data before')
 
-  resumeStore.updateAwards(transformedData)
+  resumeStore.updateAwards(localData.value)
 
   isEdit.value = false
 })
@@ -52,14 +58,28 @@ onBeforeMount(() => {
     localData.value.push({
       award_title: 'Best Paper Award',
       award_title_link: 'https://example.com/award',
-      issuer: 'IEEE',
+      issued_by: '',
       issued_date: '2023-01-01T00:00:00.000Z',
       description: 'Awarded for outstanding research in computer science.',
     })
 
     resumeStore.updateAwards(localData.value)
   }
+
+  localData.value.forEach((item, index) => {
+    descriptions.value[index] = item.description
+  })
 })
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.award)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -93,6 +113,10 @@ onBeforeMount(() => {
           <p class="font-semibold text-base">{{ formatDateUs(item?.issued_date) }}</p>
         </div>
         <p class="font-normal text-base">{{ item?.issuer }}</p>
+        <p
+          class="text-sm font-normal mt-1"
+          v-html="item?.description"
+        ></p>
       </div>
     </template>
     <div
@@ -119,7 +143,7 @@ onBeforeMount(() => {
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
-          <div class="flex items-center gap-x-3 w-1/2">
+          <div class="flex gap-x-3 w-1/2">
             <div class="form-data flex flex-col gap-2 max-w-full flex-1">
               <label for="issuer">Issuer</label>
               <InputValidation
@@ -133,21 +157,27 @@ onBeforeMount(() => {
             </div>
             <div class="form-data flex flex-col gap-1 w-[150px]">
               <label for="issuedDate">Issued Date</label>
-              <InputValidation
-                :id="`issued_date-${index}`"
-                placeholder="e.g., Jan 2023"
-                type="text"
-                :name="`issued_date-${index}`"
-                :initial-value="item.issued_date"
-                class="h-11 mt-1 bg-white border-slate-200 outline-none"
-              />
+              <a-config-provider
+                :theme="{
+                  token: {
+                    colorPrimary: '#FF5C00',
+                  },
+                }"
+              >
+                <a-date-picker
+                  v-model:value="localData[index].issued_date"
+                  class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                  picker="month"
+                  :name="`endDate-${index}`"
+                />
+              </a-config-provider>
             </div>
           </div>
           <div class="flex flex-col gap-1 w-full mb-12">
             <label for="description">Descriptions</label>
             <div class="form-description h-40 w-full bg-white rounded-lg">
               <QuillEditor
-                v-model:content="localData[index].description"
+                v-model:content="descriptions[index]"
                 :toolbar="['bold', 'italic', 'underline', 'link']"
                 placeholder="e.g. Awarded for writing and presenting an outstanding technical paper at a conference"
                 content-type="html"
@@ -156,9 +186,15 @@ onBeforeMount(() => {
             </div>
           </div>
           <div
-            v-if="index + 1 < localData.length"
             class="border-b border-slate-950 mb-5 w-full mt-5"
-          ></div>
+            @click.stop.prevent="deleteAward(index)"
+          >
+            <div
+              class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+            >
+              <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+            </div>
+          </div>
         </div>
         <Button
           variant="outline"
@@ -186,7 +222,7 @@ onBeforeMount(() => {
               v-if="isLoading"
               class="i-svg-spinners-ring-resize"
             ></span>
-            Save
+            <span class="text-white">Save</span>
           </Button>
         </div>
       </form>

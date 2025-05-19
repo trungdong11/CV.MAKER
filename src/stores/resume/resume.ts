@@ -207,6 +207,44 @@ export const useResumeStore = defineStore({
         }))
       }
 
+      if (Array.isArray(newData.works)) {
+        newData.works = newData.works.map((item: any) => ({
+          ...item,
+          start_date: item.start_date ? dayjs(item.start_date) : null,
+          end_date: item.end_date ? dayjs(item.end_date) : null,
+        }))
+      }
+
+      if (Array.isArray(newData.projects)) {
+        newData.projects = newData.projects.map((item: any) => ({
+          ...item,
+          start_date: item.start_date ? dayjs(item.start_date) : null,
+          end_date: item.end_date ? dayjs(item.end_date) : null,
+        }))
+      }
+
+      if (Array.isArray(newData.certification)) {
+        newData.certification = newData.certification.map((item: any) => ({
+          ...item,
+          issued_date: item.issued_date ? dayjs(item.issued_date) : null,
+        }))
+      }
+
+      if (Array.isArray(newData.award)) {
+        newData.award = newData.award.map((item: any) => ({
+          ...item,
+          issued_date: item.issued_date ? dayjs(item.issued_date) : null,
+        }))
+      }
+
+      if (Array.isArray(newData.organization)) {
+        newData.organization = newData.organization.map((item: any) => ({
+          ...item,
+          start_date: item.start_date ? dayjs(item.start_date) : null,
+          end_date: item.end_date ? dayjs(item.end_date) : null,
+        }))
+      }
+
       this.dataResume = {
         ...this.dataResume,
         ...newData,
@@ -258,5 +296,12 @@ export const useResumeStore = defineStore({
       this.dataResume.award = cloneDeep(awards)
       this.updateResume(this.dataResume.id, this.dataResume)
     },
+    updateOrganization(organization: ITemplate['organization']) {
+      this.dataResume.organization = cloneDeep(organization)
+      this.updateResume(this.dataResume.id, this.dataResume)
+    },
+  },
+  getters: {
+    getResumeInfo: (state) => state.dataResume,
   },
 })

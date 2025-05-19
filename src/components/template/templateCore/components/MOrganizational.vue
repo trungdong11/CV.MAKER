@@ -1,59 +1,110 @@
 <script lang="ts" setup>
 import InputValidation from '@/components/base/InputValidation.vue'
-import BaseCRUDComponent from '@/components/base/BaseCRUDComponent.vue'
+import Button from '@/components/ui/button/Button.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { useResumeStore } from '@/stores/resume/resume'
+import { useForm } from 'vee-validate'
+import { cloneDeep } from 'lodash-es'
+import { formatDateUs } from '@/utils/format'
 
-interface Props {
-  data: Record<string, any>[]
-  isLoading: boolean
+const resumeStore = useResumeStore()
+const { handleSubmit } = useForm()
+
+const localData = ref(cloneDeep(resumeStore.dataResume?.organization))
+
+const openEdit = () => {
+  isEdit.value = true
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  data: () => [],
-  isLoading: false,
+const cancelEdit = () => {
+  isEdit.value = false
+  localData.value = resumeStore.dataResume.organization
+}
+
+const deleteOrganization = (index: number) => {
+  if (localData.value.length > 1) {
+    localData.value.splice(index, 1)
+  }
+}
+
+const isEdit = ref(false)
+const descriptions = ref<string[]>([])
+
+const onSubmit = handleSubmit(async (value) => {
+  localData.value = localData.value.map((item, index) => ({
+    ...item,
+    name: value[`name-${index}`],
+    position: value[`position-${index}`],
+    address: value[`address-${index}`],
+    description: descriptions.value[index],
+    start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
+    end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
+  }))
+
+  console.log(localData.value, 'check data before')
+
+  resumeStore.updateOrganization(localData.value)
+
+  isEdit.value = false
 })
 
-const emit = defineEmits<{
-  (e: 'update:data', value: Record<string, any>[]): void
-}>()
+const isLoading = ref(false)
 
-const handleAdd = () => {
-  const newItem = {
-    name: '',
-    position: '',
-    address: '',
-    startDate: '',
-    endDate: '',
-    description: '',
+onBeforeMount(() => {
+  if (!localData.value) {
+    localData.value = []
   }
-  emit('update:data', [...props.data, newItem])
-}
 
-const handleDelete = (index: number) => {
-  const newData = [...props.data]
-  newData.splice(index, 1)
-  emit('update:data', newData)
-}
+  if (localData.value.length === 0) {
+    localData.value.push({
+      name: 'Vietnam Developer Community',
+      position: 'Technical Lead',
+      address: 'Ho Chi Minh City, Vietnam',
+      start_date: '2021-01-01T00:00:00.000Z',
+      end_date: '2023-12-31T00:00:00.000Z',
+      description: 'Leading technical workshops and mentoring junior developers',
+    })
+
+    resumeStore.updateOrganization(localData.value)
+  }
+
+  localData.value.forEach((item, index) => {
+    descriptions.value[index] = item.description
+  })
+})
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.organization)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
-  <BaseCRUDComponent
-    :data="data"
-    :is-loading="isLoading"
-    @update:data="(value) => emit('update:data', value)"
-    @add="handleAdd"
-    @delete="handleDelete"
+  <div
+    class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
   >
-    <template #header>
-      <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">
-        ORGANIZATION & VOLUNTEERING EXPERIENCED
-      </h2>
-    </template>
-
-    <template #display="{ data }">
+    <!-- Edit button -->
+    <div
+      v-if="!isEdit"
+      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      @click="openEdit"
+    >
+      <span class="i-solar-pen-bold text-primary"></span>
+    </div>
+    <!-- End edit button -->
+    <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">
+      ORGANIZATIONAL & VOLUNTEERING EXPERIENCE
+    </h2>
+    <template v-if="!isEdit">
       <div
-        v-for="(item, index) in data"
+        v-for="(item, index) in localData"
         :key="index"
         class="flex flex-col gap-0 mt-1 w-full px-3"
       >
@@ -64,105 +115,154 @@ const handleDelete = (index: number) => {
           </div>
           <div class="flex flex-col gap-0 items-end">
             <div class="flex items-center font-semibold text-base">
-              <p class="font-semibold text-base">{{ item?.startDate }}</p>
+              <p class="font-semibold text-base">{{ formatDateUs(item?.start_date) }}</p>
               <span> - </span>
-              <p class="font-semibold text-base">{{ item?.endDate }}</p>
+              <p class="font-semibold text-base">{{ formatDateUs(item?.end_date) }}</p>
             </div>
             <p class="font-semibold text-base">{{ item?.address }}</p>
           </div>
         </div>
-        <p class="font-nomal text-sm">{{ item?.description }}</p>
+        <p
+          class="font-nomal text-sm"
+          v-html="item?.description"
+        ></p>
       </div>
     </template>
-
-    <template #edit="{ data }">
-      <div
-        v-for="(item, idx) in data"
-        :key="idx"
-        class="flex items-start gap-x-4 w-full flex-col justify-center relative"
+    <div
+      v-if="isEdit"
+      class="w-full bg-gray-50 rounded-lg p-5"
+    >
+      <form
+        class="flex gap-2 w-full flex-col"
+        @submit.prevent="onSubmit"
       >
-        <div class="form-data flex flex-col gap-1 w-1/2">
-          <label for="title">Company Name</label>
-          <InputValidation
-            id="title"
-            v-model="item.name"
-            placeholder="e.g., Meta, Shopee, etc."
-            type="text"
-            name="title"
-            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-          />
-        </div>
-        <div class="flex items-center gap-x-3 flex-wrap">
-          <div class="form-data flex flex-col gap-1 w-[300px]">
-            <label for="position">Position</label>
-            <InputValidation
-              id="position"
-              v-model="item.position"
-              placeholder="e.g., Frontend, Backend, etc"
-              type="text"
-              name="position"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-[200px]">
-            <label for="city">City, Country</label>
-            <InputValidation
-              id="city"
-              v-model="item.address"
-              placeholder="VietNam, UK, etc"
-              type="text"
-              name="city"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-[200px]">
-            <label for="start">Start Date</label>
-            <InputValidation
-              id="start"
-              v-model="item.startDate"
-              placeholder="Start Date"
-              type="text"
-              name="start"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-          <div class="form-data flex flex-col gap-1 w-[200px]">
-            <label for="end">End Date</label>
-            <InputValidation
-              id="end"
-              v-model="item.endDate"
-              placeholder="End Date"
-              type="text"
-              name="end"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
-            />
-          </div>
-        </div>
-        <div class="flex flex-col gap-1 w-full mb-12">
-          <label for="description">Descriptions</label>
-          <div class="form-description h-40 w-full bg-white rounded-lg">
-            <QuillEditor
-              v-model:content="item.description"
-              :toolbar="['bold', 'italic', 'underline', 'link']"
-              placeholder="e.g. Awarded for writing and presenting an outstading technical paper at a conference"
-              content-type="html"
-              theme="snow"
-            />
-          </div>
-        </div>
         <div
-          v-if="idx + 1 < data.length"
-          class="border-b border-slate-950 mb-5 w-full mt-5"
-        ></div>
-        <div
-          class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
-          @click="handleDelete(idx)"
+          v-for="(item, index) in localData"
+          :key="index"
+          class="flex items-start gap-x-4 w-full flex-col justify-center relative"
         >
-          <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+          <div class="form-data flex flex-col gap-1 w-1/2">
+            <label for="title">Company Name</label>
+            <InputValidation
+              :id="`name-${index}`"
+              placeholder="e.g., Best Technical Paper Award, Bug Bounty Recognition etc."
+              type="text"
+              :name="`name-${index}`"
+              :initial-value="item?.name"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
+            />
+          </div>
+          <div class="flex items-start gap-x-3 flex-wrap">
+            <div class="form-data flex flex-col gap-1 w-[300px]">
+              <label for="position">Position</label>
+              <InputValidation
+                :id="`position-${index}`"
+                placeholder="e.g., Best Technical Paper Award, Bug Bounty Recognition etc."
+                type="text"
+                :name="`position-${index}`"
+                :initial-value="item?.position"
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+              />
+            </div>
+            <div class="form-data flex flex-col gap-1 w-[200px]">
+              <label for="city">City, Country</label>
+              <InputValidation
+                :id="`address-${index}`"
+                placeholder="e.g., Best Technical Paper Award, Bug Bounty Recognition etc."
+                type="text"
+                :name="`address-${index}`"
+                :initial-value="item?.address"
+                class="h-11 mt-1 bg-white border-slate-200 outline-none"
+              />
+            </div>
+            <div class="form-data flex flex-col gap-1 w-[200px]">
+              <label for="start">Start Date</label>
+              <a-config-provider
+                :theme="{
+                  token: {
+                    colorPrimary: '#FF5C00',
+                  },
+                }"
+              >
+                <a-date-picker
+                  v-model:value="localData[index].start_date"
+                  class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                  picker="month"
+                />
+              </a-config-provider>
+            </div>
+            <div class="form-data flex flex-col gap-1 w-[200px]">
+              <label for="end">End Date</label>
+              <a-config-provider
+                :theme="{
+                  token: {
+                    colorPrimary: '#FF5C00',
+                  },
+                }"
+              >
+                <a-date-picker
+                  v-model:value="localData[index].end_date"
+                  class="h-11 mt-1 bg-white border-slate-200 outline-none"
+                  picker="month"
+                />
+              </a-config-provider>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1 w-full mb-12">
+            <label for="description">Descriptions</label>
+            <div class="form-description h-40 w-full bg-white rounded-lg">
+              <QuillEditor
+                v-model:content="descriptions[index]"
+                :toolbar="['bold', 'italic', 'underline', 'link']"
+                placeholder="e.g. Awarded for writing and presenting an outstading technical paper at a conference"
+                content-type="html"
+                theme="snow"
+              />
+            </div>
+          </div>
+          <div
+            class="border-b border-slate-950 mb-5 w-full mt-5"
+            @click.stop.prevent="deleteOrganization(index)"
+          >
+            <div
+              class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+            >
+              <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+            </div>
+          </div>
         </div>
-      </div>
-    </template>
-  </BaseCRUDComponent>
+        <Button
+          variant="outline"
+          type="button"
+          class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
+          @click="localData.push({} as any)"
+        >
+          <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
+          <span class="text-primary">Add more</span>
+        </Button>
+        <div class="flex items-center justify-end gap-2">
+          <Button
+            variant="secondary"
+            class="w-32 h-11 flex gap-2 items-center"
+            @click="cancelEdit"
+          >
+            Cancel
+          </Button>
+          <Button
+            :disabled="isLoading"
+            class="w-32 h-11 bg-primary flex gap-2 items-center"
+            type="submit"
+          >
+            <span
+              v-if="isLoading"
+              class="i-svg-spinners-ring-resize"
+            ></span>
+            <span class="text-white">Save</span>
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>

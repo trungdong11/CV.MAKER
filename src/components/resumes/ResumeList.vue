@@ -42,7 +42,7 @@ const handleConfirmDelete = async (resumeId: string) => {
           <div class="flex items-center justify-between">
             <div class="flex item-center gap-3">
               <h2 class="title text-base font-medium w-full">
-                {{ resume?.personal_details?.fullname || 'Untitled' }}
+                {{ resume?.personal_details?.full_name || 'Untitled' }}
               </h2>
             </div>
             <div class="flex items-center gap-2">
@@ -63,7 +63,7 @@ const handleConfirmDelete = async (resumeId: string) => {
                 >
               </RouterLink>
               <RouterLink
-                to="{ name: 'resume-create', params: { resumeId: resume.id } }"
+                :to="{ name: 'templates', params: { id: resume.id } }"
                 class="flex items-center cursor-pointer hover:text-primary gap-2 hover:underline"
               >
                 <span>Edit</span>

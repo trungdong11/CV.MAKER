@@ -7,27 +7,13 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 import { formatDateUs } from '@/utils/format'
-import { watch, ref, computed } from 'vue'
-import dayjs, { type Dayjs } from 'dayjs'
 
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
 
 const isEdit = ref(false)
 const localData = ref(cloneDeep(resumeStore.dataResume?.education))
-
-const data = computed(() => {
-  return isEdit.value ? localData.value : resumeStore.dataResume?.education || []
-})
-
-const openEdit = () => {
-  isEdit.value = true
-}
-
-const cancelEdit = () => {
-  isEdit.value = false
-  localData.value = resumeStore.dataResume.education
-}
+const descriptions = ref<string[]>([])
 
 const defaultEducation = {
   school: '',
@@ -40,6 +26,15 @@ const defaultEducation = {
   city: '',
 }
 
+const openEdit = () => {
+  isEdit.value = true
+}
+
+const cancelEdit = () => {
+  isEdit.value = false
+  localData.value = resumeStore.dataResume.education
+}
+
 const addEducation = () => {
   localData.value.push({ ...defaultEducation })
 }
@@ -50,17 +45,48 @@ const deleteEducation = (index: number) => {
   }
 }
 
-const onSubmit = handleSubmit(async () => {
-  const transformedData = localData.value.map((item) => ({
+const onSubmit = handleSubmit(async (value) => {
+  console.log(value, 'check data before', descriptions.value)
+
+  localData.value = localData.value.map((item, index) => ({
     ...item,
+    school: value[`school-${index}`],
+    degree: value[`degree-${index}`],
+    gpa: value[`city-${index}`],
+    description: descriptions.value[index],
     start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
     end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
   }))
 
-  console.log(transformedData, 'check data before')
+  console.log(localData.value, 'check data after')
+  resumeStore.updateEducation(localData.value)
 
-  resumeStore.updateEducation(transformedData)
   isEdit.value = false
+})
+
+onBeforeMount(() => {
+  if (!localData.value) {
+    localData.value = []
+  }
+
+  if (localData.value.length === 0) {
+    localData.value.push({
+      degree: 'Bachelor of Computer Science',
+      school: 'University of Technology',
+      start_date: '2013-09-01T00:00:00.000Z',
+      end_date: '2017-06-30T00:00:00.000Z',
+      school_link: 'https://university.edu',
+      city: 'Ho Chi Minh City',
+      gpa: 3.8,
+      description: 'Major in Software Engineering',
+    })
+
+    resumeStore.updateEducation(localData.value)
+  }
+
+  localData.value.forEach((item, index) => {
+    descriptions.value[index] = item.description
+  })
 })
 
 watch(
@@ -91,7 +117,7 @@ watch(
 
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">EDUCATION</h2>
     <div
-      v-for="(item, index) in data"
+      v-for="(item, index) in localData"
       :key="index"
       class="flex flex-col gap-0 mt-1 w-full px-3"
     >
@@ -138,7 +164,7 @@ watch(
               id="school"
               placeholder="University of CVMaker"
               type="text"
-              name="school"
+              :name="`school-${index}`"
               :initial-value="education.school"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
@@ -157,7 +183,7 @@ watch(
               id="degree"
               placeholder="Bachelor of IT ..."
               type="text"
-              name="degree"
+              :name="`degree-${index}`"
               :initial-value="education.degree"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
@@ -168,7 +194,7 @@ watch(
               id="GPA"
               placeholder="3.4 of 4.0"
               type="text"
-              name="GPA"
+              :name="`gpa-${index}`"
               :initial-value="education.gpa.toString()"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
@@ -186,27 +212,12 @@ watch(
                 v-model:value="localData[index].start_date"
                 class="h-11 mt-1 bg-white border-slate-200 outline-none"
                 picker="month"
+                :name="`startDate-${index}`"
               />
             </a-config-provider>
-            <!-- <InputValidation
-              id="startDate"
-              placeholder="Start Date"
-              type="text"
-              name="startDate"
-              :initial-value=""
-              class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            /> -->
           </div>
           <div class="form-data flex flex-col gap-1 w-[200px]">
             <label for="name">Graduation Date</label>
-            <!-- <InputValidation
-              id="endDate"
-              placeholder="Graduation Date"
-              type="text"
-              name="endDate"
-              :initial-value="new Date(education.endDate).toLocaleDateString()"
-              class="h-11 mt-1 bg-white border-slate-200 outline-none"
-            /> -->
             <a-config-provider
               :theme="{
                 token: {
@@ -218,6 +229,7 @@ watch(
                 v-model:value="localData[index].end_date"
                 class="h-11 mt-1 bg-white border-slate-200 outline-none"
                 picker="month"
+                :name="`endDate-${index}`"
               />
             </a-config-provider>
           </div>
@@ -226,7 +238,7 @@ watch(
           <div class="form-description h-40 w-full bg-white rounded-lg">
             <QuillEditor
               ref="quillEditor"
-              v-model:content="localData[index].description"
+              v-model:content="descriptions[index]"
               :toolbar="['bold', 'italic', 'underline', 'link']"
               placeholder="Enter your post"
               content-type="html"
@@ -238,13 +250,10 @@ watch(
       <Button
         variant="outline"
         class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
+        @click.stop.prevent="addEducation()"
       >
         <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
-        <span
-          class="text-primary"
-          @click.stop.prevent="addEducation()"
-          >Add more</span
-        >
+        <span class="text-primary">Add more</span>
       </Button>
       <div class="flex items-center justify-end gap-2">
         <Button

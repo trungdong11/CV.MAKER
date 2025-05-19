@@ -15,6 +15,17 @@ const localData = ref(cloneDeep(resumeStore.dataResume?.works))
 
 const isLoading = ref(false)
 const isEdit = ref(false)
+
+const defaultWorkExperience = {
+  company_name: '',
+  is_current_working: false,
+  position: '',
+  location: '',
+  start_date: '',
+  end_date: '',
+  description: '',
+}
+
 const openEdit = () => {
   isEdit.value = true
 }
@@ -22,6 +33,16 @@ const openEdit = () => {
 const cancelEdit = () => {
   isEdit.value = false
   localData.value = resumeStore.dataResume?.works
+}
+
+const addWorkExperience = () => {
+  localData.value.push({ ...defaultWorkExperience })
+}
+
+const deleteWorkExperience = (index: number) => {
+  if (localData.value.length > 1) {
+    localData.value.splice(index, 1)
+  }
 }
 
 const descriptions = ref<string[]>([])
@@ -59,6 +80,8 @@ const onSubmit = handleSubmit(async (value) => {
     company_name: value[`company_name-${index}`],
     location: value[`city-${index}`],
     description: descriptions.value[index],
+    start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
+    end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
   }))
 
   console.log(localData.value, 'check data after')
@@ -66,6 +89,16 @@ const onSubmit = handleSubmit(async (value) => {
 
   isEdit.value = false
 })
+
+watch(
+  () => resumeStore.dataResume,
+  (newVal) => {
+    if (newVal) {
+      localData.value = cloneDeep(newVal.works)
+    }
+  },
+  { immediate: true, deep: true },
+)
 </script>
 
 <template>
@@ -164,9 +197,10 @@ const onSubmit = handleSubmit(async (value) => {
               }"
             >
               <a-date-picker
+                v-model:value="localData[index].start_date"
                 class="h-11 mt-1 bg-white border-slate-200 outline-none"
-                :initial-value="formatDateUs(item?.start_date)"
                 picker="month"
+                :name="`startDate-${index}`"
               />
             </a-config-provider>
           </div>
@@ -180,9 +214,10 @@ const onSubmit = handleSubmit(async (value) => {
               }"
             >
               <a-date-picker
+                v-model:value="localData[index].end_date"
                 class="h-11 mt-1 bg-white border-slate-200 outline-none"
-                :initial-value="formatDateUs(item?.end_date)"
                 picker="month"
+                :name="`endDate-${index}`"
               />
             </a-config-provider>
           </div>
@@ -201,18 +236,20 @@ const onSubmit = handleSubmit(async (value) => {
           </div>
         </ScrollArea>
         <div
-          v-if="index + 1 < localData.length"
           class="border-b border-slate-950 mb-5 w-full mt-5"
-        ></div>
-        <div
-          class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+          @click.stop.prevent="deleteWorkExperience(index)"
         >
-          <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+          <div
+            class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+          >
+            <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
+          </div>
         </div>
       </div>
       <Button
         variant="outline"
         class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
+        @click.stop.prevent="addWorkExperience()"
       >
         <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
         <span class="text-primary">Add more</span>
