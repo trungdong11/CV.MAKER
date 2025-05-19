@@ -1,79 +1,71 @@
 <script lang="ts" setup>
 import Button from '@/components/ui/button/Button.vue'
+import { useResumeStore } from '@/stores/resume/resume'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { cloneDeep } from 'lodash-es'
+import { useForm } from 'vee-validate'
 
-interface Props {
-  data: Record<string, any>
-  isLoading: boolean
-}
-const prop = withDefaults(defineProps<Props>(), {
-  data: () => reactive({}),
-  isLoading: false,
-})
+const resumeStore = useResumeStore()
+const { handleSubmit } = useForm()
 
-// Bản sao phản ứng của dữ liệu để chỉnh sửa
-const localData = ref(prop.data)
-
-// Đồng bộ localData khi prop.data thay đổi
-watch(
-  () => prop.data,
-  (newData) => {
-    localData.value = newData
-  },
-  { deep: true },
-)
-
-// Trạng thái chỉnh sửa
 const isEdit = ref(false)
+const localData = ref(cloneDeep(resumeStore.dataResume?.publication))
+
 const openEdit = () => {
   isEdit.value = true
 }
 
-// Expose openEdit để Index.vue có thể gọi
-defineExpose({
-  openEdit,
-})
-
 // Hủy chỉnh sửa
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = prop.data // Khôi phục dữ liệu gốc
+  localData.value = resumeStore.dataResume.certification
 }
 
-// Phát sự kiện khi submit form
-const emit = defineEmits<{
-  (e: 'update:data', value: Record<string, any>[]): void
-}>()
 const onSubmit = () => {
-  emit('update:data', localData.value)
   isEdit.value = false
 }
+
+const isLoading = ref(false)
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">PUBLICATIONS</h2>
+  <div
+    class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+  >
+    <!-- Edit button -->
     <div
-      v-for="(item, index) in prop.data"
-      :key="index"
-      class="flex flex-col gap-0 mt-1 w-full px-3"
+      v-if="!isEdit"
+      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      @click="openEdit"
     >
-      <div class="flex items-center justify-between w-full">
-        <div class="flex items-center gap-1">
-          <a
-            :href="item?.url"
-            class="text-base font-semibold hover:text-primary"
-            >{{ item?.title }}</a
-          >
-          <p>
-            on <span class="text-base font-semibold">{{ item?.publisher }}</span>
-          </p>
-        </div>
-        <p class="text-base font-semibold">{{ item?.publicationDate }}</p>
-      </div>
-      <p clas="text-xm font-normal">{{ item?.description }}</p>
+      <span class="i-solar-pen-bold text-primary"></span>
     </div>
+    <!-- End edit button -->
+    <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">PUBLICATIONS</h2>
+    <template v-if="!isEdit">
+      <div
+        v-for="(item, index) in resumeStore.dataResume?.publication"
+        :key="index"
+        class="flex flex-col gap-0 mt-1 w-full px-3"
+      >
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-1">
+            <a
+              :href="item?.url"
+              class="text-base font-semibold hover:text-primary"
+              >{{ item?.title }}</a
+            >
+            <p>
+              on <span class="text-base font-semibold">{{ item?.publisher }}</span>
+            </p>
+          </div>
+          <p class="text-base font-semibold">{{ item?.publication_date }}</p>
+        </div>
+        <p clas="text-xm font-normal">{{ item?.description }}</p>
+      </div>
+    </template>
   </div>
   <div
     v-if="isEdit"
@@ -84,7 +76,7 @@ const onSubmit = () => {
       @submit="onSubmit"
     >
       <div
-        v-for="(item, index) in prop.data"
+        v-for="(item, index) in localData"
         :key="index"
         class="flex items-start gap-x-4 w-full flex-col justify-center relative"
       >
@@ -137,7 +129,7 @@ const onSubmit = () => {
           <div class="form-description h-40 w-full bg-white rounded-lg">
             <QuillEditor
               ref="quillEditor"
-              v-model:content="localData.description"
+              v-model:content="localData[index].description"
               :toolbar="['bold', 'italic', 'underline', 'link']"
               placeholder="e.g. This paper presents the first study that attempts to synthesize research on AI in e-commerce"
               content-type="html"
@@ -146,7 +138,7 @@ const onSubmit = () => {
           </div>
         </ScrollArea>
         <div
-          v-if="index + 1 < prop.data.length"
+          v-if="index + 1 < localData.length"
           class="border-b border-slate-950 mb-5 w-full mt-5"
         ></div>
         <div

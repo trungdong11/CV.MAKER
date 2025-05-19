@@ -13,15 +13,17 @@ import MOrganizational from './components/MOrganizational.vue'
 import MPublication from './components/MPublication.vue'
 import Card from '@/components/ui/card/Card.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useResumeStore } from '@/stores/resume/resume'
 
 // Định nghĩa tất cả các phần của CV
+const resumeStore = useResumeStore()
 const sections = [
   {
-    key: 'personal',
+    key: 'personal_details',
     component: MPersonal,
   },
   {
-    key: 'description',
+    key: 'summary',
     component: MDescription,
   },
   {
@@ -33,7 +35,7 @@ const sections = [
     component: MEducation,
   },
   {
-    key: 'work',
+    key: 'works',
     component: MWorkExperient,
   },
   {
@@ -41,11 +43,11 @@ const sections = [
     component: MProject,
   },
   {
-    key: 'certifications',
+    key: 'certification',
     component: MCertification,
   },
   {
-    key: 'awards',
+    key: 'award',
     component: MAward,
   },
   {
@@ -53,11 +55,11 @@ const sections = [
     component: MLanguage,
   },
   {
-    key: 'organizations',
+    key: 'organization-not',
     component: MOrganizational,
   },
   {
-    key: 'publications',
+    key: 'publication',
     component: MPublication,
   },
 ]
@@ -68,6 +70,17 @@ const sectionNotAdded = computed(() => {
   return sections.filter((section) => {
     return !sectionInitialIndex.value.includes(sections.indexOf(section))
   })
+})
+
+onBeforeMount(() => {
+  const data = resumeStore.dataResume
+  if (data) {
+    sectionInitialIndex.value = sections
+      .map((section, index) => {
+        return data[section.key] ? index : null
+      })
+      .filter((index) => index !== null)
+  }
 })
 </script>
 

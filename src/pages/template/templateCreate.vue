@@ -84,7 +84,10 @@ const isLoading = ref(false)
       </div>
     </div>
 
-    <div class="px-8 flex gap-6 overflow-y-hidden p-1">
+    <div
+      v-if="resumeStore?.dataResume?.id"
+      class="px-8 flex gap-6 overflow-y-hidden p-1"
+    >
       <TemplateCore />
       <div class="flex flex-col gap-6 min-w-[300px]">
         <Evaluation />

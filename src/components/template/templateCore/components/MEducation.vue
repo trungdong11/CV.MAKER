@@ -59,7 +59,7 @@ const onSubmit = handleSubmit(async () => {
 
   console.log(transformedData, 'check data before')
 
-  await resumeStore.updateEducation(transformedData)
+  resumeStore.updateEducation(transformedData)
   isEdit.value = false
 })
 

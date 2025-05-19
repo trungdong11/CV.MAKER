@@ -1,117 +1,153 @@
 <script lang="ts" setup>
 import InputValidation from '@/components/base/InputValidation.vue'
 import Button from '@/components/ui/button/Button.vue'
+import { useResumeStore } from '@/stores/resume/resume'
+import { cloneDeep } from 'lodash-es'
+import { useForm } from 'vee-validate'
+import { formatDateUs } from '@/utils/format'
 
-interface Props {
-  data: Record<string, any>
-  isLoading: boolean
-}
-const prop = withDefaults(defineProps<Props>(), {
-  data: () => reactive({}),
-  isLoading: false,
-})
-
-const localData = ref(prop.data)
-
-watch(
-  () => prop.data,
-  (newData) => {
-    localData.value = newData
-  },
-  { deep: true },
-)
+const resumeStore = useResumeStore()
+const { handleSubmit } = useForm()
 
 const isEdit = ref(false)
+const localData = ref(cloneDeep(resumeStore.dataResume?.certification))
+
 const openEdit = () => {
   isEdit.value = true
 }
 
-defineExpose({
-  openEdit,
-})
-
 const cancelEdit = () => {
   isEdit.value = false
-  localData.value = prop.data
+  localData.value = resumeStore.dataResume.education as any
 }
 
-const emit = defineEmits<{
-  (e: 'update:data', value: Record<string, any>[]): void
-}>()
-const onSubmit = () => {
-  emit('update:data', localData.value)
+const isLoading = ref(false)
+const onSubmit = handleSubmit(async (value) => {
+  localData.value = localData.value.map((item, index) => ({
+    ...item,
+    certification_name: value[`certification_name-${index}`],
+    issuing_organization: value[`issuing_organization-${index}`],
+    issued_date: value[`issued_date-${index}`],
+    credential_id: value[`credential_id-${index}`],
+    certification_link: value[`certification_link-${index}`],
+  }))
+
+  resumeStore.updateCertifications(localData.value)
   isEdit.value = false
+})
+
+onBeforeMount(() => {
+  if (!localData.value) {
+    localData.value = []
+  }
+
+  if (localData.value.length === 0) {
+    localData.value.push({
+      certification_name: 'AWS Certified Cloud Practitioner',
+      issuing_organization: 'Amazon Web Services',
+      issued_date: '2023-01-01T00:00:00.000Z',
+      credential_id: '1234567890',
+      certification_link: 'https://aws.amazon.com/certification/certified-cloud-practitioner/',
+    })
+
+    resumeStore.updateCertifications(localData.value)
+  }
+})
+
+const deleteSkill = (index: number) => {
+  if (localData.value.length > 1) {
+    localData.value.splice(index, 1)
+  }
 }
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">CERTIFICATION</h2>
+  <div
+    class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
+    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+  >
+    <!-- Edit button -->
     <div
-      v-for="(item, index) in prop.data"
-      :key="index"
-      class="flex flex-col gap-0 mt-1 w-full px-3"
+      v-if="!isEdit"
+      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
+      @click="openEdit"
     >
-      <div class="flex justify-between w-full items-center">
-        <a
-          :href="item?.certificationLink"
-          class="cursor-pointer"
-        >
-          <span class="font-semibold text-base">{{ item?.certificationName }}</span> by
-          <span class="font-normal text-sm">{{ item?.issuingOrganization }}</span>
-        </a>
-        <p class="font-semibold text-base">{{ item?.issuedDate }}</p>
-      </div>
-      <div class="flex justify-between w-full items-center">
-        <p class="font-semibold text-base underline cursor-pointer hover:text-primary">
-          Credential Id:
-          <span class="font-normal text-sm"> {{ item?.credentialId }}</span>
-        </p>
-      </div>
+      <span class="i-solar-pen-bold text-primary"></span>
     </div>
+    <!-- End edit button -->
+    <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">CERTIFICATION</h2>
+    <template v-if="!isEdit">
+      <div
+        v-for="(item, index) in resumeStore.dataResume?.certification"
+        :key="index"
+        class="flex flex-col gap-0 mt-1 w-full px-3"
+      >
+        <div class="flex justify-between w-full items-center">
+          <a
+            :href="item?.certification_link"
+            class="cursor-pointer"
+          >
+            <span class="font-semibold text-base">{{ item?.certification_name }}</span> by
+            <span class="font-normal text-sm">{{ item?.issuing_organization }}</span>
+          </a>
+          <p class="font-semibold text-base">
+            {{ formatDateUs(item?.issued_date) }}
+          </p>
+        </div>
+        <div class="flex justify-between w-full items-center">
+          <p class="font-semibold text-base underline cursor-pointer hover:text-primary">
+            Credential Id:
+            <span class="font-normal text-sm"> {{ item?.credential_id }}</span>
+          </p>
+        </div>
+      </div>
+    </template>
   </div>
   <div
     v-if="isEdit"
-    class="w-full bg-[#f9f1ee] rounded-lg p-5 mt-5"
+    class="w-full bg-gray-50 rounded-lg p-5"
   >
     <form
       class="flex gap-2 w-full flex-col"
       @submit="onSubmit"
     >
       <div
-        v-for="(item, index) in prop.data"
+        v-for="(item, index) in localData"
         :key="index"
         class="flex items-start gap-x-4 w-full flex-col justify-center relative"
       >
         <div class="form-data flex flex-col gap-1 w-[300px]">
           <label for="name">Certification Name</label>
           <InputValidation
-            id="name"
+            :id="`certification_name-${index}`"
             placeholder="e.g. AWS Certified Cloud Practitioner"
             type="text"
-            name="name"
-            class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+            :name="`certification_name-${index}`"
+            :initial-value="item?.certification_name"
+            class="h-11 mt-1 bg-white border-slate-200 outline-none"
           />
         </div>
         <div class="flex items-center gap-x-3 flex-wrap">
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="position">Issuing Organization</label>
             <InputValidation
-              id="position"
+              :id="`issuing_organization-${index}`"
               placeholder="e.g., Frontend, Backend, etc"
               type="text"
-              name="position"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              :name="`issuing_organization-${index}`"
+              :initial-value="item?.issuing_organization"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="city">Issued Date</label>
             <InputValidation
-              id="city"
+              :id="`issued_date-${index}`"
               placeholder="issued day"
               type="text"
-              name="city"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              :name="`issued_date-${index}`"
+              :initial-value="item?.issued_date"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
         </div>
@@ -119,37 +155,37 @@ const onSubmit = () => {
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="city">Certification Link</label>
             <InputValidation
-              id="city"
+              :id="`certification_link-${index}`"
               placeholder="link-to-your-certification.com"
               type="text"
-              name="city"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              :name="`certification_link-${index}`"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
           <div class="form-data flex flex-col gap-1 w-[300px]">
             <label for="end">Credential ID</label>
             <InputValidation
-              id="end"
+              :id="`credential_id-${index}`"
               placeholder="Credential ID"
               type="text"
-              name="end"
-              class="h-11 mt-1 bg-slate-50 border-slate-200 outline-none"
+              :name="`credential_id-${index}`"
+              :initial-value="item?.credential_id"
+              class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
         </div>
         <div
-          v-if="index + 1 < prop.data.length"
-          class="border-b border-slate-950 mb-5 w-full mt-5"
-        ></div>
-        <div
           class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
+          @click="deleteSkill(index)"
         >
           <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
         </div>
       </div>
       <Button
         variant="outline"
+        type="button"
         class="w-32 h-11 flex gap-2 items-center border-primary text-primary"
+        @click="localData.push({} as any)"
       >
         <span class="i-solar-add-circle-broken w-4 h-4 text-primary"></span>
         <span class="text-primary">Add more</span>
