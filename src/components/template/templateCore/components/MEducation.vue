@@ -7,6 +7,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 import { formatDateUs } from '@/utils/format'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
@@ -65,25 +66,6 @@ const onSubmit = handleSubmit(async (value) => {
 })
 
 onBeforeMount(() => {
-  if (!localData.value) {
-    localData.value = []
-  }
-
-  if (localData.value.length === 0) {
-    localData.value.push({
-      degree: 'Bachelor of Computer Science',
-      school: 'University of Technology',
-      start_date: '2013-09-01T00:00:00.000Z',
-      end_date: '2017-06-30T00:00:00.000Z',
-      school_link: 'https://university.edu',
-      city: 'Ho Chi Minh City',
-      gpa: 3.8,
-      description: 'Major in Software Engineering',
-    })
-
-    resumeStore.updateEducation(localData.value)
-  }
-
   localData.value.forEach((item, index) => {
     descriptions.value[index] = item.description
   })
@@ -105,13 +87,23 @@ watch(
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
     :class="isEdit ? 'bg-gray-50' : 'bg-white'"
   >
-    <!-- Edit button -->
-    <div
+   <!-- Edit button -->
+   <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="openEdit"
+      >
+        <span class="i-solar-pen-bold text-primary"></span>
+      </div>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="resumeStore.deleteSection('education')"
+      >
+        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+      </div>
     </div>
     <!-- End edit button -->
 

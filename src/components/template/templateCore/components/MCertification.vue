@@ -36,24 +36,6 @@ const onSubmit = handleSubmit(async (value) => {
   isEdit.value = false
 })
 
-onBeforeMount(() => {
-  if (!localData.value) {
-    localData.value = []
-  }
-
-  if (localData.value.length === 0) {
-    localData.value.push({
-      certification_name: 'AWS Certified Cloud Practitioner',
-      issuing_organization: 'Amazon Web Services',
-      issued_date: '2023-01-01T00:00:00.000Z',
-      credential_id: '1234567890',
-      certification_link: 'https://aws.amazon.com/certification/certified-cloud-practitioner/',
-    })
-
-    resumeStore.updateCertifications(localData.value)
-  }
-})
-
 const deleteCertification = (index: number) => {
   if (localData.value.length > 1) {
     localData.value.splice(index, 1)
@@ -79,10 +61,20 @@ watch(
     <!-- Edit button -->
     <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="openEdit"
+      >
+        <span class="i-solar-pen-bold text-primary"></span>
+      </div>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="resumeStore.deleteSection('certification')"
+      >
+        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+      </div>
     </div>
     <!-- End edit button -->
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">CERTIFICATION</h2>

@@ -5,6 +5,7 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { cloneDeep } from 'lodash-es'
 import { useForm } from 'vee-validate'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()

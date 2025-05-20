@@ -50,22 +50,6 @@ const onSubmit = handleSubmit(async (value) => {
 const isLoading = ref(false)
 
 onBeforeMount(() => {
-  if (!localData.value) {
-    localData.value = []
-  }
-
-  if (localData.value.length === 0) {
-    localData.value.push({
-      award_title: 'Best Paper Award',
-      award_title_link: 'https://example.com/award',
-      issued_by: '',
-      issued_date: '2023-01-01T00:00:00.000Z',
-      description: 'Awarded for outstanding research in computer science.',
-    })
-
-    resumeStore.updateAwards(localData.value)
-  }
-
   localData.value.forEach((item, index) => {
     descriptions.value[index] = item.description
   })
@@ -90,10 +74,20 @@ watch(
     <!-- Edit button -->
     <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="openEdit"
+      >
+        <span class="i-solar-pen-bold text-primary"></span>
+      </div>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="resumeStore.deleteSection('award')"
+      >
+        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+      </div>
     </div>
     <!-- End edit button -->
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">AWARDS</h2>
