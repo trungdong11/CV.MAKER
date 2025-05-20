@@ -12,7 +12,6 @@ import Evaluation from '@/components/template/review/Evaluation.vue'
 import MatchResume from '@/components/template/review/MatchResume.vue'
 import { useResumeStore } from '@/stores/resume/resume'
 import { useRoute } from 'vue-router'
-import { generateCV } from '@/utils/resume'
 import jsPDF from 'jspdf'
 import { formatDateUs } from '@/utils/format'
 

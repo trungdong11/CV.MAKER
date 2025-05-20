@@ -41,7 +41,7 @@ export const getModelList = async (): Promise<Model[]> => {
 
 //AI model
 export const evaluateCVApi = async (data: any): Promise<BaseResponse<IEvaluate>> => {
-  return $api('/upload_cv', {
+  return $api('/cv/score', {
     method: 'POST',
     body: data,
     baseURL: config.evaluateEndpoint,

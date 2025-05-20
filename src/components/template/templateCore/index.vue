@@ -10,12 +10,11 @@ import MCertification from './components/MCertification.vue'
 import MAward from './components/MAward.vue'
 import MLanguage from './components/MLanguage.vue'
 import MOrganizational from './components/MOrganizational.vue'
-import MPublication from './components/MPublication.vue'
+// import MPublication from './components/MPublication.vue'
 import Card from '@/components/ui/card/Card.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useResumeStore } from '@/stores/resume/resume'
 
-// Định nghĩa tất cả các phần của CV
 const resumeStore = useResumeStore()
 const sections = [
   {
@@ -58,13 +57,13 @@ const sections = [
     key: 'organization',
     component: MOrganizational,
   },
-  {
-    key: 'publication',
-    component: MPublication,
-  },
+  // {
+  //   key: 'publication',
+  //   component: MPublication,
+  // },
 ]
 
-const sectionInitialIndex = ref([0, 1, 2, 3, 4])
+const sectionInitialIndex = ref([0, 1, 2, 3])
 
 const sectionNotAdded = computed(() => {
   return sections.filter((section) => {

@@ -5,10 +5,10 @@ export const dataCreate = {
   summary:
     "Experienced Front-end developer with 2 years of expertise in Web Development. I am confident in my ability to solve technical challenges and contribute to delivering high-quality products. I'm seeking opportunities that allow me to make meaningful contributions while continuing to grow my skills.",
   personal_details: {
-    full_name: 'Le5678911',
+    full_name: 'LE VAN B',
     phone_number: '0353504690',
     address: 'Vietnam, Da Nang City',
-    email: 'trungdong0811@gmail.com',
+    email: 'levanbwork@gmail.com',
   },
   socials: [
     { icon: 'linkedin', link: 'https://linkedin.com/in/johndoe' },
@@ -102,13 +102,13 @@ export const dataCreate = {
     },
   ],
   award: [
-    // {
-    //   award_title: 'Best Developer Award',
-    //   award_title_link: 'https://example.com/award',
-    //   issued_by: 'Tech Community Vietnam',
-    //   issued_date: '2022-12-15T00:00:00.000Z',
-    //   description: 'Awarded for outstanding contribution to open source projects',
-    // },
+    {
+      award_title: 'Best Developer Award',
+      award_title_link: 'https://example.com/award',
+      issued_by: 'Tech Community Vietnam',
+      issued_date: '2022-12-15T00:00:00.000Z',
+      description: 'Awarded for outstanding contribution to open source projects',
+    },
   ],
 }
 

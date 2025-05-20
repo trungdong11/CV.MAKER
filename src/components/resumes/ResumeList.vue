@@ -3,7 +3,6 @@ import { useResumeManageStore } from '@/stores/resume/resumeManage'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useConfirmDialog } from '@/stores/modal'
-// import Chip from '@/components/base/Chip.vue'
 
 const resumeManageStore = useResumeManageStore()
 const confirmDialog = useConfirmDialog()
@@ -63,7 +62,7 @@ const handleConfirmDelete = async (resumeId: string) => {
                 >
               </RouterLink>
               <RouterLink
-                :to="{ name: 'templates', params: { id: resume.id } }"
+                :to="`/resumes/${resume?.id}`"
                 class="flex items-center cursor-pointer hover:text-primary gap-2 hover:underline"
               >
                 <span>Edit</span>
