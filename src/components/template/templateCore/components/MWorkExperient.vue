@@ -7,6 +7,7 @@ import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 import { useResumeStore } from '@/stores/resume/resume'
 import { formatDateUs } from '@/utils/format'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
@@ -47,25 +48,6 @@ const deleteWorkExperience = (index: number) => {
 
 const descriptions = ref<string[]>([])
 onBeforeMount(() => {
-  console.log('localData', localData.value)
-  if (!localData.value) {
-    localData.value = []
-  }
-
-  if (localData.value.length === 0) {
-    localData.value.push({
-      company_name: 'Tech Solutions Inc.',
-      is_current_working: true,
-      position: 'Senior Software Engineer',
-      location: 'Ho Chi Minh City, Vietnam',
-      start_date: '2020-01-01T00:00:00.000Z',
-      end_date: '2023-12-31T00:00:00.000Z',
-      description: 'Led development of enterprise applications using React and Node.js',
-    })
-
-    resumeStore.updateWorkExperience(localData.value)
-  }
-
   localData.value.forEach((item, index) => {
     descriptions.value[index] = item.description
   })
@@ -106,13 +88,23 @@ watch(
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
     :class="isEdit ? 'bg-gray-50' : 'bg-white'"
   >
-    <!-- Edit button -->
-    <div
+        <!-- Edit button -->
+        <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="openEdit"
+      >
+        <span class="i-solar-pen-bold text-primary"></span>
+      </div>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="resumeStore.deleteSection('works')"
+      >
+        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+      </div>
     </div>
     <!-- End edit button -->
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">WORK EXPERIENCED</h2>
