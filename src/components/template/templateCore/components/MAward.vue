@@ -11,6 +11,8 @@ import { formatDateUs } from '@/utils/format'
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
 
+const isPreview = computed(() => resumeStore.getShowPreview)
+
 const localData = ref(cloneDeep(resumeStore.dataResume?.award))
 
 const openEdit = () => {
@@ -73,7 +75,7 @@ watch(
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit"
+      v-if="!isEdit && !isPreview"
       class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
       <div

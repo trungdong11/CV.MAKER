@@ -9,6 +9,7 @@ import { useForm } from 'vee-validate'
 
 const resumeStore = useResumeStore()
 const localData = ref(resumeStore.dataResume.summary)
+const isPreview = computed(() => resumeStore.getShowPreview)
 
 const isEdit = ref(false)
 const openEdit = () => {
@@ -57,7 +58,7 @@ watch(
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit"
+      v-if="!isEdit && !isPreview"
       class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
       @click="openEdit"
     >

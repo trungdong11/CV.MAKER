@@ -9,6 +9,7 @@ import { cloneDeep } from 'lodash-es'
 const resumeStore = useResumeStore()
 const localData = ref(cloneDeep(resumeStore.dataResume?.skills))
 const { handleSubmit } = useForm()
+const isPreview = computed(() => resumeStore.getShowPreview)
 
 const isEdit = ref(false)
 const isLoading = ref(false)
@@ -87,9 +88,9 @@ watch(
     :class="isEdit ? 'bg-gray-50' : 'bg-white'"
     class="relative items-center group flex flex-col justify-start gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
-       <!-- Edit button -->
-       <div
-      v-if="!isEdit"
+    <!-- Edit button -->
+    <div
+      v-if="!isEdit && !isPreview"
       class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
       <div

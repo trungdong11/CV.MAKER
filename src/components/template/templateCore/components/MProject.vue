@@ -14,6 +14,7 @@ const { handleSubmit } = useForm()
 
 const localData = ref(cloneDeep(resumeStore.dataResume?.projects))
 const descriptions = ref<string[]>([])
+const isPreview = computed(() => resumeStore.getShowPreview)
 
 const defaultProject = {
   project_name: '',
@@ -82,9 +83,9 @@ watch(
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
     :class="isEdit ? 'bg-gray-50' : 'bg-white'"
   >
-        <!-- Edit button -->
-        <div
-      v-if="!isEdit"
+    <!-- Edit button -->
+    <div
+      v-if="!isEdit && !isPreview"
       class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
       <div

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import MPersonal from './components/MPersonal.vue'
 import MDescription from './components/MDescription.vue'
 import MSkill from './components/MSkill.vue'

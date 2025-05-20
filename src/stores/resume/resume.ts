@@ -135,6 +135,7 @@ export const useResumeStore = defineStore({
       summary: '',
     } as ITemplate,
     isLoading: true,
+    showPreview: false,
   }),
 
   actions: {
@@ -474,8 +475,15 @@ export const useResumeStore = defineStore({
       }
       this.updateResume(this.dataResume.id, this.dataResume)
     },
+    setShowPreview() {
+      this.showPreview = true
+    },
+    setUnShowPreview() {
+      this.showPreview = false
+    },
   },
   getters: {
     getResumeInfo: (state) => state.dataResume,
+    getShowPreview: (state) => state.showPreview,
   },
 })

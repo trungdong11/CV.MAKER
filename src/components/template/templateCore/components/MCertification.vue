@@ -11,6 +11,7 @@ const { handleSubmit } = useForm()
 
 const isEdit = ref(false)
 const localData = ref(cloneDeep(resumeStore.dataResume?.certification))
+const isPreview = computed(() => resumeStore.getShowPreview)
 
 const openEdit = () => {
   isEdit.value = true
@@ -60,7 +61,7 @@ watch(
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit"
+      v-if="!isEdit && !isPreview"
       class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
       <div

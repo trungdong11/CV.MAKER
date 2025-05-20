@@ -10,6 +10,7 @@ import Button from '@/components/ui/button/Button.vue'
 import TemplateCore from '@/components/template/templateCore/index.vue'
 import Evaluation from '@/components/template/review/Evaluation.vue'
 import MatchResume from '@/components/template/review/MatchResume.vue'
+import MPreview from '@/components/template/modal/MPreview.vue'
 import { useResumeStore } from '@/stores/resume/resume'
 import { useRoute } from 'vue-router'
 import jsPDF from 'jspdf'
@@ -30,6 +31,17 @@ onMounted(() => {
 })
 
 const isLoading = ref(false)
+const isShowPreview = ref(false)
+
+const showPreview = () => {
+  resumeStore.setShowPreview()
+  isShowPreview.value = true
+}
+
+const unShowPreview = () => {
+  resumeStore.setUnShowPreview()
+  isShowPreview.value = false
+}
 
 const checkPageOverflow = (doc: jsPDF, currentY: number, additionalHeight = 10): number => {
   const pageHeight = doc.internal.pageSize.height
@@ -555,6 +567,7 @@ const handleDownload = () => {
           :disabled="isLoading"
           variant="outline"
           class="w-32 h-11 text-primary border-primary flex gap-2 items-center"
+          @click="showPreview()"
         >
           <span class="text-primary i-solar-eye-linear w-4 h-4"></span>
           <span class="text-primary">Preview</span>
@@ -581,5 +594,10 @@ const handleDownload = () => {
         <MatchResume />
       </div>
     </div>
+
+    <MPreview
+      v-if="isShowPreview"
+      @close="unShowPreview()"
+    />
   </div>
 </template>
