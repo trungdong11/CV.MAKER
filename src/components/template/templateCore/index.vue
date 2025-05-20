@@ -58,13 +58,23 @@ const sections = [
     key: 'organization',
     component: MOrganizational,
   },
-  {
-    key: 'publication',
-    component: MPublication,
-  },
+  // {
+  //   key: 'publication',
+  //   component: MPublication,
+  // },
 ]
 
-const sectionInitialIndex = ref([0, 1, 2, 3, 4])
+const sectionInitialIndex = computed(() => {
+  return sections
+    .map((section, index) => {
+      if (section.key === 'personal_details') {
+        return resumeStore.dataResume[section.key] !== null ? index : null
+      } else {
+        return resumeStore.dataResume[section.key]?.length > 0 ? index : null
+      }
+    })
+    .filter((index) => index !== null)
+})
 
 const sectionNotAdded = computed(() => {
   return sections.filter((section) => {
@@ -72,16 +82,61 @@ const sectionNotAdded = computed(() => {
   })
 })
 
-onBeforeMount(() => {
-  const data = resumeStore.dataResume
-  if (data) {
-    sectionInitialIndex.value = sections
-      .map((section, index) => {
-        return data[section.key] ? index : null
-      })
-      .filter((index) => index !== null)
+// const checkSection = () => {
+//   const data = resumeStore.dataResume
+//   if (data) {
+//     sectionInitialIndex.value = sections
+//       .map((section, index) => {
+//         console.log(section.key, 'check section', data[section.key])
+//         return data[section.key] ? index : null
+//       })
+//       .filter((index) => index !== null)
+//   }
+// }
+
+// watch(
+//   () => resumeStore.dataResume,
+//   (newVal) => {
+//     if (newVal) {
+//       checkSection()
+//     }
+//   },
+//   { immediate: true, deep: true },
+// )
+
+const handleAddSection = (section: string) => {
+  switch (section) {
+    case 'award':
+      resumeStore.seedAward()
+      break
+    case 'certification':
+      resumeStore.seedCertification()
+      break
+    case 'education':
+      resumeStore.seedEducation()
+      break
+    case 'languages':
+      resumeStore.seedLanguage()
+      break
+    case 'organization':
+      resumeStore.seedOrganization()
+      break
+    case 'projects':
+      resumeStore.seedProject()
+      break
+    case 'works':
+      resumeStore.seedWork()
+      break
+    case 'publication':
+      resumeStore.seedPublication()
+      break
+    case 'skills':
+      resumeStore.seedSkill()
+      break
+    default:
+      break
   }
-})
+}
 </script>
 
 <template>
@@ -100,7 +155,7 @@ onBeforeMount(() => {
           v-for="item in sectionNotAdded"
           :key="item.key"
           class="flex items-center gap-2 border px-3 py-2 rounded-full hover:bg-gray-100 cursor-pointer"
-          @click="sectionInitialIndex.push(sections.indexOf(item))"
+          @click="handleAddSection(item.key)"
         >
           <span class="i-material-symbols-light-add-2-rounded"></span>
           <div>

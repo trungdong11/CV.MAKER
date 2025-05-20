@@ -87,13 +87,23 @@ watch(
     :class="isEdit ? 'bg-gray-50' : 'bg-white'"
     class="relative items-center group flex flex-col justify-start gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
-    <!-- Edit button -->
-    <div
+       <!-- Edit button -->
+       <div
       v-if="!isEdit"
-      class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="openEdit"
+      >
+        <span class="i-solar-pen-bold text-primary"></span>
+      </div>
+      <div
+        class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
+        @click="resumeStore.deleteSection('skills')"
+      >
+        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+      </div>
     </div>
     <!-- End edit button -->
 
