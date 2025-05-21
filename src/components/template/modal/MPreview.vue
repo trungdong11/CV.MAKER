@@ -14,8 +14,6 @@ import Card from '@/components/ui/card/Card.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useResumeStore } from '@/stores/resume/resume'
 
-
-
 const emit = defineEmits<{
   (e: 'close'): void
 }>()

@@ -7,7 +7,8 @@ import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 import { useResumeStore } from '@/stores/resume/resume'
 import { formatDateUs } from '@/utils/format'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import MSupportDescription from '../../modal/MSupportDescription.vue'
 
 const resumeStore = useResumeStore()
 const { handleSubmit } = useForm()
@@ -17,6 +18,10 @@ const isPreview = computed(() => resumeStore.getShowPreview)
 
 const isLoading = ref(false)
 const isEdit = ref(false)
+const isShowSupport = ref(false)
+const type = ref('')
+const indexCurrent = ref()
+const descriptions = ref<string[]>([])
 
 const defaultWorkExperience = {
   company_name: '',
@@ -47,7 +52,6 @@ const deleteWorkExperience = (index: number) => {
   }
 }
 
-const descriptions = ref<string[]>([])
 onBeforeMount(() => {
   localData.value.forEach((item, index) => {
     descriptions.value[index] = item.description
@@ -55,8 +59,6 @@ onBeforeMount(() => {
 })
 
 const onSubmit = handleSubmit(async (value) => {
-  console.log(value, 'check data before', descriptions.value)
-
   localData.value = localData.value.map((item, index) => ({
     ...item,
     position: value[`position-${index}`],
@@ -67,11 +69,24 @@ const onSubmit = handleSubmit(async (value) => {
     end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
   }))
 
-  console.log(localData.value, 'check data after')
   resumeStore.updateWorkExperience(localData.value)
 
   isEdit.value = false
 })
+
+const showSupport = (item: string, index: number) => {
+  isShowSupport.value = true
+  type.value = item
+  indexCurrent.value = index
+}
+
+const unShowSupport = () => {
+  isShowSupport.value = false
+}
+
+const handleChangeDiscription = (text: string) => {
+  descriptions.value[indexCurrent.value] = text
+}
 
 watch(
   () => resumeStore.dataResume,
@@ -215,9 +230,9 @@ watch(
             </a-config-provider>
           </div>
         </div>
-        <ScrollArea class="flex flex-col gap-1 w-full mb-12">
+        <div class="flex flex-col gap-1 w-full mb-12">
           <label for="end">Job Descriptions</label>
-          <div class="form-description h-40 w-full bg-white rounded-lg">
+          <div class="form-description h-40 w-full bg-white rounded-lg relative">
             <QuillEditor
               ref="quillEditor"
               v-model:content="descriptions[index]"
@@ -226,8 +241,47 @@ watch(
               content-type="html"
               theme="snow"
             />
+            <div class="absolute top-2 left-40">
+              <HoverCard>
+                <HoverCardTrigger>
+                  <Button
+                    id="tour-item"
+                    data-tour="1"
+                    class="ai-glow flex items-center gap-2 px-4 h-9 gradient-from-primary text-white font-medium rounded-full shadow-lg hover:bg-indigo-300 transition"
+                  >
+                    ✨ <span class="text-white">Generate Description</span>
+                    <span
+                      v-if="isLoading"
+                      class="i-svg-spinners-90-ring-with-bg text-xl"
+                    ></span>
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent class="w-80">
+                  <div
+                    class="flex flex-col gap-1 rounded-lg p-2 cursor-pointer w-full hover:bg-gray-100"
+                    @click="showSupport('enhance', index)"
+                  >
+                    <div class="font-medium text-[14px]">Enhance summary</div>
+                    <div class="text-xs m-0">
+                      Select a sentence or the entire summary that you want to improve, and let AI
+                      take care of the rest!
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-col gap-1 rounded-lg p-2 cursor-pointer w-full hover:bg-gray-100"
+                    @click="showSupport('grammar', index)"
+                  >
+                    <div class="font-medium text-[14px]">Fix spelling & grammar</div>
+                    <div class="text-xs m-0">
+                      Ensure your resume is polished and professional with perfect spelling &
+                      grammar
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </div>
           </div>
-        </ScrollArea>
+        </div>
         <div
           class="border-b border-slate-950 mb-5 w-full mt-5"
           @click.stop.prevent="deleteWorkExperience(index)"
@@ -268,9 +322,51 @@ watch(
         </Button>
       </div>
     </form>
+
+    <MSupportDescription
+      v-if="isShowSupport"
+      :text="descriptions[indexCurrent]"
+      :type="type"
+      @close="unShowSupport"
+      @handle-change-description="handleChangeDiscription"
+    />
   </div>
 </template>
 <style lang="scss" scoped>
+.ai-shine {
+  background: linear-gradient(270deg, #6366f1, #8b5cf6, #6366f1);
+  background-size: 400% 400%;
+  animation: shine 5s ease infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes aiPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+.ai-glow {
+  animation: aiPulse 2s infinite;
+}
+
 .form-description {
   &:deep() {
     .ql-container.ql-snow {
@@ -284,6 +380,8 @@ watch(
       border: 1px solid #ff5c00;
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
+      padding-top: 12px;
+      padding-bottom: 12px;
     }
   }
 }

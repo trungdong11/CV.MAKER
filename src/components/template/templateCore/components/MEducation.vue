@@ -48,8 +48,6 @@ const deleteEducation = (index: number) => {
 }
 
 const onSubmit = handleSubmit(async (value) => {
-  console.log(value, 'check data before', descriptions.value)
-
   localData.value = localData.value.map((item, index) => ({
     ...item,
     school: value[`school-${index}`],
@@ -60,7 +58,6 @@ const onSubmit = handleSubmit(async (value) => {
     end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
   }))
 
-  console.log(localData.value, 'check data after')
   resumeStore.updateEducation(localData.value)
 
   isEdit.value = false
