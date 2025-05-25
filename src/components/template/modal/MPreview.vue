@@ -80,15 +80,15 @@ const sectionInitialIndex = computed(() => {
 </script>
 
 <template>
-  <div class="fixed z-99 bottom-0 top-0 left-0 right-0 bg-rgb">
+  <div
+    class="fixed z-99 bottom-0 top-0 left-0 right-0 bg-rgb"
+    @click="emit('close')"
+  >
     <div class="flex items-center justify-center py-11 px-20 h-full w-full">
-      <div
-        class="absolute right-80 top-3 cursor-pointer text-base text-primary"
-        @click="emit('close')"
+      <Card
+        class="flex flex-col w-[952px] min-w-[952px] h-full"
+        @click.stop
       >
-        Close
-      </div>
-      <Card class="flex flex-col w-[952px] min-w-[952px] h-full">
         <ScrollArea class="flex-1 overflow-y-auto flex flex-col gap-6 p-5">
           <component
             :is="sections[index].component"

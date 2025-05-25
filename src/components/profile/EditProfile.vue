@@ -256,7 +256,7 @@ const onChangeImg = (e: Event) => {
           Delete account
         </RouterLink>
         <p class="text-sm">
-          If you delete your account, you'll lose access to all the quizzfly you created
+          If you delete your account, you'll lose access to all the CV you created
         </p>
       </div>
     </div>

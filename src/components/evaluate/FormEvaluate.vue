@@ -3,14 +3,13 @@ import { Button } from '@/components/ui/button'
 import { showToast } from '@/utils/toast'
 
 import { useEvaluateStore } from '@/stores/evaluate'
-// const router = useRouter()
+const router = useRouter()
 
 const evaluateStore = useEvaluateStore()
 
 const { evaluateCV } = evaluateStore
 // const { evaluateDetail } = toRefs(evaluateStore)
 
-const isLoading = ref<boolean>(false)
 const refInput = ref()
 const fileUpload = ref()
 
@@ -35,28 +34,14 @@ const onSubmit = async () => {
     return
   }
 
-  isLoading.value = true
   const formData = new FormData()
   formData.append('file', fileUpload.value)
 
-  try {
-    await evaluateCV(formData)
-    showToast({
-      title: 'Evaluate CV success',
-      description: 'Check detail evaluate and improve your CV',
-      variant: 'default',
-    })
-    // if (evaluateDetail.value) {
-    //   router.push(`evaluate/${evaluateDetail.value?.cv_id}`)
-    // }
-  } catch (error) {
-    showToast({
-      description: 'Evaluate CV failed',
-      variant: 'destructive',
-    })
-  } finally {
-    isLoading.value = false
-  }
+  await evaluateCV(formData)
+  // })
+  // if (evaluateDetail.value) {
+  //   router.push(`evaluate/${evaluateDetail.value?.cv_id}`)
+  // }
 }
 
 const handleButtonClick = () => {
@@ -78,21 +63,20 @@ const handleButtonClick = () => {
       <div class="flex flex-col gap-2 mx-auto mb-5">
         <h2 class="text-xl font-medium">Drag and drop your resume here</h2>
         <p>
-          You can upload your resume in PDF, DOC, DOCX or
-          <span class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
-            >choose your resume</span
+          You can upload your resume in PDF, DOC, DOCX
+          <!-- <span class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
+            >choose your resume</span -->
           >
         </p>
       </div>
       <Button
         class="w-1/2 h-11"
-        :disabled="isLoading"
         @click="handleButtonClick"
       >
         <span
           class="i-material-symbols-light-upload-rounded text-white text-[20px] font-semibold"
         ></span>
-        <span class="text-white ml-2">{{ isLoading ? 'Uploading...' : 'Upload Resume' }}</span>
+        <span class="text-white ml-2">Upload Resume</span>
         <input
           ref="refInput"
           type="file"
@@ -105,7 +89,9 @@ const handleButtonClick = () => {
     <div class="">
       <p class="text-[14px]">
         Or you can always
-        <span class="text-primary font-medium cursor-pointer hover:underline"
+        <span
+          class="text-primary font-medium cursor-pointer hover:underline"
+          @click="router.push('/templates')"
           >build a new resume</span
         >
         from scratch

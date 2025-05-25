@@ -40,7 +40,7 @@ const handleAddSummary = (text: string, index: number) => {
 </script>
 
 <template>
-  <div class="fixed z-50 bottom-0 top-0 left-0 right-0 bg-rgb">
+  <div class="fixed z-[999] bottom-0 top-0 left-0 right-0 bg-rgb">
     <div class="flex items-center justify-center p-20 h-full w-full">
       <Card class="flex flex-col gap-4 p-6 w-[650px] min-w-[650px]">
         <div class="flex items-start justify-between">

@@ -99,7 +99,7 @@ const onSubmit = handleSubmit(async (values) => {
       <div class="flex flex-col gap-4 text-center">
         <h2 class="text-3xl font-semibold">Are you sure you'd like to delete your account?</h2>
         <p>
-          We’re sorry to see you go. Once you delete your account, you’ll lose access to the kahoots
+          We’re sorry to see you go. Once you delete your account, you’ll lose access to the CVs
           you’ve created.
         </p>
       </div>
@@ -109,7 +109,7 @@ const onSubmit = handleSubmit(async (values) => {
             <img
               v-if="userInfo?.avatar"
               class="w-full h-full object-cover rounded-full"
-              :src="userInfo.user_info?.avatar"
+              :src="userInfo?.avatar"
               alt=""
             />
             <img

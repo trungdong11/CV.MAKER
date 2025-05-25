@@ -7,6 +7,8 @@ import ResumeFilter from '@/components/resumes/ResumeFilter.vue'
 import ResumeList from '@/components/resumes/ResumeList.vue'
 import { useResumeManageStore } from '@/stores/resume/resumeManage'
 
+const router = useRouter()
+
 import {
   Pagination,
   PaginationEllipsis,
@@ -69,7 +71,7 @@ const debouncedFn = useDebounceFn((value) => {
         </div>
       </div>
       <!-- right -->
-      <Button @click="handleClickCreateQuiz">
+      <Button @click="router.push('/templates')">
         <span class="i-material-symbols-light-add text-2xl text-white font-bold"></span>
         <span class="text-white">Create resume</span>
       </Button>

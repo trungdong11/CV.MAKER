@@ -522,7 +522,7 @@ const handlePercent = (num: number, section: string) => {
 // }
 </script>
 <template>
-  <div class="flex flex-col gap-8 w-full">
+  <div class="flex flex-col gap-8 w-full h-[100vh] overflow-auto">
     <div
       v-for="item in evaluateDetail?.sections"
       :key="item.section"
@@ -552,21 +552,28 @@ const handlePercent = (num: number, section: string) => {
       </div>
       <div
         v-if="item.grammar_errors_detailed.length > 0"
-        class="flex w-full"
+        class="flex flex-col w-full"
       >
-        <div class="flex flex-col gap-1 w-full rounded-lg text-[#ff576f] bg-[#ffeef1] p-5">
+        <div class="flex flex-col gap-1 w-full rounded-lg text-[#1f2937] bg-[#F9FAFB] p-5">
           <h2 class="text-base font-medium">Grammars Error</h2>
           <div class="flex flex-col gap-4">
             <div
-              v-for="grammarItem in item.grammar_errors_detailed"
+              v-for="(grammarItem, index) in item.grammar_errors_detailed"
               :key="grammarItem.type"
               class="flex flex-col gap-1"
             >
               <p class="font-xs">Location: {{ grammarItem?.location }}</p>
               <p class="font-xs">Description: {{ grammarItem?.description }}</p>
-              <p class="font-xs p-3 rounded-lg bg-[#cdf0e4] text-[#249a71]">
-                Suggestion: {{ grammarItem?.suggestion }}
-              </p>
+              <div
+                class="border-[#1fc76a] flex flex-col gap-1 border font-xs p-3 rounded-lg bg-[#EEFFF5] text-[#1f2937]"
+              >
+                <p class="font-medium">Suggestions</p>
+                <p>{{ grammarItem?.suggestion }}</p>
+              </div>
+              <div
+                v-if="item.grammar_errors_detailed.length !== index + 1"
+                class="w-full bg-slate-200 h-[1px] mt-4"
+              ></div>
             </div>
           </div>
         </div>

@@ -80,28 +80,6 @@ const sectionNotAdded = computed(() => {
   })
 })
 
-// const checkSection = () => {
-//   const data = resumeStore.dataResume
-//   if (data) {
-//     sectionInitialIndex.value = sections
-//       .map((section, index) => {
-//         console.log(section.key, 'check section', data[section.key])
-//         return data[section.key] ? index : null
-//       })
-//       .filter((index) => index !== null)
-//   }
-// }
-
-// watch(
-//   () => resumeStore.dataResume,
-//   (newVal) => {
-//     if (newVal) {
-//       checkSection()
-//     }
-//   },
-//   { immediate: true, deep: true },
-// )
-
 const handleAddSection = (section: string) => {
   switch (section) {
     case 'award':
@@ -130,6 +108,9 @@ const handleAddSection = (section: string) => {
       break
     case 'skills':
       resumeStore.seedSkill()
+      break
+    case 'summary':
+      resumeStore.seedSummary()
       break
     default:
       break

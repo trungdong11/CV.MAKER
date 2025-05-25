@@ -4,60 +4,98 @@ import Button from '@/components/ui/button/Button.vue'
 import { useResumeStore } from '@/stores/resume/resume'
 import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
+import * as yup from 'yup'
+import { showToast } from '@/utils/toast'
 
 const resumeStore = useResumeStore()
 const localData = ref(cloneDeep(resumeStore.dataResume?.personal_details))
 const localSocialData = ref(cloneDeep(resumeStore.dataResume?.socials))
 const isPreview = computed(() => resumeStore.getShowPreview)
+const isEditPersonal = computed(() => resumeStore.isEditPersonal)
 
-const isEdit = ref(false)
-const openEdit = () => {
-  isEdit.value = true
-}
+const isLoading = ref(false)
 
-defineExpose({
-  openEdit,
+const displayItems = computed(() => {
+  const items: string[] = []
+
+  if (localData.value?.address) {
+    items.push(localData.value.address)
+  }
+
+  if (localData.value?.email) {
+    items.push(localData.value.email)
+  }
+
+  if (localData.value?.phone_number) {
+    items.push(localData.value.phone_number)
+  }
+
+  localSocialData.value?.forEach((social) => {
+    if (social?.link) {
+      items.push(social.link)
+    }
+  })
+
+  return items
 })
 
 const cancelEdit = () => {
-  isEdit.value = false
+  resumeStore.cancelEditPersonal()
   localData.value = resumeStore.dataResume?.personal_details
   localSocialData.value = resumeStore.dataResume?.socials
 }
 
-const { handleSubmit } = useForm()
+const schemaShape: Record<string, yup.AnySchema> = {
+  full_name: yup.string().required('Full name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  phone_number: yup.string().required('Phone number is required'),
+  address: yup.string().nullable().notRequired(),
+}
+
+for (const social of localSocialData.value) {
+  schemaShape[social.icon] = yup
+    .string()
+    .trim()
+    .url(`${social.icon} must be a valid URL`)
+    .nullable()
+    .notRequired()
+}
+
+const { handleSubmit } = useForm({
+  validationSchema: yup.object(schemaShape),
+})
+
 const onSubmit = handleSubmit(async (values) => {
-  resumeStore.updatePersonalDetails({
-    ...resumeStore.dataResume?.personal_details,
-    ...values,
-  })
-
-  const socialLinksUpdated = localSocialData.value.map((item) => {
-    const link = values[item.icon]
-    return {
-      ...item,
-      link,
-    }
-  })
-  resumeStore.updateSocials(socialLinksUpdated)
-  isEdit.value = false
-})
-
-const data = computed(() => {
-  if (isEdit.value) {
-    return localData.value
+  try {
+    isLoading.value = true
+    const socialLinksUpdated = localSocialData.value.map((item) => {
+      const link = values[item.icon]
+      return {
+        ...item,
+        link,
+      }
+    })
+    resumeStore.updatePersonalDetails(
+      {
+        ...resumeStore.dataResume?.personal_details,
+        ...values,
+      },
+      socialLinksUpdated,
+    )
+    resumeStore.cancelEditPersonal()
+    showToast({
+      description: 'Update personal detail success',
+      variant: 'success',
+    })
+  } catch (error) {
+    showToast({
+      description: 'Update personal detail failed',
+      variant: 'destructive',
+    })
+  } finally {
+    isLoading.value = false
   }
-  return resumeStore.dataResume.personal_details
 })
-
-const socialData = computed(() => {
-  if (isEdit.value) {
-    return localSocialData.value
-  }
-  return resumeStore.dataResume.socials
-})
-
-const isLoading = ref(false)
 
 watch(
   () => resumeStore.dataResume,
@@ -73,46 +111,43 @@ watch(
 
 <template>
   <div
-    :class="isEdit || !isPreview ? 'bg-gray-50' : 'bg-white'"
+    :class="isEditPersonal || !isPreview ? 'bg-gray-50' : 'bg-white'"
     class="items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit && !isPreview"
+      v-if="!isEditPersonal && !isPreview"
       class="absolute hidden group-hover:flex top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      @click="resumeStore.editPersonal"
     >
       <span class="i-solar-pen-bold text-primary"></span>
     </div>
     <!-- End edit button -->
 
-    <h2 class="font-semibold text-3xl">{{ data?.full_name }}</h2>
+    <h2 class="font-semibold text-3xl">{{ localData?.full_name }}</h2>
     <div
       class="flex items-center gap-1 justify-center font-normal text-slate-600 text-sm flex-wrap"
     >
-      <p>{{ data?.address }}</p>
-      <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-      <p>{{ data?.email }}</p>
-      <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-      <p>{{ data?.phone_number }}</p>
-      <div class="font-semibold text-base -mt-2 flex justify-center items-center">.</div>
-      <div
-        v-for="(item, index) in socialData"
-        :key="index"
-        class="flex items-center justify-center gap-2"
+      <template
+        v-for="(item, index) in displayItems"
+        :key="`item-${index}`"
       >
-        <p class="underline">{{ item?.link }}</p>
+        <p class="break-all">
+          {{ item }}
+        </p>
         <div
-          v-if="index + 1 < socialData.length"
+          v-if="index + 1 < displayItems.length"
+          :key="`dot-${index}`"
           class="font-semibold text-base -mt-2 flex justify-center items-center"
         >
           .
         </div>
-      </div>
+      </template>
     </div>
+
     <!-- Edit area -->
     <div
-      v-if="isEdit"
+      v-if="isEditPersonal"
       class="w-full rounded-lg p-5 mt-5"
     >
       <form
@@ -121,46 +156,46 @@ watch(
       >
         <div class="grid grid-cols-3 items-center gap-x-4 w-full flex-wrap justify-center">
           <div class="form-data flex flex-col gap-1 w-full">
-            <label for="name">Name</label>
+            <label for="name">Full Name <span class="text-red-600 text-e">*</span></label>
             <InputValidation
               id="name"
               placeholder="Enter your name..."
               type="text"
               name="full_name"
-              :initial-value="data?.full_name"
+              :initial-value="localData?.full_name"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
-          <div class="form-data flex flex-col gap-1 w-full">
+          <div class="form-localData flex flex-col gap-1 w-full">
             <label for="name">Location</label>
             <InputValidation
               id="name"
               placeholder="Enter your location..."
               type="text"
               name="address"
-              :initial-value="data?.address"
+              :initial-value="localData?.address"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
           <div class="form-data flex flex-col gap-1 w-full">
-            <label for="name">Email</label>
+            <label for="name">Email <span class="text-red-600 text-e">*</span></label>
             <InputValidation
               id="name"
               placeholder="Enter your email..."
               type="text"
               name="email"
-              :initial-value="data?.email"
+              :initial-value="localData?.email"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
           <div class="form-data flex flex-col gap-1 w-full">
-            <label for="name">Phone Number</label>
+            <label for="name">Phone Number <span class="text-red-600 text-e">*</span></label>
             <InputValidation
               id="name"
               placeholder="Enter your phone number..."
               type="text"
-              name="phoneNumber"
-              :initial-value="data?.phone_number"
+              name="phone_number"
+              :initial-value="localData?.phone_number"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>
@@ -183,7 +218,7 @@ watch(
             />
           </div>
 
-          <div class="form-data flex flex-col gap-1 w-full">
+          <!-- <div class="form-data flex flex-col gap-1 w-full">
             <label for="name">Other link</label>
             <InputValidation
               id="name"
@@ -192,26 +227,26 @@ watch(
               name="name"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
-          </div>
+          </div> -->
         </div>
         <div class="flex items-center justify-end gap-2">
           <Button
             variant="secondary"
-            class="w-32 h-11 flex gap-2 items-center text-primary"
+            class="w-28 h-10 flex gap-2 items-center text-primary"
             @click="cancelEdit"
           >
             Cancel
           </Button>
           <Button
             :disabled="isLoading"
-            class="w-32 h-11 text-white bg-primary flex gap-2 items-center"
+            class="w-28 h-10 text-white bg-primary flex gap-2 items-center"
             @click="onSubmit"
           >
+            <p class="text-white">Save</p>
             <span
               v-if="isLoading"
-              class="i-svg-spinners-ring-resize"
+              class="i-svg-spinners-ring-resize text-white"
             ></span>
-            <p class="text-white">Save</p>
           </Button>
         </div>
       </form>

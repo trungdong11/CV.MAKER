@@ -7,30 +7,37 @@ import { useForm } from 'vee-validate'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import MGenerateSummary from '../../modal/MGenerateSummary.vue'
 import MSupportDescription from '../../modal/MSupportDescription.vue'
+import { cleanQuillContent } from '@/utils/format'
+import { showToast } from '@/utils/toast'
 
 const resumeStore = useResumeStore()
 const localData = ref(resumeStore.dataResume.summary)
 const isPreview = computed(() => resumeStore.getShowPreview)
-
-const isEdit = ref(false)
-const openEdit = () => {
-  isEdit.value = true
-}
-
-defineExpose({
-  openEdit,
-})
+const isEditDescription = computed(() => resumeStore.isEditDescription)
 
 const cancelEdit = () => {
-  isEdit.value = false
+  resumeStore.cancelEditDescription()
   localData.value = resumeStore.dataResume.summary
 }
 
 const description = ref('')
 const { handleSubmit } = useForm()
 const onSubmit = handleSubmit(async () => {
-  resumeStore.updateSummary(description.value)
-  isEdit.value = false
+  try {
+    isLoading.value = true
+    resumeStore.updateSummary(cleanQuillContent(description.value))
+    resumeStore.cancelEditDescription()
+    showToast({
+      description: 'Update Summary success',
+      variant: 'success',
+    })
+  } catch (error) {
+    showToast({
+      description: 'Update Summary failed',
+      variant: 'destructive',
+    })
+  }
+  isLoading.value = false
 })
 
 const isLoading = ref(false)
@@ -72,14 +79,14 @@ watch(
 
 <template>
   <div
-    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+    :class="isEditDescription ? 'bg-gray-50' : 'bg-white'"
     class="relative items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit && !isPreview"
+      v-if="!isEditDescription && !isPreview"
       class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
-      @click="openEdit"
+      @click="resumeStore.editDescription"
     >
       <span class="i-solar-pen-bold text-primary"></span>
     </div>
@@ -92,7 +99,7 @@ watch(
 
     <!-- Edit area -->
     <div
-      v-if="isEdit"
+      v-if="isEditDescription"
       class="w-full rounded-lg p-5"
     >
       <form
@@ -173,11 +180,11 @@ watch(
             class="w-32 h-11 bg-primary flex gap-2 items-center"
             @click="onSubmit"
           >
+            <p class="text-white">Save</p>
             <span
               v-if="isLoading"
-              class="i-svg-spinners-ring-resize"
+              class="i-svg-spinners-ring-resize text-white"
             ></span>
-            <p class="text-white">Save</p>
           </Button>
         </div>
       </form>

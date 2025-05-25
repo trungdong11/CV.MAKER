@@ -1,10 +1,11 @@
-// import { getDetailRoomApi, createRoomApi, settingRoomApi } from '@/services/room'
 import type { IEvaluate } from '@/types/ai'
 import { showToast } from '@/utils/toast'
 import { defineStore } from 'pinia'
-import { apiError } from '@/utils/exceptionHandler'
-// import router from '@/routers/router'
-import { evaluateCVApi } from '@/services/ai'
+import { evaluateCVApi, importCVApi } from '@/services/ai'
+import type { ITemplate } from '@/types/template'
+import { useResumeStore } from './resume/resume'
+
+const resumeStore = useResumeStore()
 
 export const useEvaluateStore = defineStore({
   id: 'evaluate',
@@ -20,38 +21,52 @@ export const useEvaluateStore = defineStore({
         const data = await evaluateCVApi(val)
         this.setDetailEvaluate(data)
         this.isCheckUpload = true
+        showToast({
+          title: 'Evaluate CV success',
+          description: 'Check detail evaluate and improve your CV',
+          variant: 'default',
+        })
       } catch (error) {
         console.error(error)
         showToast({
-          description: apiError(error).message,
+          description: 'Evaluate failed',
           variant: 'destructive',
         })
-        // router.push(`/evaluate/${this.evaluateDetail?.cv_id}`)
       }
       this.isLoading = false
     },
     setDetailEvaluate(val: IEvaluate) {
       this.evaluateDetail = val
     },
+    setResultImport(val: any) {
+      resumeStore.setDataResume(val)
+      console.log(val, 'check val data resume')
+      console.log(resumeStore.dataResume, 'check data resume')
+    },
     resetIsCheckUpload() {
       this.isCheckUpload = false
     },
-    // async getevaluateDetail(id: string) {
-    //   try {
-    //     const { data } = await getDetailRoomApi(id)
-    //     this.setDetailEvaluate(data)
-    //   } catch (error) {
-    //     console.error(error)
-    //     showToast({
-    //       description: 'Fetch room detail failed',
-    //       variant: 'destructive',
-    //     })
-    //     throw error
-    //   }
-    // },
-    // setCurrentSetting(data: any) {
-    //   this.currentSetting = data
-    // },
+    async handleImportFile(body: any) {
+      this.isLoading = true
+      try {
+        const data = await importCVApi(body)
+        this.setResultImport(data)
+        showToast({
+          title: 'Import CV success',
+          description: 'Check your CV to improve',
+          variant: 'default',
+        })
+      } catch (error) {
+        console.error(error)
+        showToast({
+          description: 'Import failed',
+          variant: 'destructive',
+        })
+        throw error
+      } finally {
+        this.isLoading = false
+      }
+    },
   },
   getters: {
     getEvaluateInfo: (state) => state.evaluateDetail,

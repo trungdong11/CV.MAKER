@@ -3,6 +3,7 @@ import { useResumeManageStore } from '@/stores/resume/resumeManage'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useConfirmDialog } from '@/stores/modal'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const resumeManageStore = useResumeManageStore()
 const confirmDialog = useConfirmDialog()
@@ -22,7 +23,43 @@ const handleConfirmDelete = async (resumeId: string) => {
 }
 </script>
 <template>
-  <div class="grid grid-cols-2 max-md:grid-cols-1 gap-5">
+  <div
+    v-if="resumes.length === 0"
+    class="flex flex-col items-center w-full"
+  >
+    <div class="flex gap-2 w-full items-center">
+      <div class="flex w-full p-4 gap-3">
+        <Skeleton class="w-10 h-10 rounded-full" />
+        <Skeleton class="w-full h-20 rounded-md" />
+      </div>
+      <div class="flex p-4 gap-3 w-full">
+        <Skeleton class="w-10 h-10 rounded-full" />
+        <Skeleton class="w-full h-20 rounded-md" />
+      </div>
+      <div class="flex p-4 gap-3 w-full">
+        <Skeleton class="w-10 h-10 rounded-full" />
+        <Skeleton class="w-full h-20 rounded-md" />
+      </div>
+    </div>
+    <div class="flex gap-2 w-full items-center">
+      <div class="flex w-full p-4 gap-3">
+        <Skeleton class="w-10 h-10 rounded-full" />
+        <Skeleton class="w-full h-20 rounded-md" />
+      </div>
+      <div class="flex p-4 gap-3 w-full">
+        <Skeleton class="w-10 h-10 rounded-full" />
+        <Skeleton class="w-full h-20 rounded-md" />
+      </div>
+      <div class="flex p-4 gap-3 w-full">
+        <Skeleton class="w-10 h-10 rounded-full" />
+        <Skeleton class="w-full h-20 rounded-md" />
+      </div>
+    </div>
+  </div>
+  <div
+    v-else
+    class="grid grid-cols-2 max-md:grid-cols-1 gap-5"
+  >
     <Card
       v-for="resume in resumes"
       :key="resume.id"

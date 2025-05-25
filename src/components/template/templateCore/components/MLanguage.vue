@@ -5,49 +5,73 @@ import TextareaValidation from '@/components/base/TextareaValidation.vue'
 import { cloneDeep } from 'lodash-es'
 import { useForm } from 'vee-validate'
 import { useResumeStore } from '@/stores/resume/resume'
+import * as yup from 'yup'
+import { showToast } from '@/utils/toast'
 
 const resumeStore = useResumeStore()
-const { handleSubmit } = useForm()
 
-const isEdit = ref(false)
 const localData = ref(cloneDeep(resumeStore.dataResume?.languages))
 const isPreview = computed(() => resumeStore.getShowPreview)
-
-const openEdit = () => {
-  isEdit.value = true
-}
+const isEditLanguage = computed(() => resumeStore.isEditLanguage)
+const isLoading = ref(false)
 
 const cancelEdit = () => {
-  isEdit.value = false
+  resumeStore.cancelEditLanguage()
   localData.value = resumeStore.dataResume.languages
 }
 
-const onSubmit = handleSubmit(async (value) => {
-  localData.value = localData.value.map((item, index) => ({
-    language: value[`language-${index}`],
-    proficiency: value[`proficiency-${index}`],
-  }))
+const schema = computed(() => {
+  const shape: Record<string, yup.StringSchema> = {}
 
-  resumeStore.updateLanguages(localData.value)
-  isEdit.value = false
+  localData.value.forEach((_, index) => {
+    shape[`language_name-${index}`] = yup.string().trim().required('Language name is required')
+  })
+
+  return yup.object().shape(shape)
 })
 
-const isLoading = ref(false)
+const { handleSubmit } = useForm({
+  validationSchema: schema,
+})
+
+const onSubmit = handleSubmit(async (value) => {
+  try {
+    isLoading.value = true
+    localData.value = localData.value.map((item, index) => ({
+      language: value[`language_name-${index}`],
+      proficiency: value[`proficiency-${index}`],
+    }))
+
+    resumeStore.updateLanguages(localData.value)
+    resumeStore.cancelEditLanguage()
+
+    showToast({
+      description: 'Update language success',
+      variant: 'success',
+    })
+  } catch (error) {
+    showToast({
+      description: 'Update language failed',
+      variant: 'destructive',
+    })
+  }
+  isLoading.value = false
+})
 </script>
 
 <template>
   <div
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
-    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+    :class="isEditLanguage ? 'bg-gray-50' : 'bg-white'"
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit && !isPreview"
+      v-if="!isEditLanguage && !isPreview"
       class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="openEdit"
+        @click="resumeStore.editLanguage"
       >
         <span class="i-solar-pen-bold text-primary"></span>
       </div>
@@ -61,7 +85,7 @@ const isLoading = ref(false)
     <!-- End edit button -->
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">LANGUAGES</h2>
     <div
-      v-if="!isEdit"
+      v-if="!isEditLanguage"
       class="px-3 flex gap-2 items-center mt-1"
     >
       <div
@@ -81,7 +105,7 @@ const isLoading = ref(false)
     </div>
   </div>
   <div
-    v-if="isEdit"
+    v-if="isEditLanguage"
     class="w-full bg-gray-50 rounded-lg p-5"
   >
     <form
@@ -94,12 +118,12 @@ const isLoading = ref(false)
         class="flex items-start gap-x-4 w-full flex-col justify-center relative"
       >
         <div class="form-data flex flex-col gap-1 w-1/2">
-          <label for="language">Language</label>
+          <label for="language">Language <span class="text-red-600 text-e">*</span></label>
           <InputValidation
             :id="`language-${index}`"
             placeholder="e.g., English, Vietnamese etc."
             type="text"
-            :name="`language-${index}`"
+            :name="`language_name-${index}`"
             :initial-value="item.language"
             class="h-11 mt-1 bg-white border-slate-200 outline-none"
           />
@@ -117,10 +141,11 @@ const isLoading = ref(false)
           />
         </div>
         <div
-          v-if="index + 1 < localData.length"
-          class="border-b border-slate-950 mb-5 w-full mt-5"
+          class="mb-5 w-full mt-5"
+          :class="{ 'border-b': index + 1 < localData.length }"
         ></div>
         <div
+          v-if="index !== 0"
           class="absolute -top-2 right-0 rounded-lg cursor-pointer p-1 bg-slate-200 flex items-center justify-center"
           @click="localData.splice(index, 1)"
         >

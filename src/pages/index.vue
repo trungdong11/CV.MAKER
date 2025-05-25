@@ -7,6 +7,9 @@ import { useConfirmDialog } from '@/stores/modal'
 // import { apiError } from '@/utils/exceptionHandler'
 
 // import { useGroupStore } from '@/stores/group/group'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const authStore = useAuthStore()
 const confirmDialog = useConfirmDialog()
 
@@ -78,7 +81,7 @@ const handleOpenCreateWithAI = async () => {
         <div class="grid grid-cols-2 gap-6 mt-5">
           <div
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
-            @click="handleClickCreateQuiz"
+            @click="router.push('/templates')"
           >
             <div
               class="min-w-10 w-10 h-10 rounded-lg border-2 flex justify-center items-center border-dashed border-primary"
@@ -89,7 +92,7 @@ const handleOpenCreateWithAI = async () => {
           </div>
 
           <RouterLink
-            to="/"
+            to="/resumes"
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
           >
             <div

@@ -6,16 +6,18 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { cloneDeep } from 'lodash-es'
 import { useForm } from 'vee-validate'
-import { formatDateUs } from '@/utils/format'
+import { formatDateUs, cleanQuillContent } from '@/utils/format'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import MSupportDescription from '../../modal/MSupportDescription.vue'
+import * as yup from 'yup'
+import { showToast } from '@/utils/toast'
 
 const resumeStore = useResumeStore()
-const { handleSubmit } = useForm()
 
 const localData = ref(cloneDeep(resumeStore.dataResume?.projects))
 const descriptions = ref<string[]>([])
 const isPreview = computed(() => resumeStore.getShowPreview)
+const isEditProject = computed(() => resumeStore.isEditProject)
 
 const defaultProject = {
   project_name: '',
@@ -25,10 +27,24 @@ const defaultProject = {
   description: '',
 }
 
-const isEdit = ref(false)
 const isShowSupport = ref(false)
 const type = ref('')
 const indexCurrent = ref()
+const isLoading = ref(false)
+
+const schema = computed(() => {
+  const shape: Record<string, yup.StringSchema> = {}
+
+  localData.value.forEach((_, index) => {
+    shape[`project_name-${index}`] = yup.string().trim().required('Name project is required')
+  })
+
+  return yup.object().shape(shape)
+})
+
+const { handleSubmit } = useForm({
+  validationSchema: schema,
+})
 
 const showSupport = (item: string, index: number) => {
   isShowSupport.value = true
@@ -44,17 +60,14 @@ const handleChangeDiscription = (text: string) => {
   descriptions.value[indexCurrent.value] = text
 }
 
-const openEdit = () => {
-  isEdit.value = true
-}
-
 const cancelEdit = () => {
-  isEdit.value = false
+  resumeStore.cancelEditProject()
   localData.value = resumeStore.dataResume?.projects
 }
 
 const addProject = () => {
   localData.value.push({ ...defaultProject })
+  descriptions.value.push('')
 }
 
 const deleteProject = (index: number) => {
@@ -70,21 +83,31 @@ onBeforeMount(() => {
 })
 
 const onSubmit = handleSubmit(async (value) => {
-  localData.value = localData.value.map((item, index) => ({
-    ...item,
-    project_link: value[`project_link-${index}`],
-    project_name: value[`project_name-${index}`],
-    description: descriptions.value[index],
-    start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
-    end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
-  }))
+  try {
+    isLoading.value = true
+    localData.value = localData.value.map((item, index) => ({
+      ...item,
+      project_link: value[`project_link-${index}`],
+      project_name: value[`project_name-${index}`],
+      description: cleanQuillContent(descriptions.value[index]),
+      start_date: item.start_date ? new Date(item.start_date).toISOString() : null,
+      end_date: item.end_date ? new Date(item.end_date).toISOString() : null,
+    }))
 
-  resumeStore.updateProjects(localData.value)
-
-  isEdit.value = false
+    resumeStore.updateProjects(localData.value)
+    resumeStore.cancelEditProject()
+    showToast({
+      description: 'Update project success',
+      variant: 'success',
+    })
+  } catch (error) {
+    showToast({
+      description: 'Update project failed',
+      variant: 'destructive',
+    })
+  }
+  isLoading.value = false
 })
-
-const isLoading = ref(false)
 
 watch(
   () => resumeStore.dataResume,
@@ -100,16 +123,16 @@ watch(
 <template>
   <div
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
-    :class="isEdit ? 'bg-gray-50' : 'bg-white'"
+    :class="isEditProject ? 'bg-gray-50' : 'bg-white'"
   >
     <!-- Edit button -->
     <div
-      v-if="!isEdit && !isPreview"
+      v-if="!isEditProject && !isPreview"
       class="absolute hidden group-hover:flex -top-2 p-1 gap-1 right-10 cursor-pointer border rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
     >
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="openEdit"
+        @click="resumeStore.editProject"
       >
         <span class="i-solar-pen-bold text-primary"></span>
       </div>
@@ -122,7 +145,7 @@ watch(
     </div>
     <!-- End edit button -->
     <h2 class="font-semibold text-base pb-1 border-b border-slate-950 w-full">PROJECTS</h2>
-    <template v-if="!isEdit">
+    <template v-if="!isEditProject">
       <div
         v-for="(item, index) in resumeStore.dataResume?.projects"
         :key="index"
@@ -139,7 +162,7 @@ watch(
               {{ formatDateUs(item?.start_date) }}
             </p>
             <p class="font-semibold text-base">
-              {{ formatDateUs(item?.end_date) }}
+              {{ item.end_date ? formatDateUs(item?.end_date) : 'Present' }}
             </p>
           </div>
         </div>
@@ -151,11 +174,11 @@ watch(
     </template>
   </div>
   <div
-    v-if="isEdit"
+    v-if="isEditProject"
     class="w-full bg-gray-50 p-5"
   >
     <form
-      class="flex gap-2 w-full flex-col"
+      class="flex w-full flex-col"
       @submit="onSubmit"
     >
       <div
@@ -164,7 +187,7 @@ watch(
         class="flex items-start gap-x-4 w-full flex-col justify-center relative"
       >
         <div class="form-data flex flex-col gap-1 w-[300px]">
-          <label for="name">Project Name</label>
+          <label for="name">Project Name <span class="text-red-600 text-e">*</span></label>
           <InputValidation
             :id="`project_name-${index}`"
             placeholder="e.g., Youtube, Ecomdy, etc"
@@ -264,7 +287,7 @@ watch(
           </div>
         </div>
         <div
-          class="border-b border-slate-950 mb-5 w-full mt-5"
+          v-if="index !== 0"
           @click.stop.prevent="deleteProject(index)"
         >
           <div
@@ -273,6 +296,10 @@ watch(
             <span class="i-solar-trash-bin-trash-broken w-4 h-4 text-red-500"></span>
           </div>
         </div>
+        <div
+          class="mb-5 w-full mt-5"
+          :class="{ 'border-b': index + 1 < localData.length }"
+        ></div>
       </div>
       <Button
         variant="outline"
@@ -286,21 +313,21 @@ watch(
       <div class="flex items-center justify-end gap-2">
         <Button
           variant="secondary"
-          class="w-32 h-11 flex gap-2 items-center"
+          class="w-28 h-10 flex gap-2 items-center"
           @click="cancelEdit"
         >
           Cancel
         </Button>
         <Button
           :disabled="isLoading"
-          class="w-32 h-11 bg-primary flex gap-2 items-center"
+          class="w-28 h-10 bg-primary flex gap-2 items-center"
           @click="onSubmit"
         >
+          <span class="text-white">Save</span>
           <span
             v-if="isLoading"
-            class="i-svg-spinners-ring-resize"
+            class="i-svg-spinners-ring-resize text-white"
           ></span>
-          <span class="text-white">Save</span>
         </Button>
       </div>
     </form>

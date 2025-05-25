@@ -30,6 +30,6 @@ onBeforeMount(() => {
   />
   <ErrorMessage
     :error="errorMessage"
-    class="mt-1 text-xs"
+    class="text-xs"
   />
 </template>

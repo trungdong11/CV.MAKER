@@ -9,136 +9,84 @@ import { cloneDeep } from 'lodash-es'
 export const useResumeStore = defineStore({
   id: 'resume',
   state: () => ({
-    // data: {
-    //   created_at: '2024-03-07T13:39:44.967Z',
-    //   updated_at: '2024-03-07T13:39:44.967Z',
-    //   summary: 'Experienced software developer with 5 years of expertise in full-stack development',
-    //   personal_details: {
-    //     full_name: 'John Doe',
-    //     phone_number: '+84 123 456 789',
-    //     address: '123 Main Street, Ho Chi Minh City, Vietnam',
-    //     birthday: '1995-05-15T00:00:00.000Z',
-    //     email: 'john.doe@example.com',
-    //     avatar: 'https://example.com/avatar.jpg',
-    //     job_title: 'Senior Software Engineer',
-    //   },
-    //   socials: [
-    //     {
-    //       icon: 'linkedin',
-    //       link: 'https://linkedin.com/in/johndoe',
-    //     },
-    //     {
-    //       icon: 'github',
-    //       link: 'https://github.com/johndoe',
-    //     },
-    //   ],
-    //   education: [
-    //     {
-    //       degree: 'Bachelor of Computer Science',
-    //       school: 'University of Technology',
-    //       start_date: '2013-09-01T00:00:00.000Z',
-    //       end_date: '2017-06-30T00:00:00.000Z',
-    //       school_link: 'https://university.edu',
-    //       city: 'Ho Chi Minh City',
-    //       gpa: 3.8,
-    //       description: 'Major in Software Engineering',
-    //     },
-    //   ],
-    //   award: [
-    //     {
-    //       awardTitle: 'Best Developer Award',
-    //       awardTitleLink: 'https://example.com/award',
-    //       issuer: 'Tech Community Vietnam',
-    //       issuedDate: '2022-12-15T00:00:00.000Z',
-    //       description: 'Awarded for outstanding contribution to open source projects',
-    //     },
-    //   ],
-    //   languages: [
-    //     {
-    //       language: 'English',
-    //       proficiency: 'Fluent',
-    //     },
-    //     {
-    //       language: 'Vietnamese',
-    //       proficiency: 'Native',
-    //     },
-    //   ],
-    //   skills: [
-    //     {
-    //       skill_category: 'Programming Languages',
-    //       list_of_skill: 'JavaScript, TypeScript, Python, Java',
-    //     },
-    //     {
-    //       skill_category: 'Frameworks',
-    //       list_of_skill: 'React, Node.js, Express, NestJS',
-    //     },
-    //   ],
-    //   works: [
-    //     {
-    //       company_name: 'Tech Solutions Inc.',
-    //       is_current_working: true,
-    //       position: 'Senior Software Engineer',
-    //       location: 'Ho Chi Minh City, Vietnam',
-    //       start_date: '2020-01-01T00:00:00.000Z',
-    //       end_date: '2023-12-31T00:00:00.000Z',
-    //       description: 'Led development of enterprise applications using React and Node.js',
-    //     },
-    //     {
-    //       company_name: 'StartUp Co.',
-    //       is_current_working: false,
-    //       position: 'Software Developer',
-    //       location: 'Hanoi, Vietnam',
-    //       start_date: '2017-07-01T00:00:00.000Z',
-    //       end_date: '2019-12-31T00:00:00.000Z',
-    //       description: 'Developed and maintained web applications',
-    //     },
-    //   ],
-    //   projects: [
-    //     {
-    //       projectName: 'E-commerce Platform',
-    //       projectLink: 'https://github.com/johndoe/ecommerce',
-    //       startDate: '2022-01-01T00:00:00.000Z',
-    //       endDate: '2022-06-30T00:00:00.000Z',
-    //       description: 'Built a full-stack e-commerce platform using React and Node.js',
-    //     },
-    //   ],
-    //   certification: [
-    //     {
-    //       certificationName: 'AWS Certified Developer',
-    //       issuingOrganization: 'Amazon Web Services',
-    //       issuedDate: '2022-03-15T00:00:00.000Z',
-    //       certificationLink: 'https://aws.amazon.com/certification',
-    //       credentialId: 'AWS-123456',
-    //     },
-    //   ],
-    //   publication: [
-    //     {
-    //       title: 'Modern Web Development Practices',
-    //       publisher: 'Tech Journal',
-    //       url: 'https://techjournal.com/article',
-    //       publicationDate: '2022-09-01T00:00:00.000Z',
-    //       description: 'Article about best practices in modern web development',
-    //     },
-    //   ],
-    //   organization: [
-    //     {
-    //       name: 'Vietnam Developer Community',
-    //       position: 'Technical Lead',
-    //       address: 'Ho Chi Minh City, Vietnam',
-    //       startDate: '2021-01-01T00:00:00.000Z',
-    //       endDate: '2023-12-31T00:00:00.000Z',
-    //       description: 'Leading technical workshops and mentoring junior developers',
-    //     },
-    //   ],
-    // },
     dataResume: {
       summary: '',
     } as ITemplate,
     isLoading: true,
     showPreview: false,
+    isEditPersonal: false,
+    isEditDescription: false,
+    isEditSkill: false,
+    isEditWork: false,
+    isEditEducation: false,
+    isEditProject: false,
+    isEditLanguage: false,
+    isEditCertification: false,
+    isEditOrganization: false,
+    isEditAward: false,
   }),
 
   actions: {
+    editPersonal() {
+      this.isEditPersonal = true
+    },
+    cancelEditPersonal() {
+      this.isEditPersonal = false
+    },
+    editDescription() {
+      this.isEditDescription = true
+    },
+    cancelEditDescription() {
+      this.isEditDescription = false
+    },
+    editSkill() {
+      this.isEditSkill = true
+    },
+    cancelEditSkill() {
+      this.isEditSkill = false
+    },
+    editEducation() {
+      this.isEditEducation = true
+    },
+    cancelEditEducation() {
+      this.isEditEducation = false
+    },
+    editWork() {
+      this.isEditWork = true
+    },
+    cancelEditWork() {
+      this.isEditWork = false
+    },
+    editProject() {
+      this.isEditProject = true
+    },
+    cancelEditProject() {
+      this.isEditProject = false
+    },
+    editLanguage() {
+      this.isEditLanguage = true
+    },
+    cancelEditLanguage() {
+      this.isEditLanguage = false
+    },
+    editCertification() {
+      this.isEditCertification = true
+    },
+    cancelEditCertification() {
+      this.isEditCertification = false
+    },
+    editOrganization() {
+      this.isEditOrganization = true
+    },
+    cancelEditOrganization() {
+      this.isEditOrganization = false
+    },
+    editAward() {
+      this.isEditAward = true
+    },
+    cancelEditAward() {
+      this.isEditAward = false
+    },
     async createResume(body: any) {
       try {
         this.isLoading = true
@@ -192,12 +140,16 @@ export const useResumeStore = defineStore({
         this.isLoading = false
       }
     },
-    updatePersonalDetails(personalDetails: ITemplate['personal_details']) {
+    updatePersonalDetails(
+      personalDetails: ITemplate['personal_details'],
+      socials: ITemplate['socials'],
+    ) {
       this.dataResume.personal_details = {
         ...this.dataResume.personal_details,
         ...personalDetails,
       }
 
+      this.dataResume.socials = socials
       this.updateResume(this.dataResume.id, this.dataResume)
     },
 
@@ -250,15 +202,12 @@ export const useResumeStore = defineStore({
         }))
       }
 
+      console.log(newData, 'check new data')
+
       this.dataResume = {
         ...this.dataResume,
         ...newData,
       }
-    },
-
-    updateSocials(socials: ITemplate['socials']) {
-      this.dataResume.socials = socials
-      this.updateResume(this.dataResume.id, this.dataResume)
     },
 
     updateSummary(summary: string) {
@@ -380,11 +329,12 @@ export const useResumeStore = defineStore({
 
       if (this.dataResume.projects.length === 0) {
         this.dataResume.projects.push({
-          project_name: 'E-commerce Platform',
-          project_link: 'https://github.com/johndoe/ecommerce',
+          project_name: 'Project Name',
+          project_link: '',
           start_date: '2022-01-01T00:00:00.000Z',
           end_date: '2022-06-30T00:00:00.000Z',
-          description: 'Built a full-stack e-commerce platform using React and Node.js',
+          description:
+            'State your tasks and accomplishments including name of the project and position of responsibility held.',
           is_ongoing: false,
         })
       }
@@ -430,9 +380,22 @@ export const useResumeStore = defineStore({
 
       if (this.dataResume.skills.length === 0) {
         this.dataResume.skills.push({
-          skill_category: 'Programming Languages',
-          list_of_skill: 'JavaScript, TypeScript, Python, Java',
+          skill_category: 'Skill Category',
+          list_of_skill:
+            'Skill Name 1, Skill Name 2, Skill Name 3, Skill Name 4, Skill Name 5, etc',
         })
+      }
+      this.updateResume(this.dataResume.id, this.dataResume)
+    },
+
+    seedSummary() {
+      if (!this.dataResume.summary) {
+        this.dataResume.summary = ''
+      }
+
+      if (this.dataResume.summary === '') {
+        this.dataResume.summary =
+          'A summary includes short, concise and targeted statements to summarize your skills and experiences. Mostly people will start with why they are here. What is the reason why they do what they do. Followed by “how” they do it and close it with “what” is the thing that they currently doing right now with respect to the ‘why’ and the ‘how’.'
       }
       this.updateResume(this.dataResume.id, this.dataResume)
     },
@@ -444,13 +407,14 @@ export const useResumeStore = defineStore({
 
       if (this.dataResume.works.length === 0) {
         this.dataResume.works.push({
-          company_name: 'Tech Solutions Inc.',
+          company_name: 'Company Name',
           is_current_working: true,
-          position: 'Senior Software Engineer',
-          location: 'Ho Chi Minh City, Vietnam',
+          position: 'Position',
+          location: 'City, State/Country',
           start_date: '2020-01-01T00:00:00.000Z',
           end_date: '2023-12-31T00:00:00.000Z',
-          description: 'Led development of enterprise applications using React and Node.js',
+          description:
+            'State your tasks and accomplishments including name of the project and position of responsibility held.',
         })
       }
       this.updateResume(this.dataResume.id, this.dataResume)
@@ -469,8 +433,8 @@ export const useResumeStore = defineStore({
           end_date: '2017-06-30T00:00:00.000Z',
           school_link: 'https://university.edu',
           city: 'Ho Chi Minh City',
-          gpa: 3.8,
-          description: 'Major in Software Engineering',
+          gpa: 4.0,
+          description: 'E.g., info about scholarships, student activity, etc.',
         })
       }
       this.updateResume(this.dataResume.id, this.dataResume)

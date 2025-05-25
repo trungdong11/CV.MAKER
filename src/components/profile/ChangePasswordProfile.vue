@@ -105,9 +105,8 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         </div>
       </div>
       <Button
-        class="h-10 flex items-center gap-2 bg-slate-100 w-24"
+        class="h-10 flex items-center gap-2 w-24"
         :disabled="isLoading"
-        variant="secondary"
         @click="onSubmit"
       >
         <span

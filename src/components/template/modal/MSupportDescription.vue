@@ -39,7 +39,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="fixed z-50 bottom-0 top-0 left-0 right-0 bg-rgb">
+  <div class="fixed z-[999] bottom-0 top-0 left-0 right-0 bg-rgb">
     <div class="flex items-center justify-center p-20 h-full w-full">
       <Card class="flex flex-col gap-4 p-6 w-[650px] min-w-[650px] items-center">
         <div class="flex items-start justify-between w-full">
@@ -65,16 +65,16 @@ onBeforeMount(() => {
         </div>
         <div
           v-else
-          class="flex flex-col gap-10 w-full max-h-[400px] overflow-y-auto mb-2"
+          class="flex flex-col gap-6 w-full max-h-[400px] overflow-y-auto mb-2"
         >
-          <div class="flex flex-col gap-3 rounded-lg p-3 border-[#E5E7EB] border bg-[#F9FAFB]">
+          <div class="flex flex-col gap-2 rounded-lg p-3 border-[#E5E7EB] border bg-[#F9FAFB]">
             <h2 class="font-semibold text-base">Before</h2>
             <p
               class="font-nomal text-xs"
               v-html="text"
             ></p>
           </div>
-          <div class="flex flex-col gap-3 rounded-lg p-3 border-[#1fc76a] border bg-[#EEFFF5]">
+          <div class="flex flex-col gap-2 rounded-lg p-3 border-[#1fc76a] border bg-[#EEFFF5]">
             <h2 class="font-semibold text-base">After</h2>
             <p
               class="text-xs font-normal"
