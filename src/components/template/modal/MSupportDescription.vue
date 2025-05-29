@@ -84,7 +84,6 @@ onBeforeMount(() => {
         </div>
         <Button
           id="tour-item"
-          data-tour="1"
           class="ai-glow ai-shine mt-4 flex items-center gap-2 px-4 h-9 text-white font-medium rounded-full shadow-lg hover:bg-[#ff8533] transition w-[200px] mx-auto"
           @click="handleAddDescription"
         >

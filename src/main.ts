@@ -14,8 +14,6 @@ import veProgress from 'vue-ellipse-progress'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import GuestLayout from '@/layouts/GuestLayout.vue'
 import NoSideBarLayout from '@/layouts/NoSideBarLayout.vue'
-import QuizCreateLayout from './layouts/QuizCreateLayout.vue'
-import RoomLayout from './layouts/RoomLayout.vue'
 import { initAuthStore } from './stores'
 
 /* plugins */
@@ -53,8 +51,6 @@ const initApp = async () => {
   app.component('DefaultLayout', DefaultLayout)
   app.component('GuestLayout', GuestLayout)
   app.component('NoSideBarLayout', NoSideBarLayout)
-  app.component('QuizCreateLayout', QuizCreateLayout)
-  app.component('RoomLayout', RoomLayout)
   app.use(createPinia())
   app.use(vue3GoogleLogin, {
     clientId:

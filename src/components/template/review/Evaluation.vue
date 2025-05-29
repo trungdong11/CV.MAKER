@@ -22,8 +22,17 @@ import NiceToHave from './suggest/NiceToHave.vue'
         </Tooltip>
       </TooltipProvider>
     </div>
-    <Important />
-    <Recommended />
-    <NiceToHave />
+    <Important
+      id="tour-item"
+      data-tour="5"
+    />
+    <Recommended
+      id="tour-item"
+      data-tour="6"
+    />
+    <NiceToHave
+      id="tour-item"
+      data-tour="7"
+    />
   </BaseSubItem>
 </template>

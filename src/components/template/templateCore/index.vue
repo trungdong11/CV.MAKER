@@ -120,7 +120,11 @@ const handleAddSection = (section: string) => {
 
 <template>
   <Card class="flex flex-col flex-auto w-[952px] min-w-[952px] overflow-auto">
-    <ScrollArea class="h-full flex flex-col gap-6 p-5">
+    <ScrollArea
+      id="tour-item"
+      data-tour="2"
+      class="h-full flex flex-col gap-6 p-5"
+    >
       <component
         :is="sections[index].component"
         v-for="index in sectionInitialIndex"
@@ -129,7 +133,11 @@ const handleAddSection = (section: string) => {
     </ScrollArea>
 
     <div class="flex justify-center pb-5">
-      <div class="max-w-[50%] flex flex-wrap justify-center gap-2">
+      <div
+        id="tour-item"
+        data-tour="3"
+        class="max-w-[50%] flex flex-wrap justify-center gap-2"
+      >
         <div
           v-for="item in sectionNotAdded"
           :key="item.key"

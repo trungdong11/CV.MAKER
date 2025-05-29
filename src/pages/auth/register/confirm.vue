@@ -46,6 +46,7 @@ onBeforeMount(async () => {
   } else {
     router.push({ name: 'login' })
   }
+  openConfirm()
 })
 </script>
 <template>

@@ -260,7 +260,6 @@ watch(
                 <HoverCardTrigger>
                   <Button
                     id="tour-item"
-                    data-tour="1"
                     class="ai-glow flex items-center gap-2 px-4 h-9 gradient-from-primary text-white font-medium rounded-full shadow-lg hover:bg-indigo-300 transition"
                   >
                     ✨ <span class="text-white">Generate Description</span>
