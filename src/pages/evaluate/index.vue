@@ -1,55 +1,25 @@
 <script setup lang="ts">
 import FormEvaluate from '@/components/evaluate/FormEvaluate.vue'
-import DetailView from '@/components/evaluate/detail/DetailView.vue'
-import GeneralView from '@/components/evaluate/detail/GeneralView.vue'
-import ModalLoading from '@/components/evaluate/detail/ModalLoading.vue'
+import ListEvaluate from '@/components/evaluate/ListEvaluate.vue'
 import { useEvaluateStore } from '@/stores/evaluate'
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-
 const evaluateStore = useEvaluateStore()
-const { resetIsCheckUpload } = evaluateStore
-const { isCheckUpload, isLoading } = toRefs(evaluateStore)
+// const { isLoading } = toRefs(evaluateStore)
+const evaluates = computed(() => evaluateStore.evaluates)
+
+onMounted(() => {
+  evaluateStore.fetchResumes()
+  setInterval(() => {
+    evaluateStore.fetchResumes()
+  }, 30000)
+})
 </script>
 
 <template>
-  <div class="p-5 w-full h-full flex items-center justify-center">
-    <FormEvaluate v-if="!isCheckUpload" />
-    <ModalLoading v-if="isLoading" />
-
-    <div
-      v-if="isCheckUpload"
-      class="flex h-full flex-col w-full"
-    >
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              <div
-                class="text-primary cursor-pointer"
-                @click="resetIsCheckUpload"
-              >
-                Evaluate
-              </div>
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage class="">Detail</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div class="flex gap-8 items-start mt-4">
-        <GeneralView />
-        <DetailView />
-      </div>
-    </div>
+  <div class="p-5 w-full h-full flex flex-col mt-16">
+    <FormEvaluate />
+    <ListEvaluate v-if="evaluates.length > 0" />
+    <!-- <ModalLoading v-if="isLoading" /> -->
   </div>
 </template>
 

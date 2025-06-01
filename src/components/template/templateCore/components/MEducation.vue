@@ -108,6 +108,7 @@ watch(
 
 <template>
   <div
+    id="education-info"
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
     :class="isEditEducation ? 'bg-gray-50' : 'bg-white'"
   >
@@ -216,7 +217,7 @@ watch(
               placeholder="3.4 of 4.0"
               type="text"
               :name="`gpa-${index}`"
-              :initial-value="education?.gpa.toString()"
+              :initial-value="education?.gpa?.toString()"
               class="h-11 mt-1 bg-white border-slate-200 outline-none"
             />
           </div>

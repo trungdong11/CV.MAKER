@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
+const emit = defineEmits(['close'])
 </script>
 
 <template>
@@ -27,6 +28,12 @@ import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
         loop
         src="https://lottie.host/b1ad3a5a-5b9c-4d1d-bdd2-dfecdf5a5300/JvdNPJDWS8.lottie"
       />
+    </div>
+    <div class="absolute top-6 right-6">
+      <span
+        class="i-material-symbols-light-close-rounded text-primary cursor-pointer text-3xl"
+        @click="emit('close')"
+      ></span>
     </div>
   </div>
 </template>

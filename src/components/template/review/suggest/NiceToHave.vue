@@ -70,6 +70,17 @@ const handleImportantEvaluate = () => {
   }
 }
 
+type EditSection = 'Organization' | 'Certification' | 'Language' | 'Award'
+
+const handleEdit = (section: EditSection) => {
+  const editMethod = `edit${section}` as keyof typeof resumeStore
+  ;(resumeStore[editMethod] as unknown as () => void)()
+  const element = document.getElementById(`${section.toLowerCase()}-info`)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 onBeforeMount(() => {
   Object.assign(valueState, initialValueState)
   handleImportantEvaluate()
@@ -200,7 +211,7 @@ watch(dataResume.value, (newVal) => {
                 </div>
                 <div
                   class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-                  @click="resumeStore.editOrganization"
+                  @click="handleEdit('Organization')"
                 >
                   <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
                   Add Now
@@ -229,7 +240,7 @@ watch(dataResume.value, (newVal) => {
                 </div>
                 <div
                   class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-                  @click="resumeStore.editOrganization"
+                  @click="handleEdit('Organization')"
                 >
                   <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
                   Add Now

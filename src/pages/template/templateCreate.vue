@@ -12,19 +12,16 @@ import Evaluation from '@/components/template/review/Evaluation.vue'
 // import MatchResume from '@/components/template/review/MatchResume.vue'
 import MPreview from '@/components/template/modal/MPreview.vue'
 import { useResumeStore } from '@/stores/resume/resume'
-import { useEvaluateStore } from '@/stores/evaluate'
 import { useRoute } from 'vue-router'
 import jsPDF from 'jspdf'
 import { formatDateUs } from '@/utils/format'
-import { showToast } from '@/utils/toast'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
+import MImport from '@/components/template/modal/MImport.vue'
 
 const resumeStore = useResumeStore()
-const evaluateStore = useEvaluateStore()
 
 const { getResumeDetail } = resumeStore
-const { isLoading } = storeToRefs(evaluateStore)
 
 const route = useRoute()
 
@@ -32,8 +29,7 @@ const idResume = computed(() => route.params?.id as string)
 const cvData = computed(() => resumeStore.getResumeInfo)
 
 const isShowPreview = ref(false)
-const refInput = ref()
-const fileUpload = ref()
+const isShowImport = ref(false)
 
 const handleCancelEdit = () => {
   resumeStore.cancelEditAward()
@@ -46,34 +42,6 @@ const handleCancelEdit = () => {
   resumeStore.cancelEditLanguage()
   resumeStore.cancelEditCertification()
   resumeStore.cancelEditOrganization()
-}
-
-const onChangeFile = async (e: Event) => {
-  const element = e.currentTarget as HTMLInputElement
-  const fileList: FileList | null = element.files
-  if (!fileList) return
-  const data = fileList[0] as any
-
-  if (data) {
-    fileUpload.value = data
-    await getImportCV()
-  }
-}
-
-const getImportCV = async () => {
-  handleCancelEdit()
-  if (!fileUpload.value) {
-    showToast({
-      description: 'Please select a file first',
-      variant: 'destructive',
-    })
-    return
-  }
-
-  const formData = new FormData()
-  formData.append('file', fileUpload.value)
-
-  await evaluateStore.handleImportFile(formData)
 }
 
 const fetchResumeDetail = async () => {
@@ -89,6 +57,14 @@ const showPreview = () => {
 const unShowPreview = () => {
   resumeStore.setUnShowPreview()
   isShowPreview.value = false
+}
+
+const showImport = () => {
+  isShowImport.value = true
+}
+
+const unShowImport = () => {
+  isShowImport.value = false
 }
 
 const checkPageOverflow = (doc: jsPDF, currentY: number, additionalHeight = 10): number => {
@@ -230,7 +206,7 @@ const handleDownload = () => {
     if (summary?.trim()) {
       doc.setFontSize(10)
       doc.setFont('helvetica', 'normal')
-      const summaryLines = doc.splitTextToSize(summary, contentWidth)
+      const summaryLines = parseHTMLToLines(summary)
       const lineHeight = 5
 
       summaryLines.forEach((line, index) => {
@@ -412,7 +388,7 @@ const handleDownload = () => {
 
         y += 5
 
-        if (project.description) {
+        if (project?.description) {
           const parsedLines = parseHTMLToLines(project.description)
           const maxWidth = projectContentWidth
 
@@ -639,10 +615,6 @@ const handleDownload = () => {
   }
 }
 
-const handleButtonClick = () => {
-  refInput.value?.click()
-}
-
 onMounted(() => {
   fetchResumeDetail()
 
@@ -652,12 +624,12 @@ onMounted(() => {
   const driverObj = driver({
     onDestroyStarted: async () => {
       if (!driverObj.hasNextStep()) {
-        // localStorage.setItem('cvmaker-tour', 'true')
+        localStorage.setItem('cvmaker-tour', 'true')
         driverObj.destroy()
       }
     },
     onCloseClick: () => {
-      // localStorage.setItem('cvmaker-tour', 'true')
+      localStorage.setItem('cvmaker-tour', 'true')
       driverObj.destroy()
     },
     showProgress: true,
@@ -781,25 +753,12 @@ onMounted(() => {
         </div>
         <Button
           id="tour-item"
-          :disabled="isLoading"
           data-tour="1"
           variant="outline"
           class="w-32 h-11 text-primary border-primary flex gap-2 items-center"
-          @click="handleButtonClick"
+          @click="showImport()"
         >
-          <span class="i-solar-bolt-outline text-primary w-4 h-4"></span>
           <span class="text-primary">Import</span>
-          <span
-            v-if="isLoading"
-            class="i-svg-spinners-ring-resize text-primary ml-2"
-          ></span>
-          <input
-            ref="refInput"
-            type="file"
-            class="hidden"
-            accept=".pdf,.doc,.docx"
-            @change="onChangeFile"
-          />
         </Button>
         <Button
           id="tour-item"
@@ -828,7 +787,7 @@ onMounted(() => {
       v-if="resumeStore?.dataResume?.id"
       class="px-8 flex gap-6 overflow-y-hidden p-1"
     >
-      <TemplateCore />
+      <TemplateCore :key="resumeStore?.cvId" />
       <div class="flex flex-col gap-6 min-w-[300px]">
         <Evaluation
           id="tour-item"
@@ -841,6 +800,11 @@ onMounted(() => {
     <MPreview
       v-if="isShowPreview"
       @close="unShowPreview()"
+    />
+
+    <MImport
+      v-if="isShowImport"
+      @close="unShowImport()"
     />
   </div>
 </template>

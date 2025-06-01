@@ -79,6 +79,7 @@ watch(
 
 <template>
   <div
+    id="description-info"
     :class="isEditDescription ? 'bg-gray-50' : 'bg-white'"
     class="relative items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >
@@ -130,7 +131,7 @@ watch(
                     ></span>
                   </Button>
                 </HoverCardTrigger>
-                <HoverCardContent class="w-80">
+                <HoverCardContent class="w-80 z-[1]">
                   <div
                     class="flex flex-col gap-1 rounded-lg p-2 cursor-pointer w-full hover:bg-gray-100"
                     @click="isShowGenerate = true"

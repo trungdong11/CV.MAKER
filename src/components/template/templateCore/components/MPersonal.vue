@@ -111,6 +111,7 @@ watch(
 
 <template>
   <div
+    id="personal-info"
     :class="isEditPersonal || !isPreview ? 'bg-gray-50' : 'bg-white'"
     class="items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >

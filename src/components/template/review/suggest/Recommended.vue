@@ -98,6 +98,17 @@ const handleImportantEvaluate = () => {
   }
 }
 
+type EditSection = 'Personal' | 'Education' | 'Project' | 'Work' | 'Skill'
+
+const handleEdit = (section: EditSection) => {
+  const editMethod = `edit${section}` as keyof typeof resumeStore
+  ;(resumeStore[editMethod] as unknown as () => void)()
+  const element = document.getElementById(`${section.toLowerCase()}-info`)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 onBeforeMount(() => {
   Object.assign(valueState, initialValueState)
   handleImportantEvaluate()
@@ -155,7 +166,7 @@ watch(dataResume.value, (newVal) => {
             </div>
             <div
               class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-              @click="resumeStore.editPersonal"
+              @click="handleEdit('Personal')"
             >
               <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
               Add Now
@@ -171,7 +182,7 @@ watch(dataResume.value, (newVal) => {
             </div>
             <div
               class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-              @click="resumeStore.editPersonal"
+              @click="handleEdit('Personal')"
             >
               <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
               Add Now
@@ -187,7 +198,7 @@ watch(dataResume.value, (newVal) => {
             </div>
             <div
               class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-              @click="resumeStore.editWork()"
+              @click="handleEdit('Work')"
             >
               <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
               Add Now
@@ -213,7 +224,7 @@ watch(dataResume.value, (newVal) => {
                 </div>
                 <div
                   class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-                  @click="resumeStore.editEducation"
+                  @click="handleEdit('Education')"
                 >
                   <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
                   Add Now
@@ -241,7 +252,7 @@ watch(dataResume.value, (newVal) => {
                 </div>
                 <div
                   class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-                  @click="resumeStore.editProject"
+                  @click="handleEdit('Project')"
                 >
                   <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
                   Add Now
@@ -269,7 +280,7 @@ watch(dataResume.value, (newVal) => {
                 </div>
                 <div
                   class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-                  @click="resumeStore.editProject"
+                  @click="handleEdit('Project')"
                 >
                   <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
                   Add Now
@@ -289,7 +300,7 @@ watch(dataResume.value, (newVal) => {
             </div>
             <div
               class="flex items-center gap-1 cursor-pointer text-primary text-[13px] font-semibold"
-              @click="resumeStore.editSkill"
+              @click="handleEdit('Skill')"
             >
               <span class="i-material-symbols-light-add text-primary text-[20px]"></span>
               Add Now

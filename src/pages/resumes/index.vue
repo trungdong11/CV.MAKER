@@ -41,10 +41,6 @@ onBeforeMount(() => {
   fetchResumes()
 })
 
-const handleClickCreateQuiz = async () => {
-  // await resumeManageStore.initQuizzflyDraft()
-}
-
 const debouncedFn = useDebounceFn((value) => {
   search.value = value
 }, 500)

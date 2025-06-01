@@ -89,3 +89,34 @@ export const itActionVerbs = [
   'Researched',
   'Investigated',
 ]
+
+export const sampleEvaluate = {
+  total_content_score: 0,
+  total_final_score: 0,
+  content_score_100: 0,
+  final_score_100: 0,
+  total_grammar_errors: 0,
+  sections: [
+    {
+      section: '',
+      content_score: 0,
+      final_score: 0,
+      grammar_errors: {},
+      grammar_errors_detailed: [
+        {
+          location: '',
+          type: '',
+          description: '',
+          suggestion: '',
+        },
+      ],
+      suggestions: [
+        {
+          issue: '',
+          suggestion: '',
+        },
+      ],
+      quality: '',
+    },
+  ],
+}

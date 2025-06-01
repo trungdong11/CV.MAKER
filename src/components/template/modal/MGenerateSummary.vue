@@ -40,7 +40,7 @@ const handleAddSummary = (text: string, index: number) => {
 </script>
 
 <template>
-  <div class="fixed z-[999] bottom-0 top-0 left-0 right-0 bg-rgb">
+  <div class="fixed z-[2] bottom-0 top-0 left-0 right-0 bg-rgb">
     <div class="flex items-center justify-center p-20 h-full w-full">
       <Card class="flex flex-col gap-4 p-6 w-[650px] min-w-[650px]">
         <div class="flex items-start justify-between">
@@ -62,9 +62,12 @@ const handleAddSummary = (text: string, index: number) => {
           <div class="flex gap-3 w-full items-end">
             <div class="flex flex-col gap-1 w-full">
               <p class="mt-5 mb-1 font-medium">Job title <span class="text-red-500">*</span></p>
-              <Select v-model="job">
+              <Select
+                v-model="job"
+                class="z-[99]!"
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Time limit" />
+                  <SelectValue placeholder="Job title" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -81,9 +84,12 @@ const handleAddSummary = (text: string, index: number) => {
             </div>
             <div class="flex flex-col gap-1 w-full">
               <p class="mt-5 mb-1 font-medium">Seniority<span class="text-red-500">*</span></p>
-              <Select v-model="seniority">
+              <Select
+                v-model="seniority"
+                class="z-[999]"
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Time limit" />
+                  <SelectValue placeholder="Seniority" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>

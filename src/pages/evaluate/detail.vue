@@ -1,19 +1,29 @@
 <script setup lang="ts">
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 
-// import generalView from '@/components/evaluate/detail/generalView.vue'
-// import detailView from '@/components/evaluate/detail/detailView.vue'
+import GeneralView from '@/components/evaluate/detail/GeneralView.vue'
+import DetailView from '@/components/evaluate/detail/DetailView.vue'
+import { useEvaluateStore } from '@/stores/evaluate'
+
+const route = useRoute()
+const evaluateId = computed(() => route.params.id as string)
+
+const evaluateStore = useEvaluateStore()
+
+onMounted(() => {
+  evaluateStore.getDetailEvaluate(evaluateId.value)
+})
 </script>
 
 <template>
   <div class="p-8 flex flex-col gap-8">
-    <!-- <div class="flex flex-col">
+    <div class="flex flex-col">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -32,10 +42,10 @@
         </BreadcrumbList>
       </Breadcrumb>
       <div class="flex gap-8 items-start mt-4">
-        <generalView />
-        <detailView />
+        <GeneralView />
+        <DetailView />
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 

@@ -100,6 +100,7 @@ watch(
 
 <template>
   <div
+    id="skill-info"
     :class="isEditSkill ? 'bg-gray-50' : 'bg-white'"
     class="relative items-center group flex flex-col justify-start gap-1 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
   >

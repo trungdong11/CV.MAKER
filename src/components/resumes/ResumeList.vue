@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useConfirmDialog } from '@/stores/modal'
 import { Skeleton } from '@/components/ui/skeleton'
-
+import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 const resumeManageStore = useResumeManageStore()
 const confirmDialog = useConfirmDialog()
 
@@ -58,39 +58,40 @@ const handleConfirmDelete = async (resumeId: string) => {
   </div>
   <div
     v-else
-    class="grid grid-cols-2 max-md:grid-cols-1 gap-5"
+    class="grid grid-cols-4 max-md:grid-cols-1 gap-5"
   >
     <Card
       v-for="resume in resumes"
       :key="resume.id"
     >
-      <div class="p-3 flex gap-2 w-full">
-        <!-- left -->
+      <div class="flex gap-2 w-full flex-col relative">
+        <div class="flex items-center gap-2 absolute top-4 right-4">
+          <span
+            class="i-material-symbols-light-delete-outline text-primary cursor-pointer text-xl"
+            @click="handleConfirmDelete(resume?.id)"
+          ></span>
+        </div>
         <div>
-          <img
-            v-image
-            class="w-[80px] h-[80px] object-cover rounded-sm"
-            src="/src/assets/svg/funnel-upload.svg"
-            alt=""
+          <DotLottieVue
+            style="height: 200px; width: 100%; object-fit: cover"
+            autoplay
+            loop
+            src="https://lottie.host/5fa9d3df-25c7-4789-be72-2dd7c1b29789/MO4WYKqaUD.lottie"
           />
         </div>
-        <div class="flex flex-col w-full justify-between">
+        <div class="flex flex-col w-full justify-between p-5 gap-2">
           <div class="flex items-center justify-between">
-            <div class="flex item-center gap-3">
+            <div class="flex items-center gap-3 justify-between w-full">
               <h2 class="title text-base font-medium w-full">
                 {{ resume?.personal_details?.full_name || 'Untitled' }}
               </h2>
-            </div>
-            <div class="flex items-center gap-2">
-              <span
-                class="i-material-symbols-light-delete-outline cursor-pointer text-xl"
-                @click="handleConfirmDelete(resume?.id)"
-              ></span>
+              <p class="text-xs text-slate-500">
+                {{ new Date(resume?.created_at).toLocaleDateString() }}
+              </p>
             </div>
           </div>
           <div class="flex items-center justify-between">
-            <div class="text-sm text-gray-500">@{{ resume?.username }}</div>
-            <div class="flex gap-5">
+            <div class="flex gap-5 items-center justify-between w-full">
               <RouterLink
                 target="_blank"
                 :to="{ name: 'evaluate' }"
@@ -114,7 +115,7 @@ const handleConfirmDelete = async (resumeId: string) => {
 </template>
 <style scoped>
 .title {
-  width: 100px;
+  width: 150px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

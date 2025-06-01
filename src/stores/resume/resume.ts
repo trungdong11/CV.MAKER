@@ -5,10 +5,11 @@ import { showToast } from '@/utils/toast'
 import router from '@/routers/router'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash-es'
-
+import { v4 as uuidv4 } from 'uuid'
 export const useResumeStore = defineStore({
   id: 'resume',
   state: () => ({
+    cvId: uuidv4(),
     dataResume: {
       summary: '',
     } as ITemplate,
@@ -201,8 +202,6 @@ export const useResumeStore = defineStore({
           end_date: item.end_date ? dayjs(item.end_date) : null,
         }))
       }
-
-      console.log(newData, 'check new data')
 
       this.dataResume = {
         ...this.dataResume,
@@ -444,6 +443,9 @@ export const useResumeStore = defineStore({
     },
     setUnShowPreview() {
       this.showPreview = false
+    },
+    setCvId(val: string) {
+      this.cvId = val
     },
   },
   getters: {

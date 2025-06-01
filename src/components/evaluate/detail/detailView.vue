@@ -524,7 +524,7 @@ const handlePercent = (num: number, section: string) => {
 <template>
   <div class="flex flex-col gap-8 w-full h-[100vh] overflow-auto">
     <div
-      v-for="item in evaluateDetail?.sections"
+      v-for="item in evaluateDetail?.sections?.slice(1)"
       :key="item.section"
       class="w-full rounded-xl p-5 shadow flex flex-col gap-4"
     >

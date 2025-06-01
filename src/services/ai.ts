@@ -1,7 +1,6 @@
 import type { BaseResponse } from '@/types/api'
 import { config } from '@/api/config'
-import type { IEvaluate } from '@/types/ai'
-
+import type { IEvaluate } from '@/types/evaluate'
 
 //AI model
 export const evaluateCVApi = async (data: any): Promise<BaseResponse<IEvaluate>> => {

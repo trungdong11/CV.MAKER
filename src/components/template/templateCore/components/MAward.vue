@@ -95,6 +95,7 @@ watch(
 
 <template>
   <div
+    id="award-info"
     class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
     :class="isEditAward ? 'bg-gray-50' : 'bg-white'"
   >

@@ -8,7 +8,7 @@ const router = useRouter()
 const evaluateStore = useEvaluateStore()
 
 const { evaluateCV } = evaluateStore
-// const { evaluateDetail } = toRefs(evaluateStore)
+const { isLoading } = toRefs(evaluateStore)
 
 const refInput = ref()
 const fileUpload = ref()
@@ -36,12 +36,8 @@ const onSubmit = async () => {
 
   const formData = new FormData()
   formData.append('file', fileUpload.value)
-
+  evaluateStore.handleAddSampleEvaluate()
   await evaluateCV(formData)
-  // })
-  // if (evaluateDetail.value) {
-  //   router.push(`evaluate/${evaluateDetail.value?.cv_id}`)
-  // }
 }
 
 const handleButtonClick = () => {
@@ -64,19 +60,34 @@ const handleButtonClick = () => {
         <h2 class="text-xl font-medium">Drag and drop your resume here</h2>
         <p>
           You can upload your resume in PDF, DOC, DOCX
-          <!-- <span class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
-            >choose your resume</span -->
+          <span class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
+            >choose your resume</span
           >
         </p>
       </div>
       <Button
+        :disabled="isLoading"
         class="w-1/2 h-11"
         @click="handleButtonClick"
       >
         <span
+          v-if="!isLoading"
           class="i-material-symbols-light-upload-rounded text-white text-[20px] font-semibold"
         ></span>
-        <span class="text-white ml-2">Upload Resume</span>
+        <span
+          v-else
+          class="i-svg-spinners-ring-resize text-white text-[20px] font-semibold"
+        ></span>
+        <span
+          v-if="!isLoading"
+          class="text-white ml-2"
+          >Upload Resume</span
+        >
+        <span
+          v-else
+          class="text-white ml-2"
+          >The evaluate is processing...</span
+        >
         <input
           ref="refInput"
           type="file"
