@@ -57,7 +57,9 @@ const handlePercent = (num: number, section: string) => {
 }
 </script>
 <template>
-  <div class="w-1/3 rounded-xl p-8 shadow flex flex-col justify-center items-center">
+  <div
+    class="w-1/3 rounded-xl p-8 shadow flex flex-col justify-center items-center overflow-auto h-[100vh]"
+  >
     <div class="flex flex-col gap-4 text-center items-center justify-center">
       <h2 class="text-3xl font-semibold">Your Score</h2>
       <!-- <div class="flex flex-col gap-1">

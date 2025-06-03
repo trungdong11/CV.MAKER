@@ -55,7 +55,6 @@ const handlePercent = (num: number, section: string) => {
 
   return (num / total) * 100
 }
-
 </script>
 <template>
   <div class="flex flex-col gap-8 w-full h-[100vh] overflow-auto">
