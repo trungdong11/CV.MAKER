@@ -12,10 +12,6 @@ const authStore = useAuthStore()
 const confirmDialog = useConfirmDialog()
 const resumeManageStore = useResumeManageStore()
 
-const handleClickCreateQuiz = async () => {
-  // await quizzflyStore.initQuizzflyDraft()
-}
-
 onBeforeMount(() => {
   // quizzflyStore.fetchQuizzflys()
   // getCountUnreadNotification()

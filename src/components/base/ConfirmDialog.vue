@@ -57,7 +57,7 @@ watch(
           class="w-full rounded-md py-5 font-medium"
           :class="{ 'bg-red-500 hover:bg-red-700': confirmDialog.getQuestion?.warning }"
           @click="confirmDialog.confirm(true)"
-          >Confirm</Button
+          ><span class="text-white">Confirm</span></Button
         >
       </AlertDialogFooter>
 

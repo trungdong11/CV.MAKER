@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 const resumeManageStore = useResumeManageStore()
 const confirmDialog = useConfirmDialog()
 
-const resumes = computed(() => resumeManageStore.getResumes)
+const { isFetching, resumes } = toRefs(resumeManageStore)
 
 const handleConfirmDelete = async (resumeId: string) => {
   const { isConfirmed } = await confirmDialog.open({
@@ -23,7 +23,7 @@ const handleConfirmDelete = async (resumeId: string) => {
 </script>
 <template>
   <div
-    v-if="resumes.length === 0"
+    v-if="isFetching"
     class="flex flex-col items-center w-full"
   >
     <div class="flex gap-2 w-full items-center">

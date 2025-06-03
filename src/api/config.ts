@@ -1,5 +1,4 @@
 export const config = {
-  // baseURL: import.meta.env.VITE_API_ENDPOINT || 'https://api.quizzfly.site/api/v1',
   baseURL: import.meta.env.VITE_API_ENDPOINT || 'https://localhost:3000/api/v1',
   evaluateEndpoint: import.meta.env.VITE_API_ENDPOINT_EVALUATE || 'https://localhost:8000/api/v1',
 

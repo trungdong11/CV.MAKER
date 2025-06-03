@@ -86,7 +86,7 @@ const loginGoogle = () => {
           >
             <span
               v-if="isLoading"
-              class="i-svg-spinners-ring-resize"
+              class="i-svg-spinners-ring-resize text-white"
             ></span>
             <span class="text-white">Sign in</span>
           </Button>

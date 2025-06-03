@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  quizzfly-client:
+  cvmaker-client:
     build:
       context: .
       dockerfile: Dockerfile

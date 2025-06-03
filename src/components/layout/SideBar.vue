@@ -3,7 +3,9 @@ import SidebarMenu from '@/components/layout/sidebar/SidebarMenu.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useConfirmDialog } from '@/stores/modal'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const lgAndSmaller = breakpoints.smallerOrEqual('lg')
 const authStore = useAuthStore()
@@ -14,6 +16,15 @@ watch(lgAndSmaller, (value) => {
     isCollapsed.value = true
   }
 })
+
+watch(
+  () => route.name,
+  (newPath) => {
+    if (newPath === 'resume-detail') {
+      isCollapsed.value = true
+    }
+  },
+)
 
 const openConfirm = async () => {
   const { isConfirmed } = await confirmDialog.open({
@@ -34,14 +45,14 @@ const toggleSidebar = () => {
   localStorage.setItem('isCollapsed', JSON.stringify(isCollapsed.value))
 }
 
-const sidebarMode = ref<'dark' | 'light'>('dark')
+const sidebarMode = ref<'dark' | 'light'>('light')
 const handleChangeMode = (mode: 'dark' | 'light') => {
   localStorage.setItem('sidebarMode', mode)
   sidebarMode.value = mode
 }
 
 onBeforeMount(() => {
-  sidebarMode.value = (localStorage.getItem('sidebarMode') as 'dark' | 'light') || 'dark'
+  sidebarMode.value = (localStorage.getItem('sidebarMode') as 'dark' | 'light') || 'light'
 })
 </script>
 <template>

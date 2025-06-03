@@ -116,6 +116,10 @@ const handleAddSection = (section: string) => {
       break
   }
 }
+
+onBeforeMount(() => {
+  localStorage.setItem('isCollapsed', JSON.stringify(true))
+})
 </script>
 
 <template>
