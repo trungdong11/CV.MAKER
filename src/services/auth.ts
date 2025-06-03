@@ -48,7 +48,7 @@ export const registerApi = async (data: RegisterBody): Promise<any> => {
 }
 
 export const confirmEmailApi = async (token: string): Promise<any> => {
-  return $api('/auth/verify-email', { query: { token: token } })
+  return $api('/auth/activation/verify-token', { query: { token: token } })
 }
 
 export const resetPasswordApi = async (data: any): Promise<any> => {
@@ -66,7 +66,7 @@ export const forgotPasswordApi = async (email: string): Promise<any> => {
 }
 
 export const verifyResetPasswordApi = async (token: string): Promise<any> => {
-  return $api('/auth/verify-reset-password-link', {
+  return $api('/auth/reset-password/verify-token', {
     method: 'GET',
     params: { token },
   })
