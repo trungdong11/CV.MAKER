@@ -116,14 +116,11 @@ const closeLoading = () => {
               @click="handleConfirmDelete(evaluate?.id)"
             ></span>
           </div>
-          <div>
-            <DotLottieVue
-              style="height: 200px; width: 100%; object-fit: cover"
-              autoplay
-              loop
-              src="https://lottie.host/5fa9d3df-25c7-4789-be72-2dd7c1b29789/MO4WYKqaUD.lottie"
-            />
-          </div>
+          <img
+            src="@/assets/images/Profile-Building.png"
+            alt="resume-default"
+            class="w-full h-[250px] object-cover"
+          />
           <div class="flex flex-col w-full justify-between p-5 gap-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3 justify-between w-full">

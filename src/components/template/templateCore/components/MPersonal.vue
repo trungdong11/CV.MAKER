@@ -6,6 +6,7 @@ import { useForm } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const resumeStore = useResumeStore()
 const localData = ref(cloneDeep(resumeStore.dataResume?.personal_details))
@@ -121,7 +122,14 @@ watch(
       class="absolute hidden group-hover:flex top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
       @click="resumeStore.editPersonal"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <span class="i-solar-pen-bold text-primary"></span>
+          </TooltipTrigger>
+          <TooltipContent class="mb-1"> Edit </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
     <!-- End edit button -->
 

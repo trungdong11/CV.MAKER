@@ -7,6 +7,7 @@ import { useForm } from 'vee-validate'
 import { formatDateUs } from '@/utils/format'
 import { showToast } from '@/utils/toast'
 import * as yup from 'yup'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const resumeStore = useResumeStore()
 
@@ -96,13 +97,27 @@ watch(
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.editCertification"
       >
-        <span class="i-solar-pen-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-pen-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Edit </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.deleteSection('certification')"
       >
-        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Delete </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
     <!-- End edit button -->

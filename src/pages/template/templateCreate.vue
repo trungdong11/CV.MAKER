@@ -208,13 +208,21 @@ const handleDownload = () => {
       doc.setFont('helvetica', 'normal')
       const summaryLines = parseHTMLToLines(summary)
       const lineHeight = 5
+      const contentWidth = pageWidth - 2 * marginLeft
 
-      summaryLines.forEach((line, index) => {
-        doc.text(line, marginLeft, y + index * lineHeight)
+      let currentY = y
+      summaryLines.forEach((line) => {
+        const wrappedLines = doc.splitTextToSize(line, contentWidth)
+
+        wrappedLines.forEach((wrappedLine, index) => {
+          doc.text(wrappedLine, marginLeft, currentY + index * lineHeight)
+        })
+
+        currentY += wrappedLines.length * lineHeight
       })
 
-      y += summaryLines.length * lineHeight + 2
-      y = checkPageOverflow(doc, y)
+      currentY += 2
+      y = checkPageOverflow(doc, currentY)
     }
 
     // SKILLS section

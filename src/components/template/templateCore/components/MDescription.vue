@@ -9,6 +9,7 @@ import MGenerateSummary from '../../modal/MGenerateSummary.vue'
 import MSupportDescription from '../../modal/MSupportDescription.vue'
 import { cleanQuillContent } from '@/utils/format'
 import { showToast } from '@/utils/toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const resumeStore = useResumeStore()
 const localData = ref(resumeStore.dataResume.summary)
@@ -89,7 +90,14 @@ watch(
       class="absolute hidden group-hover:flex -top-2 right-10 cursor-pointer border size-8 rounded-md items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200"
       @click="resumeStore.editDescription"
     >
-      <span class="i-solar-pen-bold text-primary"></span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <span class="i-solar-pen-bold text-primary"></span>
+          </TooltipTrigger>
+          <TooltipContent class="mb-1"> Edit </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
     <!-- End edit button -->
 

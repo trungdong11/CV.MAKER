@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useConfirmDialog } from '@/stores/modal'
 import { Skeleton } from '@/components/ui/skeleton'
-import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 const resumeManageStore = useResumeManageStore()
 const confirmDialog = useConfirmDialog()
 
@@ -72,11 +71,10 @@ const handleConfirmDelete = async (resumeId: string) => {
           ></span>
         </div>
         <div>
-          <DotLottieVue
-            style="height: 200px; width: 100%; object-fit: cover"
-            autoplay
-            loop
-            src="https://lottie.host/5fa9d3df-25c7-4789-be72-2dd7c1b29789/MO4WYKqaUD.lottie"
+          <img
+            src="@/assets/images/cv-template-1.avif"
+            alt="resume-default"
+            class="w-full h-[250px] object-cover"
           />
         </div>
         <div class="flex flex-col w-full justify-between p-5 gap-2">

@@ -7,6 +7,7 @@ import { useForm, type GenericObject } from 'vee-validate'
 import { cloneDeep } from 'lodash-es'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const resumeStore = useResumeStore()
 const localData = ref(cloneDeep(resumeStore.dataResume?.skills))
@@ -113,13 +114,27 @@ watch(
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.editSkill"
       >
-        <span class="i-solar-pen-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-pen-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Edit </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.deleteSection('skills')"
       >
-        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Delete </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
     <!-- End edit button -->

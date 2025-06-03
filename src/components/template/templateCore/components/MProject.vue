@@ -11,6 +11,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import MSupportDescription from '../../modal/MSupportDescription.vue'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const resumeStore = useResumeStore()
 
@@ -135,13 +136,27 @@ watch(
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.editProject"
       >
-        <span class="i-solar-pen-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-pen-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Edit </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.deleteSection('projects')"
       >
-        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Delete </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
     <!-- End edit button -->

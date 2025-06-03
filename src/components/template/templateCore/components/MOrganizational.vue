@@ -9,6 +9,7 @@ import { cloneDeep } from 'lodash-es'
 import { formatDateUs, cleanQuillContent } from '@/utils/format'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const resumeStore = useResumeStore()
 const isLoading = ref(false)
@@ -111,13 +112,27 @@ watch(
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.editOrganization"
       >
-        <span class="i-solar-pen-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-pen-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Edit </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
         @click="resumeStore.deleteSection('organization')"
       >
-        <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <span class="i-solar-trash-bin-minimalistic-2-bold text-primary"></span>
+            </TooltipTrigger>
+            <TooltipContent class="mb-1"> Edit </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
     <!-- End edit button -->

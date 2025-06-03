@@ -1,17 +1,16 @@
 <script setup lang="ts">
 // import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/auth'
-// import { useQuizzflyStore } from '@/stores/quizzfly/quizzfly'
+import ResumeList from '@/components/resumes/ResumeList.vue'
 import { useConfirmDialog } from '@/stores/modal'
 // import { showToast } from '@/utils/toast'
-// import { apiError } from '@/utils/exceptionHandler'
-
-// import { useGroupStore } from '@/stores/group/group'
 import { useRouter } from 'vue-router'
+import { useResumeManageStore } from '@/stores/resume/resumeManage'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const confirmDialog = useConfirmDialog()
+const resumeManageStore = useResumeManageStore()
 
 const handleClickCreateQuiz = async () => {
   // await quizzflyStore.initQuizzflyDraft()
@@ -21,6 +20,13 @@ onBeforeMount(() => {
   // quizzflyStore.fetchQuizzflys()
   // getCountUnreadNotification()
   // groupStore.fetchGroups({ page: 1 })
+})
+
+onMounted(() => {
+  resumeManageStore.fetchResumes({
+    page: 1,
+    keyword: '',
+  })
 })
 
 const handleOpenCreateWithAI = async () => {
@@ -171,7 +177,7 @@ const handleOpenCreateWithAI = async () => {
 
     <!-- recent -->
     <div class="mt-10">
-      <p class="text-lg font-medium mb-4">Recent activities</p>
+      <p class="text-lg font-medium pb-4">Recent activities</p>
       <!-- <div
         v-if="!quizzflyStore.getIsFetching && quizzflyStore.getQuizzflys.length === 0"
         class="h-full w-full flex flex-col justify-center items-center"
@@ -234,6 +240,7 @@ const handleOpenCreateWithAI = async () => {
           </div>
         </div>
       </div> -->
+      <ResumeList />
     </div>
   </div>
 </template>

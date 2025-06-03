@@ -73,7 +73,7 @@ const handleEdit = (section: EditSection) => {
   ;(resumeStore[editMethod] as unknown as () => void)()
   const element = document.getElementById(`${section.toLowerCase()}-info`)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    element.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'center' })
   }
 }
 
