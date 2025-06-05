@@ -4,8 +4,11 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useConfirmDialog } from '@/stores/modal'
 import { Skeleton } from '@/components/ui/skeleton'
+
 const resumeManageStore = useResumeManageStore()
+const { handleRawEvaluate } = resumeManageStore
 const confirmDialog = useConfirmDialog()
+const router = useRouter()
 
 const { isFetching, resumes } = toRefs(resumeManageStore)
 
@@ -19,6 +22,11 @@ const handleConfirmDelete = async (resumeId: string) => {
   if (isConfirmed) {
     resumeManageStore.deleteResume(resumeId)
   }
+}
+
+const handleEvaluate = (id: string) => {
+  handleRawEvaluate(id)
+  router.push({ name: 'evaluate' })
 }
 </script>
 <template>
@@ -90,13 +98,11 @@ const handleConfirmDelete = async (resumeId: string) => {
           </div>
           <div class="flex items-center justify-between">
             <div class="flex gap-5 items-center justify-between w-full">
-              <RouterLink
-                target="_blank"
-                :to="{ name: 'evaluate' }"
-                ><Button class="flex items-center h-6 w-17 text-xs text-white"
-                  ><span class="text-white">Evaluate</span></Button
-                >
-              </RouterLink>
+              <Button
+                class="flex items-center h-6 w-17 text-xs text-white"
+                @click="handleEvaluate(resume?.id)"
+                ><span class="text-white">Evaluate</span></Button
+              >
               <RouterLink
                 :to="`/resumes/${resume?.id}`"
                 class="flex items-center cursor-pointer hover:text-primary gap-2 hover:underline"

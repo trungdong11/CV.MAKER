@@ -81,7 +81,7 @@ const sectionInitialIndex = computed(() => {
 
 <template>
   <div
-    class="fixed z-99 bottom-0 top-0 left-0 right-0 bg-rgb"
+    class="fixed z-[9999] bottom-0 top-0 left-0 right-0 bg-rgb"
     @click="emit('close')"
   >
     <div class="flex items-center justify-center py-11 px-20 h-full w-full">

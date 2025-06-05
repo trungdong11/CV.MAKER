@@ -11,6 +11,14 @@ export const evaluateCVApi = async (data: any): Promise<BaseResponse<IEvaluate>>
   })
 }
 
+export const evaluateLocalCVApi = async (data: any): Promise<BaseResponse<IEvaluate>> => {
+  return $api('/cv/score-local', {
+    method: 'POST',
+    body: data,
+    baseURL: config.evaluateEndpoint,
+  })
+}
+
 export const importCVApi = async (data: any): Promise<BaseResponse<any>> => {
   return $api('/document/process', {
     method: 'POST',

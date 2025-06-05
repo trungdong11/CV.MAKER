@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import { showToast } from '@/utils/toast'
 
 import { useEvaluateStore } from '@/stores/evaluate'
+import MListResume from './modal/MListResume.vue'
+
 const router = useRouter()
 
 const evaluateStore = useEvaluateStore()
@@ -12,6 +14,15 @@ const { isLoading } = toRefs(evaluateStore)
 
 const refInput = ref()
 const fileUpload = ref()
+const isShowListResume = ref(false)
+
+const handleShowListResume = () => {
+  isShowListResume.value = true
+}
+
+const handleCloseListResume = () => {
+  isShowListResume.value = false
+}
 
 const onChangeFile = async (e: Event) => {
   const element = e.currentTarget as HTMLInputElement
@@ -36,8 +47,8 @@ const onSubmit = async () => {
 
   const formData = new FormData()
   formData.append('file', fileUpload.value)
-  evaluateStore.handleAddSampleEvaluate()
-  await evaluateCV(formData)
+  // evaluateStore.handleAddSampleEvaluate()
+  await evaluateCV(formData, 'upload')
 }
 
 const handleButtonClick = () => {
@@ -60,7 +71,9 @@ const handleButtonClick = () => {
         <h2 class="text-xl font-medium">Drag and drop your resume here</h2>
         <p>
           You can upload your resume in PDF, DOC, DOCX
-          <span class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
+          <span
+            class="text-primary text-[14px] font-medium cursor-pointer hover:underline"
+            @click="handleShowListResume()"
             >choose your resume</span
           >
         </p>
@@ -109,6 +122,10 @@ const handleButtonClick = () => {
       </p>
     </div>
   </div>
+  <MListResume
+    v-if="isShowListResume"
+    @close="handleCloseListResume"
+  />
 </template>
 
 <style scoped lang="scss">

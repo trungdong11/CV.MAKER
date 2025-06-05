@@ -2,6 +2,9 @@ import { getCVsApi, getDetailCVApi, deleteCVApi } from '@/services/resume'
 import type { ITemplate } from '@/types/template'
 import { showToast } from '@/utils/toast'
 import { defineStore } from 'pinia'
+import { useEvaluateStore } from '@/stores/evaluate'
+const evaluateStore = useEvaluateStore()
+const { evaluateCV } = evaluateStore
 // import router from '@/routers/router'
 // import { apiError } from '@/utils/exceptionHandler'
 import type { IPaging } from '@/types'
@@ -20,7 +23,7 @@ export const useResumeManageStore = defineStore({
       this.isUpdating = val
     },
     setResumeInfo(val: ITemplate) {
-      this.resumeInfo = { ...this.resumeInfo, ...val }
+      this.resumeInfo = val
     },
     async fetchResumes({ page = 1, keyword = '' }: { page?: number; keyword?: string } = {}) {
       try {
@@ -42,7 +45,8 @@ export const useResumeManageStore = defineStore({
     async getResumeDetail(id: string) {
       try {
         const { data } = await getDetailCVApi(id)
-        this.setResumeInfo(data)
+        // this.setResumeInfo(data)
+        this.resumeInfo = data
       } catch (error) {
         console.error(error)
         showToast({
@@ -66,6 +70,10 @@ export const useResumeManageStore = defineStore({
           variant: 'destructive',
         })
       }
+    },
+    async handleRawEvaluate(id: string) {
+      await this.getResumeDetail(id)
+      await evaluateCV(this.resumeInfo, 'local')
     },
   },
   getters: {

@@ -8,7 +8,7 @@ import {
 } from '@/services/evaluate'
 import { showToast } from '@/utils/toast'
 import { defineStore } from 'pinia'
-import { evaluateCVApi, importCVApi } from '@/services/ai'
+import { evaluateCVApi, importCVApi, evaluateLocalCVApi } from '@/services/ai'
 import { useResumeStore } from './resume/resume'
 import { v4 as uuidv4 } from 'uuid'
 import type { IPaging } from '@/types'
@@ -29,17 +29,17 @@ export const useEvaluateStore = defineStore({
     isFetching: false,
   }),
   actions: {
-    async evaluateCV(val: any) {
+    async evaluateCV(val: any, type: 'local' | 'upload') {
       try {
         this.isLoading = true
         await this.createEvaluate(sampleEvaluate)
-        const data = await evaluateCVApi(val)
-        console.log(this.evaluatedLocal, 'evaluatedLocal')
+        await this.fetchResumes()
+        const data = type === 'local' ? await evaluateLocalCVApi(val) : await evaluateCVApi(val)
         if (data && this.evaluatedLocal.id) {
           this.updateEvaluate(data)
         }
       } catch (error) {
-        console.error(error)
+        await this.deleteEvaluate(this.evaluatedLocal.id)
         showToast({
           description: 'Evaluate failed',
           variant: 'destructive',
@@ -111,6 +111,7 @@ export const useEvaluateStore = defineStore({
           description: 'Delete evaluate success',
           variant: 'success',
         })
+        await this.fetchResumes()
       } catch (error) {
         console.error(error)
         showToast({
