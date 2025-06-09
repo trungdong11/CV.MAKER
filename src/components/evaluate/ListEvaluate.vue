@@ -133,9 +133,7 @@ const closeLoading = () => {
               </div>
             </div>
             <div class="flex items-center justify-end">
-              <RouterLink
-                target="_blank"
-                :to="`/evaluate/${evaluate?.id}`"
+              <RouterLink :to="`/evaluate/${evaluate?.id}`"
                 ><Button class="flex items-center h-6 w-17 text-xs text-white"
                   ><span class="text-white">Detail</span></Button
                 >
