@@ -74,7 +74,6 @@ const handleYearChange = (year) => {
 };
 
 const handleSelect = (selectedDate) => {
-  console.log(selectedDate, 'check change')
   if (selectedDate) {
     date.value = selectedDate;
   }

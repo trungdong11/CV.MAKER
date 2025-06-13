@@ -8,7 +8,9 @@ import { useResumeStore } from '@/stores/resume/resume'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConfirmDialog } from '@/stores/modal'
 
+const confirmDialog = useConfirmDialog()
 const resumeStore = useResumeStore()
 
 const localData = ref(cloneDeep(resumeStore.dataResume?.languages))
@@ -34,6 +36,18 @@ const schema = computed(() => {
 const { handleSubmit } = useForm({
   validationSchema: schema,
 })
+
+const handleConfirmDelete = async () => {
+  const { isConfirmed } = await confirmDialog.open({
+    title: 'Delete Language',
+    question: 'Are you sure you want to delete language section?',
+    warning: true,
+  })
+
+  if (isConfirmed) {
+    resumeStore.deleteSection('languages')
+  }
+}
 
 const onSubmit = handleSubmit(async (value) => {
   try {
@@ -86,7 +100,7 @@ const onSubmit = handleSubmit(async (value) => {
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="resumeStore.deleteSection('languages')"
+        @click="handleConfirmDelete"
       >
         <TooltipProvider>
           <Tooltip>

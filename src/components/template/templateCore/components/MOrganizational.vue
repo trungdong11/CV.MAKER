@@ -10,7 +10,9 @@ import { formatDateUs, cleanQuillContent } from '@/utils/format'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConfirmDialog } from '@/stores/modal'
 
+const confirmDialog = useConfirmDialog()
 const resumeStore = useResumeStore()
 const isLoading = ref(false)
 
@@ -33,6 +35,18 @@ const schema = computed(() => {
 const { handleSubmit } = useForm({
   validationSchema: schema,
 })
+
+const handleConfirmDelete = async () => {
+  const { isConfirmed } = await confirmDialog.open({
+    title: 'Delete Organization',
+    question: 'Are you sure you want to delete organization section?',
+    warning: true,
+  })
+
+  if (isConfirmed) {
+    resumeStore.deleteSection('organization')
+  }
+}
 
 const cancelEdit = () => {
   resumeStore.cancelEditOrganization()
@@ -123,7 +137,7 @@ watch(
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="resumeStore.deleteSection('organization')"
+        @click="handleConfirmDelete"
       >
         <TooltipProvider>
           <Tooltip>

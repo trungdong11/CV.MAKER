@@ -10,9 +10,7 @@ export const useResumeStore = defineStore({
   id: 'resume',
   state: () => ({
     cvId: uuidv4(),
-    dataResume: {
-      summary: '',
-    } as ITemplate,
+    dataResume: reactive({} as ITemplate),
     isLoading: true,
     showPreview: false,
     isEditPersonal: false,
@@ -86,6 +84,18 @@ export const useResumeStore = defineStore({
       this.isEditAward = true
     },
     cancelEditAward() {
+      this.isEditAward = false
+    },
+    handleCancelEdit() {
+      this.isEditPersonal = false
+      this.isEditDescription = false
+      this.isEditSkill = false
+      this.isEditWork = false
+      this.isEditEducation = false
+      this.isEditProject = false
+      this.isEditLanguage = false
+      this.isEditCertification = false
+      this.isEditOrganization = false
       this.isEditAward = false
     },
     async createResume(body: any) {
@@ -254,7 +264,7 @@ export const useResumeStore = defineStore({
       this.updateResume(this.dataResume.id, this.dataResume)
     },
 
-    deleteSection(
+    async deleteSection(
       section:
         | 'education'
         | 'works'
@@ -266,11 +276,10 @@ export const useResumeStore = defineStore({
         | 'skills',
     ) {
       this.dataResume[section] = []
-      // remove property from dataResume
-      this.updateResume(this.dataResume.id, this.dataResume)
+      await this.updateResume(this.dataResume.id, this.dataResume)
     },
 
-    seedAward() {
+    async seedAward() {
       if (!this.dataResume.award) {
         this.dataResume.award = []
       }
@@ -284,7 +293,7 @@ export const useResumeStore = defineStore({
           description: 'Awarded for outstanding research in computer science.',
         })
       }
-      this.updateResume(this.dataResume.id, this.dataResume)
+      await this.updateResume(this.dataResume.id, this.dataResume)
     },
 
     seedCertification() {
@@ -372,7 +381,7 @@ export const useResumeStore = defineStore({
       this.updateResume(this.dataResume.id, this.dataResume)
     },
 
-    seedSkill() {
+    async seedSkill() {
       if (!this.dataResume.skills) {
         this.dataResume.skills = []
       }
@@ -384,7 +393,7 @@ export const useResumeStore = defineStore({
             'Skill Name 1, Skill Name 2, Skill Name 3, Skill Name 4, Skill Name 5, etc',
         })
       }
-      this.updateResume(this.dataResume.id, this.dataResume)
+      await this.updateResume(this.dataResume.id, this.dataResume)
     },
 
     seedSummary() {
@@ -399,7 +408,7 @@ export const useResumeStore = defineStore({
       this.updateResume(this.dataResume.id, this.dataResume)
     },
 
-    seedWork() {
+    async seedWork() {
       if (!this.dataResume.works) {
         this.dataResume.works = []
       }
@@ -416,10 +425,10 @@ export const useResumeStore = defineStore({
             'State your tasks and accomplishments including name of the project and position of responsibility held.',
         })
       }
-      this.updateResume(this.dataResume.id, this.dataResume)
+      await this.updateResume(this.dataResume.id, this.dataResume)
     },
 
-    seedEducation() {
+    async seedEducation() {
       if (!this.dataResume.education) {
         this.dataResume.education = []
       }
@@ -436,8 +445,9 @@ export const useResumeStore = defineStore({
           description: 'E.g., info about scholarships, student activity, etc.',
         })
       }
-      this.updateResume(this.dataResume.id, this.dataResume)
+      await this.updateResume(this.dataResume.id, this.dataResume)
     },
+
     setShowPreview() {
       this.showPreview = true
     },

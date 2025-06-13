@@ -94,7 +94,6 @@ export const useAuthStore = defineStore({
     async setupAuth() {
       try {
         const access_token = localStorage.getItem('access_token') as string
-        console.log(access_token, 'check access token')
 
         if (access_token) {
           this.token.access = access_token

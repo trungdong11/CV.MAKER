@@ -14,6 +14,10 @@ import Card from '@/components/ui/card/Card.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useResumeStore } from '@/stores/resume/resume'
 
+const route = useRoute()
+
+const paramPage = computed(() => route?.name)
+
 const resumeStore = useResumeStore()
 const sections = [
   {
@@ -120,6 +124,16 @@ const handleAddSection = (section: string) => {
 onBeforeMount(() => {
   localStorage.setItem('isCollapsed', JSON.stringify(true))
 })
+
+watch(
+  () => paramPage.value,
+  (newVal) => {
+    if (newVal !== 'resume-detail') {
+      resumeStore.handleCancelEdit()
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

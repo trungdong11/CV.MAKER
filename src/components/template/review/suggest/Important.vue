@@ -7,12 +7,12 @@ import {
 } from '@/components/ui/accordion'
 import { useResumeStore } from '@/stores/resume/resume'
 import { checkActionWork, containsNumber } from '@/utils/format'
+import { toRefs, watch, onBeforeMount } from 'vue'
 
 const resumeStore = useResumeStore()
 const { dataResume } = toRefs(resumeStore)
 
 interface ImportantSectionState {
-  // isValueDescription: boolean
   isValueSkill: boolean
   isValueEducation: boolean
   isValueExperience: boolean
@@ -22,7 +22,6 @@ interface ImportantSectionState {
 }
 
 const initialValueState: ImportantSectionState = {
-  // isValueDescription: false,
   isValueSkill: false,
   isValueEducation: false,
   isValueExperience: false,
@@ -34,19 +33,18 @@ const initialValueState: ImportantSectionState = {
 const valueState = reactive({ ...initialValueState })
 
 const handleImportantEvaluate = () => {
-  // if (dataResume.value.summary === '') {
-  //   valueState.isValueDescription = true
-  //   valueState.countImportant++
-  // }
-  if (dataResume.value?.skills?.length === 0) {
+  // Reset state
+  Object.assign(valueState, initialValueState)
+
+  if (dataResume.value?.skills.length === 0) {
     valueState.isValueSkill = true
     valueState.countImportant++
   }
-  if (dataResume.value?.education?.length === 0) {
+  if (dataResume.value?.education.length === 0) {
     valueState.isValueEducation = true
     valueState.countImportant++
   }
-  if (dataResume.value?.works?.length === 0) {
+  if (dataResume.value.works.length === 0) {
     valueState.isValueExperience = true
     valueState.countImportant++
   }
@@ -73,21 +71,23 @@ const handleEdit = (section: EditSection) => {
   ;(resumeStore[editMethod] as unknown as () => void)()
   const element = document.getElementById(`${section.toLowerCase()}-info`)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'center' })
+    element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' })
   }
 }
 
 onBeforeMount(() => {
-  Object.assign(valueState, initialValueState)
   handleImportantEvaluate()
 })
 
-watch(dataResume.value, (newVal) => {
-  if (newVal) {
-    Object.assign(valueState, initialValueState)
-    handleImportantEvaluate()
-  }
-})
+watch(
+  () => dataResume.value,
+  (newVal) => {
+    if (newVal) {
+      handleImportantEvaluate()
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

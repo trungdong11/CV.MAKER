@@ -12,8 +12,10 @@ import MSupportDescription from '../../modal/MSupportDescription.vue'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConfirmDialog } from '@/stores/modal'
 
 const resumeStore = useResumeStore()
+const confirmDialog = useConfirmDialog()
 
 const localData = ref(cloneDeep(resumeStore.dataResume?.works))
 const isPreview = computed(() => resumeStore.getShowPreview)
@@ -50,6 +52,18 @@ const schema = computed(() => {
 const { handleSubmit } = useForm({
   validationSchema: schema,
 })
+
+const handleConfirmDelete = async () => {
+  const { isConfirmed } = await confirmDialog.open({
+    title: 'Delete Work Experienced',
+    question: 'Are you sure you want to delete work experienced section?',
+    warning: true,
+  })
+
+  if (isConfirmed) {
+    resumeStore.deleteSection('works')
+  }
+}
 
 const cancelEdit = () => {
   resumeStore.cancelEditWork()
@@ -154,7 +168,7 @@ watch(
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="resumeStore.deleteSection('works')"
+        @click="handleConfirmDelete"
       >
         <TooltipProvider>
           <Tooltip>

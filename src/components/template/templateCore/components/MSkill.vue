@@ -8,13 +8,27 @@ import { cloneDeep } from 'lodash-es'
 import * as yup from 'yup'
 import { showToast } from '@/utils/toast'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConfirmDialog } from '@/stores/modal'
+
+const confirmDialog = useConfirmDialog()
 
 const resumeStore = useResumeStore()
 const localData = ref(cloneDeep(resumeStore.dataResume?.skills))
 const isPreview = computed(() => resumeStore.getShowPreview)
 const isEditSkill = computed(() => resumeStore.isEditSkill)
-
 const isLoading = ref(false)
+
+const handleConfirmDelete = async () => {
+  const { isConfirmed } = await confirmDialog.open({
+    title: 'Delete Skill',
+    question: 'Are you sure you want to delete skill section?',
+    warning: true,
+  })
+
+  if (isConfirmed) {
+    resumeStore.deleteSection('skills')
+  }
+}
 
 const cancelEdit = () => {
   resumeStore.cancelEditSkill()
@@ -125,7 +139,7 @@ watch(
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="resumeStore.deleteSection('skills')"
+        @click="handleConfirmDelete"
       >
         <TooltipProvider>
           <Tooltip>
@@ -145,20 +159,20 @@ watch(
         <div
           v-for="(item, index) in data"
           :key="index"
-          class="flex items-center justify-start w-full gap-2 px-3"
+          class="w-full"
         >
-          <p
+          <span
             v-if="item.skill_category"
             class="font-semibold text-base"
           >
             {{ item.skill_category }}:
-          </p>
-          <p
+          </span>
+          <span
             v-if="item.list_of_skill"
-            class="font-normal text-sm"
+            class="font-normal text-sm ml-2"
           >
             {{ item.list_of_skill }}
-          </p>
+          </span>
         </div>
       </div>
     </template>

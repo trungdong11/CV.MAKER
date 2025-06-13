@@ -85,6 +85,8 @@ const handleCheckProject = () => {
 }
 
 const handleImportantEvaluate = () => {
+  Object.assign(valueState, initialValueState)
+
   handleCheckPersonal()
   handleCheckEducation()
   handleCheckProject()
@@ -105,7 +107,7 @@ const handleEdit = (section: EditSection) => {
   ;(resumeStore[editMethod] as unknown as () => void)()
   const element = document.getElementById(`${section.toLowerCase()}-info`)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'center' })
+    element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' })
   }
 }
 
@@ -114,12 +116,15 @@ onBeforeMount(() => {
   handleImportantEvaluate()
 })
 
-watch(dataResume.value, (newVal) => {
-  if (newVal) {
-    Object.assign(valueState, initialValueState)
-    handleImportantEvaluate()
-  }
-})
+watch(
+  () => dataResume.value,
+  (newVal) => {
+    if (newVal) {
+      handleImportantEvaluate()
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

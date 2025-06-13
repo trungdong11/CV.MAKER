@@ -108,7 +108,7 @@ const handleOpenCreateWithAI = async () => {
             </div>
           </RouterLink>
 
-          <RouterLink
+          <!-- <RouterLink
             to="/"
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
           >
@@ -121,9 +121,9 @@ const handleOpenCreateWithAI = async () => {
               <p>Upgrade plans</p>
               <p class="text-xs text-gray-500">Upgrade plan for more features</p>
             </div>
-          </RouterLink>
+          </RouterLink> -->
 
-          <RouterLink
+          <!-- <RouterLink
             to="/"
             class="max-md:flex-col max-md:items-center hover:bg-slate-50 cursor-pointer p-3 rounded-2xl flex items-center gap-4"
           >
@@ -136,7 +136,7 @@ const handleOpenCreateWithAI = async () => {
               <p>Payment history</p>
               <p class="text-xs text-gray-500">View your payment history</p>
             </div>
-          </RouterLink>
+          </RouterLink> -->
         </div>
       </div>
 

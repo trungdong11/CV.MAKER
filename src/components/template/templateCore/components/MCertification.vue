@@ -8,13 +8,27 @@ import { formatDateUs } from '@/utils/format'
 import { showToast } from '@/utils/toast'
 import * as yup from 'yup'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConfirmDialog } from '@/stores/modal'
 
+const confirmDialog = useConfirmDialog()
 const resumeStore = useResumeStore()
 
 const localData = ref(cloneDeep(resumeStore.dataResume?.certification))
 const isPreview = computed(() => resumeStore.getShowPreview)
 const isEditCertification = computed(() => resumeStore.isEditCertification)
 const isLoading = ref(false)
+
+const handleConfirmDelete = async () => {
+  const { isConfirmed } = await confirmDialog.open({
+    title: 'Delete Certification',
+    question: 'Are you sure you want to delete certification section?',
+    warning: true,
+  })
+
+  if (isConfirmed) {
+    resumeStore.deleteSection('certification')
+  }
+}
 
 const cancelEdit = () => {
   resumeStore.cancelEditCertification()
@@ -108,7 +122,7 @@ watch(
       </div>
       <div
         class="size-6 flex justify-center items-center hover:bg-slate-50 rounded-md"
-        @click="resumeStore.deleteSection('certification')"
+        @click="handleConfirmDelete"
       >
         <TooltipProvider>
           <Tooltip>
@@ -141,7 +155,7 @@ watch(
           </p>
         </div>
         <div class="flex justify-between w-full items-center">
-          <p class="font-semibold text-base underline cursor-pointer hover:text-primary">
+          <p class="font-semibold text-base">
             Credential Id:
             <span class="font-normal text-sm"> {{ item?.credential_id }}</span>
           </p>

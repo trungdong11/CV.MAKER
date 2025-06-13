@@ -15,7 +15,7 @@ const { isFetching, resumes } = toRefs(resumeManageStore)
 const handleConfirmDelete = async (resumeId: string) => {
   const { isConfirmed } = await confirmDialog.open({
     title: 'Delete Resume',
-    question: 'Are you sure you want to delete this resume?',
+    question: 'Are you sure want to delete this resume?',
     warning: true,
   })
 

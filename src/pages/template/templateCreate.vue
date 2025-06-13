@@ -31,25 +31,12 @@ const cvData = computed(() => resumeStore.getResumeInfo)
 const isShowPreview = ref(false)
 const isShowImport = ref(false)
 
-const handleCancelEdit = () => {
-  resumeStore.cancelEditAward()
-  resumeStore.cancelEditPersonal()
-  resumeStore.cancelEditDescription()
-  resumeStore.cancelEditSkill()
-  resumeStore.cancelEditWork()
-  resumeStore.cancelEditProject()
-  resumeStore.cancelEditEducation()
-  resumeStore.cancelEditLanguage()
-  resumeStore.cancelEditCertification()
-  resumeStore.cancelEditOrganization()
-}
-
 const fetchResumeDetail = async () => {
   await getResumeDetail(idResume.value)
 }
 
 const showPreview = () => {
-  handleCancelEdit()
+  resumeStore.handleCancelEdit()
   resumeStore.setShowPreview()
   isShowPreview.value = true
 }
@@ -78,7 +65,7 @@ const checkPageOverflow = (doc: jsPDF, currentY: number, additionalHeight = 10):
 }
 
 const handleDownload = () => {
-  handleCancelEdit()
+  resumeStore.handleCancelEdit()
   try {
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -796,7 +783,7 @@ onMounted(() => {
       class="px-8 flex gap-6 overflow-y-hidden p-1"
     >
       <TemplateCore :key="resumeStore?.cvId" />
-      <div class="flex flex-col gap-6 min-w-[300px]">
+      <div class="flex flex-col gap-6 w-[400px]">
         <Evaluation
           id="tour-item"
           data-tour="4"

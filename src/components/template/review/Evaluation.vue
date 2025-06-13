@@ -9,7 +9,7 @@ import NiceToHave from './suggest/NiceToHave.vue'
 <template>
   <BaseSubItem class="flex flex-col gap-3 h-screen overflow-y-auto">
     <div class="flex items-center justify-between w-full">
-      <p class="font-medium text-base">Resume Score</p>
+      <p class="font-medium text-base">Resume Feedback</p>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>

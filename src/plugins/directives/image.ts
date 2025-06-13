@@ -16,7 +16,6 @@ const handleImage = {
 
     img.onload = () => {
       if (!img) return
-      console.log('loaded', el.src)
       if (el.tagName === 'DIV') {
         el.style.backgroundImage = `url(${img.src})`
       } else {
