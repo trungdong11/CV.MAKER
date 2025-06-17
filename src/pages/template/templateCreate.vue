@@ -73,6 +73,16 @@ const handleDownload = () => {
       format: [250, 350],
     })
 
+ // Hàm xóa dấu tiếng Việt sử dụng chuẩn hóa Unicode
+    function removeDiacritics(str: string) {
+      if (!str) return str;
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')  
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D');
+    }
+
     const {
       personal_details,
       summary,
@@ -84,7 +94,7 @@ const handleDownload = () => {
       languages,
       certification,
       organization,
-      award,
+      award
     } = cvData.value || {}
     const marginContent = 14
 
@@ -95,40 +105,47 @@ const handleDownload = () => {
     const contentWidth = pageWidth - marginLeft - marginRight
 
     // parse HTML for description
-    const parseHTMLToLines = (html: string | undefined): string[] => {
-      if (!html) return []
-      const parser = new DOMParser()
-      const parsed = parser.parseFromString(html, 'text/html')
-      const lines: string[] = []
+    const parseHTMLToLines = (html: string | undefined): { text: string, isBold: boolean, isListItem: boolean, isParagraph: boolean }[] => {
+    if (!html) return []
+    const parser = new DOMParser()
+    const parsed = parser.parseFromString(html, 'text/html')
+    const lines: { text: string, isBold: boolean, isListItem: boolean, isParagraph: boolean }[] = []
 
-      const walk = (node: Node) => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.textContent?.trim()
-          if (text) lines.push(text)
-        } else if (
-          (node as HTMLElement).nodeName === 'P' ||
-          (node as HTMLElement).nodeName === 'UL'
-        ) {
-          walkChildren(node)
-        } else {
-          walkChildren(node)
+    const walk = (node: Node, parentTags: string[] = []) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent?.trim()
+        if (text) {
+          const isBold = parentTags.includes('STRONG') || parentTags.includes('B')
+          const isListItem = parentTags.includes('LI')
+          const isParagraph = parentTags.includes('P')
+          lines.push({
+            text: removeDiacritics(text),
+            isBold,
+            isListItem,
+            isParagraph
+          })
         }
+      } else {
+        const tagName = (node as HTMLElement).nodeName
+        walkChildren(node, [...parentTags, tagName])
       }
-
-      const walkChildren = (node: Node) => {
-        node.childNodes.forEach(walk)
-      }
-
-      walkChildren(parsed.body)
-      return lines
     }
+
+    const walkChildren = (node: Node, parentTags: string[] = []) => {
+      node.childNodes.forEach((child) => walk(child, parentTags))
+    }
+
+    walkChildren(parsed.body)
+    return lines
+  }
 
     // Header: Name
     doc.setFontSize(20)
     doc.setFont('helvetica', 'bold')
     const name = personal_details?.full_name?.toUpperCase() || 'UNKNOWN NAME'
-    const nameX = (pageWidth - doc.getTextWidth(name)) / 2
-    doc.text(name, nameX, y)
+    const cleanName = removeDiacritics(name) // Xóa dấu
+    const nameX = (pageWidth - doc.getTextWidth(cleanName)) / 2
+    doc.text(cleanName, nameX, y)
     y += 8 // Maintain increased spacing after fullName
 
     // Header: Contact Info and Social Links

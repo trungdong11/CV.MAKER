@@ -77,8 +77,11 @@ const onSubmit = handleSubmit(async (value) => {
 <template>
   <div
     id="language-info"
-    class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
-    :class="isEditLanguage ? 'bg-gray-50' : 'bg-white'"
+    class="relative group rounded-lg p-5 py-2 w-full"
+    :class="[
+      isEditLanguage ? 'bg-gray-50' : 'bg-white',
+      !isPreview ? 'hover:bg-gray-50' : ''
+    ]"
   >
     <!-- Edit button -->
     <div

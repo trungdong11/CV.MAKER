@@ -145,8 +145,11 @@ watch(
 <template>
   <div
     id="work-info"
-    class="relative group rounded-lg p-5 py-2 w-full hover:bg-gray-50"
-    :class="isEditWork ? 'bg-gray-50' : 'bg-white'"
+    class="relative group rounded-lg p-5 py-2 w-full"
+    :class="[
+      isEditWork ? 'bg-gray-50' : 'bg-white',
+      !isPreview ? 'hover:bg-gray-50' : ''
+    ]"
   >
     <!-- Edit button -->
     <div

@@ -42,7 +42,7 @@ const handleAddSummary = (text: string, index: number) => {
 <template>
   <div class="fixed z-[2] bottom-0 top-0 left-0 right-0 bg-rgb">
     <div class="flex items-center justify-center p-20 h-full w-full">
-      <Card class="flex flex-col gap-4 p-6 w-[650px] min-w-[650px]">
+      <Card class="flex flex-col gap-4 p-6 w-[700px] min-w-[650px]">
         <div class="flex items-start justify-between">
           <h2 class="text-lg font-semibold">Generate Great Summary Samples</h2>
           <span
@@ -123,9 +123,9 @@ const handleAddSummary = (text: string, index: number) => {
             <div
               v-for="(item, index) in summaryInfo"
               :key="index"
-              class="border rounded-lg p-3 border-slate-300 flex items-center gap-2"
+              class="border rounded-lg p-3 border-slate-300 flex items-center gap-4"
             >
-              <p class="font-medium text-[13px]">{{ item }}</p>
+              <p class="text-[13px] text-[#6B7280]">{{ item }}</p>
               <Button
                 class="border-primary text-primary min-w-[96px]"
                 variant="outline"

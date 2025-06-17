@@ -81,8 +81,11 @@ watch(
 <template>
   <div
     id="description-info"
-    :class="isEditDescription ? 'bg-gray-50' : 'bg-white'"
-    class="relative items-center group flex flex-col justify-center gap-3 w-full hover:bg-gray-50 rounded-lg p-5 py-2"
+    :class="[
+      isEditDescription ? 'bg-gray-50' : 'bg-white',
+      !isPreview ? 'hover:bg-gray-50' : ''
+    ]"
+    class="relative items-center group flex flex-col justify-center gap-3 w-full rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
     <div
