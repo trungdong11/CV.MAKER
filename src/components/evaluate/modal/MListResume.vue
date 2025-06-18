@@ -30,7 +30,7 @@ onMounted(() => {
     @click="emit('close')"
   >
     <div
-      class="flex flex-col gap-6 items-center justify-center p-12 rounded-xl bg-white w-[650px]"
+      class="flex flex-col gap-6 items-center justify-center p-8 rounded-xl bg-white w-[650px]"
       @click.stop
     >
       <h2 class="text-3xl font-bold">Select a resume</h2>

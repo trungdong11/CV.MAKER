@@ -116,10 +116,7 @@ watch(
 <template>
   <div
     id="skill-info"
-    :class="[
-      isEditSkill ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditSkill ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
     class="relative items-center group flex flex-col justify-start gap-1 w-full rounded-lg p-5 py-2"
   >
     <!-- Edit button -->
@@ -156,7 +153,7 @@ watch(
     </div>
     <!-- End edit button -->
 
-    <h2 class="font-bold text-base pb-2 border-b border-slate-950 w-full mb-1">SKILLS</h2>
+    <h2 class="font-semibold text-base pb-2 border-b border-slate-950 w-full mb-1">SKILLS</h2>
     <template v-if="!isEditSkill">
       <div class="flex flex-col w-full">
         <div
@@ -166,7 +163,7 @@ watch(
         >
           <span
             v-if="item.skill_category"
-            class="font-semibold text-base"
+            class="font-medium text-base"
           >
             {{ item.skill_category }}:
           </span>

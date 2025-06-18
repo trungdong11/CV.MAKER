@@ -391,12 +391,13 @@
           <div class="flex flex-col bg-white rounded p-5 gap-2 shadow-lg w-[450px]">
             <div class="flex gap-2 items-center">
               <img
-                src="@/assets/images/avatar-1.png"
+                src="@/assets/images/avatar-2.jpg"
                 alt=""
-                class="h[68px] w-[68px] object-cover"
+                class="h-[68px] w-[68px] object-cover rounded-full"
               />
               <p class="font-semibold text-2xl">
-                Peter Eva, <span class="font-medium text-base text-primary">Web Developer</span>
+                Dana Jayson,
+                <span class="font-medium text-base text-primary">Mobile Developer</span>
               </p>
             </div>
             <p class="font-normal text-base pb-4">
@@ -408,12 +409,12 @@
           <div class="flex flex-col bg-white rounded p-5 gap-2 shadow-lg w-[450px] mt-11">
             <div class="flex gap-2 items-center">
               <img
-                src="@/assets/images/avatar-1.png"
+                src="@/assets/images/avatar-3.jpeg"
                 alt=""
-                class="h[68px] w-[68px] object-cover"
+                class="h-[68px] w-[68px] object-cover rounded-full"
               />
               <p class="font-semibold text-2xl">
-                Peter Eva, <span class="font-medium text-base text-primary">Web Developer</span>
+                Tony Nguyen, <span class="font-medium text-base text-primary">Quality Control</span>
               </p>
             </div>
             <p class="font-normal text-base pb-4">

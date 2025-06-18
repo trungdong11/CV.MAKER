@@ -146,10 +146,7 @@ watch(
   <div
     id="work-info"
     class="relative group rounded-lg p-5 py-2 w-full"
-    :class="[
-      isEditWork ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditWork ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
   >
     <!-- Edit button -->
     <div
@@ -192,17 +189,18 @@ watch(
         class="flex flex-col gap-0 mt-1 w-full px-3"
       >
         <div class="flex justify-between w-full items-center">
-          <p class="font-semibold text-base">{{ item?.position }}</p>
-          <div class="flex items-center gap-3">
-            <p class="font-semibold text-base">{{ formatDateUs(item?.start_date) }}</p>
-            <p class="font-semibold text-base">
+          <p class="font-medium text-base">{{ item?.position }}</p>
+          <div class="flex items-center">
+            <p class="font-medium text-base">{{ formatDateUs(item?.start_date) }}</p>
+            <span class="mx-1">-</span>
+            <p class="font-medium text-base">
               {{ item.end_date ? formatDateUs(item?.end_date) : 'Present' }}
             </p>
           </div>
         </div>
         <div class="flex justify-between w-full items-center">
-          <p class="font-semibold text-base">{{ item?.company_name }}</p>
-          <p class="font-semibold text-base">{{ item?.location }}</p>
+          <p class="font-medium text-base">{{ item?.company_name }}</p>
+          <p class="font-medium text-base">{{ item?.location }}</p>
         </div>
         <p
           class="text-sm font-normal mt-1"

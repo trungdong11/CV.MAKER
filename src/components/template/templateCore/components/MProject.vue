@@ -139,10 +139,7 @@ watch(
   <div
     id="project-info"
     class="relative group rounded-lg p-5 py-2 w-full"
-    :class="[
-      isEditProject ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditProject ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
   >
     <!-- Edit button -->
     <div
@@ -187,14 +184,15 @@ watch(
         <div class="flex justify-between w-full items-center">
           <a
             :href="item?.project_link"
-            class="font-bold text-base"
+            class="font-medium text-base"
             >{{ item?.project_name }}</a
           >
-          <div class="flex items-center gap-3">
-            <p class="font-semibold text-base">
+          <div class="flex items-center">
+            <p class="font-medium text-base">
               {{ formatDateUs(item?.start_date) }}
             </p>
-            <p class="font-semibold text-base">
+            <span class="mx-1">-</span>
+            <p class="font-medium text-base">
               {{ item.end_date ? formatDateUs(item?.end_date) : 'Present' }}
             </p>
           </div>

@@ -73,14 +73,14 @@ const handleDownload = () => {
       format: [250, 350],
     })
 
- // Hàm xóa dấu tiếng Việt sử dụng chuẩn hóa Unicode
-    function removeDiacritics(str: string) {
-      if (!str) return str;
+    // Hàm xóa dấu tiếng Việt sử dụng chuẩn hóa Unicode
+    const removeDiacritics = (str: string) => {
+      if (!str) return str
       return str
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')  
+        .replace(/[\u0300-\u036f]/g, '')
         .replace(/đ/g, 'd')
-        .replace(/Đ/g, 'D');
+        .replace(/Đ/g, 'D')
     }
 
     const {
@@ -94,7 +94,7 @@ const handleDownload = () => {
       languages,
       certification,
       organization,
-      award
+      award,
     } = cvData.value || {}
     const marginContent = 14
 
@@ -105,39 +105,120 @@ const handleDownload = () => {
     const contentWidth = pageWidth - marginLeft - marginRight
 
     // parse HTML for description
-    const parseHTMLToLines = (html: string | undefined): { text: string, isBold: boolean, isListItem: boolean, isParagraph: boolean }[] => {
-    if (!html) return []
-    const parser = new DOMParser()
-    const parsed = parser.parseFromString(html, 'text/html')
-    const lines: { text: string, isBold: boolean, isListItem: boolean, isParagraph: boolean }[] = []
+    const parseHTMLToLines = (
+      html: string | undefined,
+    ): {
+      text: string
+      isBold: boolean
+      isItalic: boolean
+      isListItem: boolean
+      isLink: boolean
+      isNewLine: boolean
+    }[] => {
+      if (!html) return []
 
-    const walk = (node: Node, parentTags: string[] = []) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent?.trim()
-        if (text) {
-          const isBold = parentTags.includes('STRONG') || parentTags.includes('B')
-          const isListItem = parentTags.includes('LI')
-          const isParagraph = parentTags.includes('P')
-          lines.push({
-            text: removeDiacritics(text),
-            isBold,
-            isListItem,
-            isParagraph
-          })
+      const parser = new DOMParser()
+      const parsed = parser.parseFromString(html, 'text/html')
+      const lines: {
+        text: string
+        isBold: boolean
+        isItalic: boolean
+        isListItem: boolean
+        isLink: boolean
+        isNewLine: boolean
+      }[] = []
+
+      const walk = (
+        node: Node,
+        context = { bold: false, italic: false, list: false, link: false },
+      ) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const rawText = node.textContent?.trim()
+          if (rawText) {
+            lines.push({
+              text: removeDiacritics(rawText),
+              isBold: context.bold,
+              isItalic: context.italic,
+              isListItem: context.list,
+              isLink: context.link,
+              isNewLine: false,
+            })
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const el = node as HTMLElement
+          const tag = el.tagName.toUpperCase()
+          const newContext = {
+            bold: context.bold || ['B', 'STRONG'].includes(tag),
+            italic: context.italic || ['I', 'EM'].includes(tag),
+            list: context.list || ['LI'].includes(tag),
+            link: context.link || tag === 'A',
+          }
+
+          if (tag === 'BR') {
+            lines.push({
+              text: '',
+              isBold: false,
+              isItalic: false,
+              isListItem: false,
+              isLink: false,
+              isNewLine: true,
+            })
+            return
+          }
+
+          if (tag === 'P' || tag === 'LI' || tag === 'DIV') {
+            // thêm dòng mới trước nội dung đoạn
+            // if (lines.length > 0) {
+            //   lines.push({
+            //     text: '',
+            //     isBold: false,
+            //     isItalic: false,
+            //     isListItem: false,
+            //     isLink: false,
+            //     isNewLine: true,
+            //   })
+            // }
+          }
+
+          node.childNodes.forEach((child) => walk(child, newContext))
         }
-      } else {
-        const tagName = (node as HTMLElement).nodeName
-        walkChildren(node, [...parentTags, tagName])
       }
+
+      walk(parsed.body)
+
+      return lines
     }
 
-    const walkChildren = (node: Node, parentTags: string[] = []) => {
-      node.childNodes.forEach((child) => walk(child, parentTags))
-    }
+    const renderHTMLDescription = (
+      doc: jsPDF,
+      html: string,
+      startY: number,
+      marginLeft: number,
+      maxWidth: number,
+    ): number => {
+      const lines = parseHTMLToLines(html)
+      const lineHeight = 5
+      let y = startY
 
-    walkChildren(parsed.body)
-    return lines
-  }
+      lines.forEach((line) => {
+        if (line.isNewLine) {
+          y += lineHeight
+          y = checkPageOverflow(doc, y)
+          return
+        }
+
+        const wrappedLines = doc.splitTextToSize(line.text, maxWidth)
+
+        wrappedLines.forEach((wrappedLine) => {
+          doc.setFont('helvetica', line.isBold ? 'bold' : 'normal')
+          doc.text(wrappedLine, marginLeft, y)
+          y += lineHeight
+          y = checkPageOverflow(doc, y)
+        })
+      })
+
+      return y
+    }
 
     // Header: Name
     doc.setFontSize(20)
@@ -209,24 +290,30 @@ const handleDownload = () => {
     // Summary
     if (summary?.trim()) {
       doc.setFontSize(10)
-      doc.setFont('helvetica', 'normal')
       const summaryLines = parseHTMLToLines(summary)
       const lineHeight = 5
       const contentWidth = pageWidth - 2 * marginLeft
 
       let currentY = y
+
       summaryLines.forEach((line) => {
-        const wrappedLines = doc.splitTextToSize(line, contentWidth)
+        if (line.isNewLine) {
+          currentY += lineHeight
+          currentY = checkPageOverflow(doc, currentY)
+          return
+        }
 
-        wrappedLines.forEach((wrappedLine, index) => {
-          doc.text(wrappedLine, marginLeft, currentY + index * lineHeight)
+        const wrappedLines = doc.splitTextToSize(line.text, contentWidth)
+
+        wrappedLines.forEach((wrappedLine) => {
+          doc.setFont('helvetica', line.isBold ? 'bold' : 'normal')
+          doc.text(wrappedLine, marginLeft, currentY)
+          currentY += lineHeight
+          currentY = checkPageOverflow(doc, currentY)
         })
-
-        currentY += wrappedLines.length * lineHeight
       })
 
-      currentY += 2
-      y = checkPageOverflow(doc, currentY)
+      y = currentY + 2
     }
 
     // SKILLS section
@@ -246,19 +333,52 @@ const handleDownload = () => {
       doc.setFontSize(10)
 
       skills.forEach((skillItem) => {
-        if (!skillItem?.skill_category || !skillItem?.list_of_skill) return
         const label = `${skillItem.skill_category}: `
         const content = skillItem.list_of_skill
-        const boldWidth = doc.getTextWidth(label)
 
+        // Max width của trang
+        const maxWidth = pageWidth - marginContent - marginRight
+
+        // Đo độ rộng của label
+        doc.setFont('helvetica', 'bold')
+        const labelWidth = doc.getTextWidth(label)
+
+        // Phần còn lại cho content ở dòng đầu tiên
+        const firstLineWidth = maxWidth - labelWidth
+
+        // Cắt content thành phần đầu và phần còn lại
+        doc.setFont('helvetica', 'normal')
+        const contentWords = content.split(' ')
+
+        let firstLine = ''
+        while (contentWords.length) {
+          const testLine = firstLine ? firstLine + ' ' + contentWords[0] : ' ' + contentWords[0]
+          if (doc.getTextWidth(testLine) <= firstLineWidth) {
+            firstLine = testLine
+            contentWords.shift()
+          } else {
+            break
+          }
+        }
+
+        // const remainingLines = doc.splitTextToSize(contentWords.join(''), maxWidth)
+
+        // Vẽ dòng đầu tiên (label + firstLine)
         doc.setFont('helvetica', 'bold')
         doc.text(label, marginContent, y)
 
         doc.setFont('helvetica', 'normal')
-        doc.text(content, marginContent + boldWidth + 3, y)
+        doc.text(firstLine, marginContent + labelWidth, y)
 
         y += 5
         y = checkPageOverflow(doc, y)
+
+        // // Vẽ các dòng còn lại (nếu có)
+        // remainingLines.forEach((line) => {
+        //   doc.text(line, marginContent, y)
+        //   y += 5
+        //   y = checkPageOverflow(doc, y)
+        // })
       })
 
       y += 1
@@ -275,6 +395,8 @@ const handleDownload = () => {
       doc.setLineWidth(0.3)
       doc.line(marginLeft, y, pageWidth - marginRight, y)
       y += 5
+
+      const workContentWidth = pageWidth - marginContent - marginContent
 
       education.forEach((edu) => {
         if (!edu?.degree || !edu?.school) return
@@ -298,9 +420,12 @@ const handleDownload = () => {
 
         y += 5
         y = checkPageOverflow(doc, y)
-      })
 
-      y += 2
+        if (edu.description) {
+          y = renderHTMLDescription(doc, edu.description, y, marginContent, workContentWidth)
+          y += 2
+        }
+      })
     }
 
     // WORK EXPERIENCE section
@@ -345,21 +470,9 @@ const handleDownload = () => {
         y += 5
 
         if (work.description) {
-          const parsedLines = parseHTMLToLines(work.description)
-          const maxWidth = workContentWidth
-
-          parsedLines.forEach((line) => {
-            const wrappedLines = doc.splitTextToSize(line, maxWidth)
-
-            wrappedLines.forEach((wrappedLine) => {
-              doc.text(wrappedLine, marginContent, y)
-              y += 5
-              y = checkPageOverflow(doc, y)
-            })
-          })
+          y = renderHTMLDescription(doc, work.description, y, marginContent, workContentWidth)
+          y += 3
         }
-
-        y += 3
       })
     }
 
@@ -400,22 +513,10 @@ const handleDownload = () => {
 
         y += 5
 
-        if (project?.description) {
-          const parsedLines = parseHTMLToLines(project.description)
-          const maxWidth = projectContentWidth
-
-          parsedLines.forEach((line) => {
-            const wrappedLines = doc.splitTextToSize(line, maxWidth)
-
-            wrappedLines.forEach((wrappedLine) => {
-              doc.text(wrappedLine, marginContent, y)
-              y += 5
-              y = checkPageOverflow(doc, y)
-            })
-          })
+        if (project.description) {
+          y = renderHTMLDescription(doc, project.description, y, marginContent, projectContentWidth)
+          y += 3
         }
-
-        y += 3
       })
     }
 
@@ -496,7 +597,7 @@ const handleDownload = () => {
         y += 5
 
         if (cert.credential_id && cert.certification_link) {
-          doc.setTextColor(100)
+          doc.setTextColor(0, 0, 0)
           doc.textWithLink(`Credential ID: ${cert.credential_id}`, marginContent, y, {
             url: cert.certification_link,
           })
@@ -546,21 +647,9 @@ const handleDownload = () => {
         y += 5
 
         if (org.description) {
-          const parsedLines = parseHTMLToLines(org.description)
-          const maxWidth = orgContentWidth
-
-          parsedLines.forEach((line) => {
-            const wrappedLines = doc.splitTextToSize(line, maxWidth)
-
-            wrappedLines.forEach((wrappedLine) => {
-              doc.text(wrappedLine, marginContent, y)
-              y += 5
-              y = checkPageOverflow(doc, y)
-            })
-          })
+          y = renderHTMLDescription(doc, org.description, y, marginContent, orgContentWidth)
+          y += 3
         }
-
-        y += 3
       })
     }
 
@@ -605,17 +694,9 @@ const handleDownload = () => {
         y += 5
 
         if (aw.description) {
-          doc.setFont('helvetica', 'normal')
-          doc.setTextColor(0)
-          const lines = doc.splitTextToSize(aw.description, awardContentWidth)
-          lines.forEach((line) => {
-            doc.text(line, marginContent, y)
-            y += 5
-            y = checkPageOverflow(doc, y)
-          })
+          y = renderHTMLDescription(doc, aw.description, y, marginContent, awardContentWidth)
+          y += 5
         }
-
-        y += 5
       })
     }
 

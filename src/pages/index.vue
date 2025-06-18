@@ -57,13 +57,13 @@ const handleOpenCreateWithAI = async () => {
 
     <!-- Buttons -->
     <div class="flex gap-4 mt-4">
-      <!-- Ask AI button with gradient border -->
+      <!-- Ask AI button with gradient border 
       <button
         class="px-4 h-9 gradient-from-primary text-white font-medium rounded-full shadow-lg hover:bg-indigo-300 transition"
         @click="handleOpenCreateWithAI"
       >
         ✨ Create with AI
-      </button>
+      </button>-->
 
       <!-- <RouterLink
         :to="{ name: 'templates', query: { create: 'true' } }"

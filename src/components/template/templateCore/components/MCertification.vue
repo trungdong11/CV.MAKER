@@ -100,10 +100,7 @@ watch(
   <div
     id="certification-info"
     class="relative group rounded-lg p-5 py-2 w-full"
-    :class="[
-      isEditCertification ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditCertification ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
   >
     <!-- Edit button -->
     <div
@@ -150,15 +147,31 @@ watch(
             :href="item?.certification_link"
             class="cursor-pointer"
           >
-            <span class="font-semibold text-base">{{ item?.certification_name }}</span> by
-            <span class="font-normal text-sm">{{ item?.issuing_organization }}</span>
+            <span
+              v-if="item?.certification_name"
+              class="font-medium text-base"
+              >{{ item?.certification_name }}</span
+            >
+            <span
+              v-if="item?.issuing_organization"
+              class="mx-1"
+              >by</span
+            >
+            <span
+              v-if="item?.issuing_organization"
+              class="font-normal text-sm"
+              >{{ item?.issuing_organization }}</span
+            >
           </a>
-          <p class="font-semibold text-base">
+          <p class="font-medium text-base">
             {{ formatDateUs(item?.issued_date) }}
           </p>
         </div>
-        <div class="flex justify-between w-full items-center">
-          <p class="font-semibold text-base">
+        <div
+          v-if="item?.credential_id"
+          class="flex justify-between w-full items-center"
+        >
+          <p class="font-medium text-base">
             Credential Id:
             <span class="font-normal text-sm"> {{ item?.credential_id }}</span>
           </p>

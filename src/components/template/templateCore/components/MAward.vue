@@ -112,10 +112,7 @@ watch(
   <div
     id="award-info"
     class="relative group rounded-lg p-5 py-2 w-full"
-    :class="[
-      isEditAward ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditAward ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
   >
     <!-- Edit button -->
     <div
@@ -162,9 +159,9 @@ watch(
             :href="item?.award_title_link"
             class="cursor-pointer"
           >
-            <span class="font-semibold text-base">{{ item?.award_title }}</span>
+            <span class="font-medium text-base">{{ item?.award_title }}</span>
           </a>
-          <p class="font-semibold text-base">{{ formatDateUs(item?.issued_date) }}</p>
+          <p class="font-medium text-base">{{ formatDateUs(item?.issued_date) }}</p>
         </div>
         <p class="font-normal text-base">{{ item?.issued_by }}</p>
         <p

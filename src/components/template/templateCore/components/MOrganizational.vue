@@ -115,10 +115,7 @@ watch(
   <div
     id="organization-info"
     class="relative group rounded-lg p-5 py-2 w-full"
-    :class="[
-      isEditOrganization ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditOrganization ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
   >
     <!-- Edit button -->
     <div
@@ -164,18 +161,18 @@ watch(
       >
         <div class="flex items-center justify-between w-full">
           <div class="flex flex-col gap-0 items-start">
-            <p class="font-semibold text-base">{{ item?.position }}</p>
-            <p class="font-semibold text-base">{{ item?.name }}</p>
+            <p class="font-medium text-base">{{ item?.position }}</p>
+            <p class="font-medium text-base">{{ item?.name }}</p>
           </div>
           <div class="flex flex-col gap-0 items-end">
-            <div class="flex items-center font-semibold text-base">
-              <p class="font-semibold text-base">{{ formatDateUs(item?.start_date) }}</p>
-              <span> - </span>
-              <p class="font-semibold text-base">
+            <div class="flex items-center font-medium text-base">
+              <p class="font-medium text-base">{{ formatDateUs(item?.start_date) }}</p>
+              <span class="mx-1">-</span>
+              <p class="font-medium text-base">
                 {{ item.end_date ? formatDateUs(item?.end_date) : 'Present' }}
               </p>
             </div>
-            <p class="font-semibold text-base">{{ item?.address }}</p>
+            <p class="font-medium text-base">{{ item?.address }}</p>
           </div>
         </div>
         <p

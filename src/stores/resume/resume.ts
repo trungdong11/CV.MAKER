@@ -106,10 +106,10 @@ export const useResumeStore = defineStore({
         if (this.dataResume) {
           router.push(`/resumes/${this.dataResume?.id}`)
         }
-        showToast({
-          description: 'Create resumes success',
-          variant: 'success',
-        })
+        // showToast({
+        //   description: 'Create resumes success',
+        //   variant: 'success',
+        // })
       } catch (error) {
         console.error(error)
         showToast({

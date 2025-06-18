@@ -78,10 +78,7 @@ const onSubmit = handleSubmit(async (value) => {
   <div
     id="language-info"
     class="relative group rounded-lg p-5 py-2 w-full"
-    :class="[
-      isEditLanguage ? 'bg-gray-50' : 'bg-white',
-      !isPreview ? 'hover:bg-gray-50' : ''
-    ]"
+    :class="[isEditLanguage ? 'bg-gray-50' : 'bg-white', !isPreview ? 'hover:bg-gray-50' : '']"
   >
     <!-- Edit button -->
     <div
@@ -126,11 +123,11 @@ const onSubmit = handleSubmit(async (value) => {
         :key="index"
         class="flex gap-1 items-center"
       >
-        <span class="text-base font-semibold">{{ item?.language }}</span>
+        <span class="text-base font-medium">{{ item?.language }}</span>
         ( <span class="font-normal text-sm">{{ item?.proficiency }}</span> )
         <div
           v-if="index + 1 < resumeStore.dataResume?.languages.length"
-          class="font-semibold text-lg -mt-2 flex justify-center items-center text-white0"
+          class="font-medium text-lg -mt-2 flex justify-center items-center text-white0"
         >
           .
         </div>

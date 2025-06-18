@@ -8,14 +8,41 @@ const evaluateStore = useEvaluateStore()
 const authStore = useAuthStore()
 const evaluates = computed(() => evaluateStore.evaluates)
 
-onMounted(() => {
-  evaluateStore.fetchResumes()
-  if (authStore.getUser?.id) {
-    setInterval(() => {
+const intervalId = ref()
+
+const startFetching = () => {
+  if (!intervalId.value) {
+    intervalId.value = setInterval(() => {
       evaluateStore.fetchResumes()
     }, 30000)
   }
+}
+
+const stopFetching = () => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value)
+    intervalId.value = null
+  }
+}
+
+onMounted(() => {
+  evaluateStore.fetchResumes()
+
+  if (authStore.getIsLoggedIn) {
+    startFetching()
+  }
 })
+
+watch(
+  () => authStore.getIsLoggedIn,
+  (isLoggedIn) => {
+    if (isLoggedIn) {
+      startFetching()
+    } else {
+      stopFetching()
+    }
+  },
+)
 </script>
 
 <template>
