@@ -57,58 +57,63 @@ const handlePercent = (num: number, section: string) => {
 }
 </script>
 <template>
-  <div class="flex flex-col gap-8 w-full h-[100vh] overflow-auto">
+  <div class="flex flex-col gap-8 p-1 w-full h-[calc(100vh-100px)] overflow-auto">
     <div
       v-for="item in evaluateDetail?.sections?.slice(1)"
       :key="item.section"
       class="w-full rounded-xl p-5 shadow flex flex-col gap-4"
     >
-      <div class="flex items-center w-full">
-        <div class="flex items-center gap-2 w-[400px]">
-          <span
-            class="i-material-symbols-light-person-apron-outline text-[20px] text-primary"
-          ></span>
-          <h2 class="text-base font-medium">{{ item?.section }}</h2>
-        </div>
-        <div class="flex items-center gap-4">
-          <p
-            class="text-xs font-medium px-3 py-0.5 rounded-xl"
-            :class="getScoreColor(item?.final_score, item?.section)"
-          >
-            {{ item?.quality }}
-          </p>
-          <p
-            class="text-xs font-medium px-3 py-0.5 rounded-xl"
-            :class="getScoreColor(item?.final_score, item?.section)"
-          >
-            {{ handlePercent(item?.final_score, item?.section).toFixed() }}%
-          </p>
-        </div>
-      </div>
       <div
-        v-if="item.grammar_errors_detailed.length > 0"
-        class="flex flex-col w-full"
+        v-if="item.section !== ''"
+        class=""
       >
-        <div class="flex flex-col gap-1 w-full rounded-lg text-[#1f2937] bg-[#F9FAFB] p-5">
-          <h2 class="text-base font-medium">Grammars Error</h2>
-          <div class="flex flex-col gap-4">
-            <div
-              v-for="(grammarItem, index) in item.grammar_errors_detailed"
-              :key="grammarItem.type"
-              class="flex flex-col gap-1"
+        <div class="flex items-center w-full">
+          <div class="flex items-center gap-2 w-[400px]">
+            <span
+              class="i-material-symbols-light-person-apron-outline text-[20px] text-primary"
+            ></span>
+            <h2 class="text-base font-medium">{{ item?.section }}</h2>
+          </div>
+          <div class="flex items-center gap-4">
+            <p
+              class="text-xs font-medium px-3 py-0.5 rounded-xl"
+              :class="getScoreColor(item?.final_score, item?.section)"
             >
-              <p class="font-xs">Location: {{ grammarItem?.location }}</p>
-              <p class="font-xs">Description: {{ grammarItem?.description }}</p>
+              {{ item?.quality }}
+            </p>
+            <p
+              class="text-xs font-medium px-3 py-0.5 rounded-xl"
+              :class="getScoreColor(item?.final_score, item?.section)"
+            >
+              {{ handlePercent(item?.final_score, item?.section).toFixed() }}%
+            </p>
+          </div>
+        </div>
+        <div
+          v-if="item.grammar_errors_detailed.length > 0"
+          class="flex flex-col w-full"
+        >
+          <div class="flex flex-col gap-1 w-full rounded-lg text-[#1f2937] bg-[#F9FAFB] p-5">
+            <h2 class="text-base font-medium">Grammars Error</h2>
+            <div class="flex flex-col gap-4">
               <div
-                class="border-[#1fc76a] flex flex-col gap-1 border font-xs p-3 rounded-lg bg-[#EEFFF5] text-[#1f2937]"
+                v-for="(grammarItem, index) in item.grammar_errors_detailed"
+                :key="grammarItem.type"
+                class="flex flex-col gap-1"
               >
-                <p class="font-medium">Suggestions</p>
-                <p>{{ grammarItem?.suggestion }}</p>
+                <p class="font-xs">Location: {{ grammarItem?.location }}</p>
+                <p class="font-xs">Description: {{ grammarItem?.description }}</p>
+                <div
+                  class="border-[#1fc76a] flex flex-col gap-1 border font-xs p-3 rounded-lg bg-[#EEFFF5] text-[#1f2937]"
+                >
+                  <p class="font-medium">Suggestions</p>
+                  <p>{{ grammarItem?.suggestion }}</p>
+                </div>
+                <div
+                  v-if="item.grammar_errors_detailed.length !== index + 1"
+                  class="w-full bg-slate-200 h-[1px] mt-4"
+                ></div>
               </div>
-              <div
-                v-if="item.grammar_errors_detailed.length !== index + 1"
-                class="w-full bg-slate-200 h-[1px] mt-4"
-              ></div>
             </div>
           </div>
         </div>

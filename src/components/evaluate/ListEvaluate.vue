@@ -125,7 +125,7 @@ const closeLoading = () => {
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3 justify-between w-full">
                 <h2 class="title text-base font-medium w-full">
-                  {{ evaluate?.personal_details?.full_name || 'Untitled' }}
+                  {{ evaluate?.name_cv || 'Untitled' }}
                 </h2>
                 <p class="text-xs text-slate-500">
                   {{ new Date(evaluate?.created_at).toLocaleString('vi-VN') }}

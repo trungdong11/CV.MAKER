@@ -7,6 +7,7 @@ import Skeleton from '@/components/ui/skeleton/Skeleton.vue'
 const resumeManageStore = useResumeManageStore()
 const { isFetching, resumes } = toRefs(resumeManageStore)
 const { handleRawEvaluate } = resumeManageStore
+const router = useRouter()
 
 interface Emits {
   (e: 'close'): void
@@ -55,8 +56,23 @@ onMounted(() => {
           v-else
           class="flex flex-col gap-3"
         >
+          <div
+            v-if="resumes.length === 0"
+            class="flex items-center justify-center flex-col mt-8"
+          >
+            <p class="text-slate-500 text-[16px]">Resume empty</p>
+            <p class="text-slate-500 text-[16px] pt-1 pb-4">
+              Start building your professional resume
+            </p>
+            <Button
+              class="flex items-center w-17 text-xs text-white"
+              @click="router.push('/templates')"
+              ><span class="text-white">Create resume</span>
+            </Button>
+          </div>
           <Card
             v-for="resume in resumes"
+            v-else
             :key="resume.id"
             class="flex gap-3 cursor-pointer rounded-lg"
           >

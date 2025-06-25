@@ -1,5 +1,6 @@
 export interface IEvaluate {
   id: string
+  name_cv: string
   created_at: string
   updated_at: string
   total_content_score: number

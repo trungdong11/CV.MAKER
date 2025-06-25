@@ -96,6 +96,7 @@ export const sampleEvaluate = {
   content_score_100: 0,
   final_score_100: 0,
   total_grammar_errors: 0,
+  name_cv: 'Unknow',
   sections: [
     {
       section: '',
