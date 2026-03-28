@@ -36,6 +36,17 @@ yarn install
 yarn dev
 ```
 
+## 📸Preview
+
+### 1. CV Management Dashboard
+![CV Management Dashboard](https://dong-93m.pages.dev/_nuxt/cvmaker-1.B8a2Bmwu.png)
+
+### 2. CV Detailed Information Editor
+![CV Detailed Information Editor](https://dong-93m.pages.dev/_nuxt/cvmaker-2.Du4BuHcA.png)
+
+### 3. CV Evaluation Results
+![CV Evaluation Results](https://dong-93m.pages.dev/_nuxt/cvmaker-3.CG1wIDsb.png)
+
 ## User Guide
 
 ### Create New CV
